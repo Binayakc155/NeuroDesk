@@ -1,0 +1,215 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                    String                 @id @default(cuid())
+  email                 String                 @unique
+  name                  String?
+  image                 String?
+  emailVerified         DateTime?
+  password              String?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  
+  // Sound preferences
+  preferredSound        String?                @default("none")
+  soundVolume           Int?                   @default(50)
+  
+  // Relations
+  accounts              Account[]
+  sessions              Session[]
+  focusSessions         FocusSession[]
+  teamMembers           TeamMember[]
+  notifications         Notification[]
+  whitelistedDomains    WhitelistedDomain[]
+  customSounds          CustomSound[]
+  
+  @@index([email])
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+model Team {
+  id                    String                 @id @default(cuid())
+  name                  String
+  slug                  String                 @unique
+  description           String?
+  image                 String?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  
+  // Relations
+  members               TeamMember[]
+  invites               TeamInvite[]
+  focusSessions         FocusSession[]
+  
+  @@index([slug])
+}
+
+model TeamMember {
+  id                    String                 @id @default(cuid())
+  userId                String
+  teamId                String
+  role                  String                 @default("member") // admin, member
+  joinedAt              DateTime               @default(now())
+  
+  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team                  Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, teamId])
+  @@index([teamId])
+  @@index([userId])
+}
+
+model TeamInvite {
+  id                    String                 @id @default(cuid())
+  teamId                String
+  email                 String
+  role                  String                 @default("member")
+  createdAt             DateTime               @default(now())
+  expiresAt             DateTime
+  
+  team                  Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  
+  @@unique([teamId, email])
+  @@index([teamId])
+  @@index([email])
+}
+
+model FocusSession {
+  id                    String                 @id @default(cuid())
+  userId                String
+  teamId                String?
+  startTime             DateTime
+  endTime               DateTime?
+  duration              Int                   @default(0) // in seconds
+  isDistracted          Boolean               @default(false)
+  distractionCount      Int                   @default(0)
+  notes                 String?
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  
+  user                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team                  Team?                 @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  distractions          Distraction[]
+  
+  @@index([userId])
+  @@index([teamId])
+  @@index([startTime])
+}
+
+model Distraction {
+  id                    String                @id @default(cuid())
+  focusSessionId        String
+  timestamp             DateTime              @default(now())
+  description           String?
+  
+  focusSession          FocusSession          @relation(fields: [focusSessionId], references: [id], onDelete: Cascade)
+  
+  @@index([focusSessionId])
+}
+
+model WeeklyReport {
+  id                    String                @id @default(cuid())
+  userId                String
+  teamId                String?
+  weekStart             DateTime
+  weekEnd               DateTime
+  totalFocusHours       Float
+  totalSessions         Int
+  focusScore            Float
+  averageSessionDuration Int
+  distractionCount      Int
+  createdAt             DateTime              @default(now())
+  
+  @@unique([userId, weekStart])
+  @@index([userId])
+  @@index([teamId])
+}
+
+model Notification {
+  id                    String                @id @default(cuid())
+  userId                String
+  type                  String                // session_complete, team_invite, weekly_report
+  title                 String
+  message               String
+  read                  Boolean               @default(false)
+  createdAt             DateTime              @default(now())
+  
+  user                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model WhitelistedDomain {
+  id                    String                @id @default(cuid())
+  userId                String
+  domain                String                // e.g., "github.com", "stackoverflow.com"
+  description           String?               // Optional note about why it's whitelisted
+  createdAt             DateTime              @default(now())
+  
+  user                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, domain])
+  @@index([userId])
+}
+
+model CustomSound {
+  id                    String                @id @default(cuid())
+  userId                String
+  name                  String                // User-defined name
+  url                   String                // Direct audio URL or YouTube/Spotify link
+  icon                  String?               @default("🎵") // Optional emoji icon
+  createdAt             DateTime              @default(now())
+  
+  user                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  
+  @@unique([identifier, token])
+}
