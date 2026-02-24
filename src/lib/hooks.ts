@@ -12,31 +12,32 @@ export function useDashboardStats() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await fetch('/api/dashboard/stats');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch stats');
-        }
-        
-        const data = await response.json();
-        setStats(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
+  // Expose fetchStats so it can be called from outside
+  const fetchStats = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/dashboard/stats');
+      if (!response.ok) {
+        throw new Error('Failed to fetch stats');
       }
-    };
+      const data = await response.json();
+      setStats(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchStats();
   }, []);
 
-  return { stats, loading, error };
+  // Return refetch method
+  return { stats, loading, error, refetch: fetchStats };
 }
 
-export function useFocusSession() {
+export function useFocusSession(refetchStats?: () => void) {
   const [activeSession, setActiveSession] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -45,6 +46,7 @@ export function useFocusSession() {
   // Fetch active session on mount
   useEffect(() => {
     fetchActiveSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Timer for elapsed time
@@ -96,6 +98,8 @@ export function useFocusSession() {
       if (response.ok) {
         const data = await response.json();
         setDistractionCount(data.totalDistractions);
+        // Refetch dashboard stats after distraction
+        if (refetchStats) refetchStats();
       }
     } catch (error) {
       console.error('Error recording distraction:', error);
@@ -137,7 +141,11 @@ export function useFocusSession() {
         setActiveSession(null);
         setElapsedTime(0);
         // Refresh stats
-        location.reload();
+        if (refetchStats) {
+          refetchStats();
+        } else {
+          location.reload();
+        }
       }
     } catch (error) {
       console.error('Error ending session:', error);
@@ -211,14 +219,14 @@ export function useDistractionDetection(
         // User came back to the tab
         if (hideTime) {
           const timeAway = Date.now() - hideTime;
-          
+
           // If away for more than 3 seconds, record as distraction
           // Note: We can't detect which site they went to with Page Visibility API
           // A browser extension would be needed to check against whitelist
           if (timeAway > 3000) {
             onDistractionDetected();
           }
-          
+
           hideTime = null;
         }
       }

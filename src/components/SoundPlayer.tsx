@@ -1,331 +1,112 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-
-export type SoundType =
-  | 'none'
-  | 'rain'
-  | 'ocean'
-  | 'forest'
-  | 'coffee'
-  | 'whitenoise'
-  | 'lofi'
-  | string;
-
-interface Sound {
-  id: SoundType;
-  name: string;
-  url: string;
-  icon: string;
-  isCustom?: boolean;
-}
-
-const SOUNDS: Sound[] = [
-  { id: 'none', name: 'No Sound', url: '', icon: '🔇' },
-  {
-    id: 'rain',
-    name: 'Rain',
-    url: 'https://cdn.pixabay.com/download/audio/2022/05/13/audio_257112ce8f.mp3',
-    icon: '🌧️',
-  },
-  {
-    id: 'ocean',
-    name: 'Ocean Waves',
-    url: 'https://cdn.pixabay.com/download/audio/2022/06/07/audio_8c6b29e3d8.mp3',
-    icon: '🌊',
-  },
-  {
-    id: 'forest',
-    name: 'Forest',
-    url: 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_4dedf1f94f.mp3',
-    icon: '🌲',
-  },
-  {
-    id: 'coffee',
-    name: 'Coffee Shop',
-    url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_c9c9ee6f20.mp3',
-    icon: '☕',
-  },
-  {
-    id: 'whitenoise',
-    name: 'White Noise',
-    url: 'https://cdn.pixabay.com/download/audio/2021/08/09/audio_bb630cc098.mp3',
-    icon: '📻',
-  },
-  {
-    id: 'lofi',
-    name: 'Lo-fi Beats',
-    url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe05c21.mp3',
-    icon: '🎵',
-  },
-    {
-      id: 'calmpiano',
-      name: 'Calm Piano',
-      url: 'https://cdn.pixabay.com/audio/2023/03/28/audio_1e1e1e1e1e.mp3',
-      icon: '🎹',
-    },
-];
+import { useState } from 'react';
 
 interface SoundPlayerProps {
   isPlaying: boolean;
-  onSoundChange?: (soundId: SoundType) => void;
 }
 
-export default function SoundPlayer({
-  isPlaying,
-  onSoundChange,
-}: SoundPlayerProps) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+interface SpotifyItem {
+  id: string;
+  name: string;
+  type: 'playlist' | 'album' | 'track';
+  isCustom?: boolean;
+}
 
-  const [selectedSound, setSelectedSound] =
-    useState<SoundType>('none');
-  const [volume, setVolume] = useState<number>(50);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [customSounds, setCustomSounds] = useState<Sound[]>([]);
-  const [showAddSound, setShowAddSound] = useState<boolean>(false);
-  const [newSoundName, setNewSoundName] = useState<string>('');
-  const [newSoundUrl, setNewSoundUrl] = useState<string>('');
-  const [newSoundIcon, setNewSoundIcon] = useState<string>('🎵');
-  const [adding, setAdding] = useState<boolean>(false);
-  const [audioError, setAudioError] = useState<string | null>(null);
-  const [hasUserInteracted, setHasUserInteracted] =
-    useState<boolean>(false);
+const DEFAULT_ITEMS: SpotifyItem[] = [
+  { name: 'Deep Focus', id: '37i9dQZF1DX8NTLI2TtZa6', type: 'playlist' },
+  { name: 'Lo-Fi Beats', id: '37i9dQZF1DXcBWIGoYBM5M', type: 'playlist' },
+  { name: 'Peaceful Piano', id: '37i9dQZF1DWZqd5JICZI0u', type: 'playlist' },
+];
 
-  const allSounds: Sound[] = [...SOUNDS, ...customSounds];
+export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
+  const [items, setItems] = useState<SpotifyItem[]>(DEFAULT_ITEMS);
+  const [selectedId, setSelectedId] = useState(items[0].id);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [itemName, setItemName] = useState('');
+  const [itemUrl, setItemUrl] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [showOptions, setShowOptions] = useState(true); // <-- New state
 
-  // Sync volume to audio element
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
-    }
-  }, [volume]);
+  if (!isPlaying) return null;
 
-  // Play / Pause logic
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+  const extractSpotifyId = (url: string): { id: string; type: 'playlist' | 'album' | 'track' } | null => {
+    let match = url.match(/playlist\/([a-zA-Z0-9]+)/) || url.match(/spotify:playlist:([a-zA-Z0-9]+)/);
+    if (match) return { id: match[1], type: 'playlist' };
 
-    const playAudio = async (): Promise<void> => {
-      if (!hasUserInteracted && selectedSound !== 'none') {
-        return;
-      }
+    match = url.match(/album\/([a-zA-Z0-9]+)/) || url.match(/spotify:album:([a-zA-Z0-9]+)/);
+    if (match) return { id: match[1], type: 'album' };
 
-      try {
-        setAudioError(null);
+    match = url.match(/track\/([a-zA-Z0-9]+)/) || url.match(/spotify:track:([a-zA-Z0-9]+)/);
+    if (match) return { id: match[1], type: 'track' };
 
-        if (isPlaying && selectedSound !== 'none') {
-          if (audio.paused) {
-            await audio.play();
-          }
-        } else {
-          if (!audio.paused) {
-            audio.pause();
-          }
-        }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          if (error.name === 'NotAllowedError') {
-            setAudioError('Click a sound to enable audio');
-          } else if (error.name === 'NotSupportedError') {
-            setAudioError('Audio format not supported');
-          } else {
-            setAudioError(error.message);
-          }
-        } else {
-          setAudioError('Unknown audio error');
-        }
-      }
-    };
-
-    playAudio();
-  }, [isPlaying, selectedSound, hasUserInteracted]);
-
-  const handleSoundChange = (soundId: SoundType): void => {
-    setHasUserInteracted(true);
-    setSelectedSound(soundId);
-    onSoundChange?.(soundId);
+    return null;
   };
 
-  const handleAddSound = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!newSoundName || !newSoundUrl) return;
+    const extracted = extractSpotifyId(itemUrl);
+    if (!extracted) {
+      setError('Invalid Spotify link (playlist, album, or track only)');
+      return;
+    }
 
-    setAdding(true);
-
-    const newSound: Sound = {
-      id: Date.now().toString(),
-      name: newSoundName,
-      url: newSoundUrl,
-      icon: newSoundIcon || '🎵',
+    const newItem: SpotifyItem = {
+      id: extracted.id,
+      name: itemName || 'Custom Spotify Item',
+      type: extracted.type,
       isCustom: true,
     };
 
-    setCustomSounds((prev) => [...prev, newSound]);
-
-    setNewSoundName('');
-    setNewSoundUrl('');
-    setNewSoundIcon('🎵');
-    setShowAddSound(false);
-    setAdding(false);
+    setItems((prev) => [...prev, newItem]);
+    setSelectedId(newItem.id);
+    setItemName('');
+    setItemUrl('');
+    setShowAddForm(false);
+    setError(null);
   };
 
-  const handleDeleteSound = (soundId: string): void => {
-    setCustomSounds((prev) =>
-      prev.filter((sound) => sound.id !== soundId)
-    );
-
-    if (selectedSound === soundId) {
-      setSelectedSound('none');
-    }
+  const handleDelete = (id: string) => {
+    setItems((prev) => prev.filter((i) => i.id !== id));
+    if (selectedId === id) setSelectedId(items[0].id);
   };
 
-  const currentSound =
-    allSounds.find((sound) => sound.id === selectedSound) ??
-    null;
+  const embedUrl = (item: SpotifyItem) =>
+    `https://open.spotify.com/embed/${item.type}/${item.id}`;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border p-5">
-      <div className="flex justify-between mb-4">
-        <div className="flex gap-2 items-center">
-          <span className="text-2xl">
-            {currentSound?.icon ?? '🔇'}
-          </span>
-          <h3 className="font-bold">Focus Sounds</h3>
-        </div>
-
+    <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-6 backdrop-blur-md shadow-xl">
+      <h3 className="text-lg font-semibold text-white mb-4 flex justify-between items-center">
+        🎧 Spotify Player
         <button
-          onClick={() => setIsExpanded((prev) => !prev)}
-          className="text-sm text-blue-600"
+          onClick={() => setShowOptions((prev) => !prev)}
+          className="text-sm text-violet-400 hover:text-violet-300"
         >
-          {isExpanded ? 'Hide' : 'Change'}
+          {showOptions ? 'Hide Options' : 'Show Options'}
         </button>
-      </div>
+      </h3>
 
-      {selectedSound !== 'none' ? (
-        <div className="mb-4">
-          <div className="flex justify-between text-sm">
-            <span>Volume</span>
-            <span>{volume}%</span>
-          </div>
-
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={volume}
-            onChange={(e) =>
-              setVolume(Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-      ) : (
-        <p className="text-sm text-gray-500 mb-4">
-          No sound selected
-        </p>
-      )}
-
-      {audioError && (
-        <p className="text-xs text-red-600 mb-3">
-          {audioError}
-        </p>
-      )}
-
-      {isExpanded && (
+      {showOptions && (
         <>
-          {showAddSound ? (
-            <form
-              onSubmit={handleAddSound}
-              className="mb-4 space-y-2"
-            >
-              <input
-                value={newSoundIcon}
-                onChange={(e) =>
-                  setNewSoundIcon(e.target.value)
-                }
-                maxLength={2}
-                className="w-16 border p-2"
-              />
-
-              <input
-                value={newSoundName}
-                onChange={(e) =>
-                  setNewSoundName(e.target.value)
-                }
-                placeholder="Sound name"
-                required
-                className="w-full border p-2"
-              />
-
-              <input
-                type="url"
-                value={newSoundUrl}
-                onChange={(e) =>
-                  setNewSoundUrl(e.target.value)
-                }
-                placeholder="https://example.com/audio.mp3"
-                required
-                className="w-full border p-2"
-              />
-
-              <div className="flex gap-2">
+          {/* Item selector buttons */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {items.map((item) => (
+              <div key={item.id} className="relative">
                 <button
-                  type="submit"
-                  disabled={adding}
-                  className="bg-blue-600 text-white px-4 py-2 rounded"
-                >
-                  {adding ? 'Adding...' : 'Add'}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowAddSound(false);
-                    setNewSoundName('');
-                    setNewSoundUrl('');
-                    setNewSoundIcon('🎵');
-                    setAudioError(null);
-                  }}
-                  className="bg-gray-300 px-4 py-2 rounded"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          ) : (
-            <button
-              onClick={() => setShowAddSound(true)}
-              className="mb-4 text-sm text-blue-600"
-            >
-              + Add Your Own Sound
-            </button>
-          )}
-
-          <div className="grid grid-cols-2 gap-2">
-            {allSounds.map((sound) => (
-              <div key={sound.id} className="relative">
-                <button
-                  onClick={() =>
-                    handleSoundChange(sound.id)
-                  }
-                  className={`w-full p-2 border rounded ${
-                    selectedSound === sound.id
-                      ? 'bg-blue-100 border-blue-500'
-                      : ''
+                  onClick={() => setSelectedId(item.id)}
+                  className={`px-4 py-2 text-sm rounded-lg transition ${
+                    selectedId === item.id
+                      ? 'bg-violet-500 text-white'
+                      : 'bg-white/10 text-slate-300 hover:bg-white/20'
                   }`}
                 >
-                  {sound.icon} {sound.name}
+                  {item.name}
                 </button>
-
-                {sound.isCustom && (
+                {item.isCustom && (
                   <button
-                    onClick={() =>
-                      handleDeleteSound(sound.id)
-                    }
-                    className="absolute top-1 right-1 text-xs text-red-500"
+                    onClick={() => handleDelete(item.id)}
+                    className="absolute -top-2 -right-2 text-xs text-rose-400"
                   >
                     ✕
                   </button>
@@ -333,18 +114,68 @@ export default function SoundPlayer({
               </div>
             ))}
           </div>
+
+          {/* Add new item */}
+          {showAddForm ? (
+            <form onSubmit={handleAddItem} className="mb-4 space-y-3">
+              <input
+                type="text"
+                placeholder="Name (optional)"
+                value={itemName}
+                onChange={(e) => setItemName(e.target.value)}
+                className="w-full p-2 rounded bg-white/10 text-white border border-white/10"
+              />
+              <input
+                type="url"
+                placeholder="Paste Spotify link (playlist, album, track)"
+                value={itemUrl}
+                onChange={(e) => setItemUrl(e.target.value)}
+                required
+                className="w-full p-2 rounded bg-white/10 text-white border border-white/10"
+              />
+              {error && <p className="text-rose-400 text-sm">{error}</p>}
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-violet-500 hover:bg-violet-600 text-white rounded-lg"
+                >
+                  Add
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddForm(false);
+                    setError(null);
+                  }}
+                  className="px-4 py-2 bg-white/10 text-slate-300 rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="mb-4 text-sm text-violet-400 hover:text-violet-300"
+            >
+              + Add Spotify Item
+            </button>
+          )}
         </>
       )}
 
-      {selectedSound !== 'none' &&
-        currentSound?.url && (
-          <audio
-            ref={audioRef}
-            src={currentSound.url}
-            loop
-            preload="auto"
-          />
-        )}
+      {/* Embed player */}
+      {items.find((i) => i.id === selectedId) && (
+        <iframe
+          style={{ borderRadius: '12px' }}
+          src={embedUrl(items.find((i) => i.id === selectedId)!)}
+          width="100%"
+          height="152"
+          frameBorder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        />
+      )}
     </div>
   );
 }

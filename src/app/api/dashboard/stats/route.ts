@@ -24,10 +24,14 @@ export async function GET() {
     const totalDuration = focusSessions.reduce((sum, session) => sum + session.duration, 0);
     const totalHours = Math.round((totalDuration / 3600) * 10) / 10;
 
-    // Calculate focus score (0-100)
-    const totalDistracted = focusSessions.reduce((sum, session) => sum + session.distractionCount, 0);
-    const focusScore = totalSessions > 0 
-      ? Math.max(0, 100 - (totalDistracted / totalSessions) * 10)
+    // Improved focus score calculation
+    const DISTRACTION_PENALTY_SECONDS = 10;
+    const totalDistractedTime = focusSessions.reduce(
+      (sum, session) => sum + (session.distractionCount * DISTRACTION_PENALTY_SECONDS),
+      0
+    );
+    const focusScore = totalDuration > 0
+      ? Math.max(0, 100 - (totalDistractedTime / totalDuration) * 100)
       : 0;
 
     return NextResponse.json({
