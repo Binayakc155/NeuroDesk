@@ -7,24 +7,46 @@ export default function Home() {
   const { data: session } = useSession();
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-emerald-50">
+    <div className="relative min-h-screen text-gray-900 overflow-hidden">
+
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 -z-30 bg-gradient-to-br from-indigo-100 via-white to-cyan-100 animate-gradientShift" />
+
+      {/* Floating Ambient Glow */}
+      <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-indigo-400/20 rounded-full blur-3xl animate-floatSlow -z-20" />
+      <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-cyan-400/20 rounded-full blur-3xl animate-floatMedium -z-20" />
+
       {/* Navigation */}
-      <nav className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/70 border-b border-indigo-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
+          <Link
+            href="/"
+            className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent"
+          >
             NeuroDesk
           </Link>
+
           <div className="flex items-center gap-4">
             {session ? (
-              <Link href="/dashboard" className="px-6 py-2.5 bg-linear-to-r from-blue-600 to-emerald-500 hover:from-blue-700 hover:to-emerald-600 text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+              <Link
+                href="/dashboard"
+                className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              >
                 Dashboard →
               </Link>
             ) : (
               <>
-                <Link href="/auth/signin" className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                <Link
+                  href="/auth/signin"
+                  className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-indigo-600 transition"
+                >
                   Sign in
                 </Link>
-                <Link href="/auth/signup" className="px-6 py-2.5 bg-linear-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+
+                <Link
+                  href="/auth/signup"
+                  className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white rounded-xl text-sm font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                >
                   Get Started
                 </Link>
               </>
@@ -34,32 +56,37 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="max-w-5xl mx-auto px-6 py-20 md:py-32 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-8">
-          <span>AI-Powered Focus Tracking</span>
+      <section className="max-w-5xl mx-auto px-6 py-24 md:py-32 text-center animate-fadeUp">
+
+        <div className="inline-flex items-center px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold mb-8">
+          AI-Powered Focus Tracking
         </div>
-        <h1 className="text-5xl md:text-7xl font-black mb-6">
-          <span className="bg-linear-to-r from-blue-600 via-purple-600 to-emerald-500 bg-clip-text text-transparent">
-            Track Your Focus.
+
+        <h1 className="text-5xl md:text-7xl font-black leading-tight mb-8">
+          <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 bg-clip-text text-transparent">
+            Master Your Focus
           </span>
-          <br/>
-          <span className="bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-            Build Better Habits.
+          <span className="block text-gray-900">
+            Own Your Productivity
           </span>
         </h1>
-        <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-          Automatic distraction detection, intelligent analytics, and personalized insights to help you achieve peak productivity.
+
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
+          Smart distraction detection, intelligent analytics, and personalized insights
+          designed to help you reach deep work faster.
         </p>
+
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href={session ? '/dashboard' : '/auth/signup'}
-            className="px-10 py-4 bg-linear-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white font-bold rounded-xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all text-lg"
+            className="px-10 py-4 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white font-bold rounded-xl shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-3xl"
           >
             {session ? 'Go to Dashboard' : 'Start Free'}
           </Link>
+
           <Link
             href="#features"
-            className="px-10 py-4 bg-white hover:bg-gray-50 text-gray-900 font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all border-2 border-gray-200 text-lg"
+            className="px-10 py-4 bg-white border-2 border-indigo-200 text-gray-900 font-bold rounded-xl shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
             Learn More
           </Link>
@@ -67,63 +94,142 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section id="features" className="max-w-6xl mx-auto px-6 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-4">
-            Everything you need to stay focused
+      <section id="features" className="max-w-6xl mx-auto px-6 py-24">
+
+        <div className="text-center mb-20 animate-fadeUp">
+          <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent">
+            Everything you need to stay locked in
           </h2>
-          <p className="text-xl text-gray-600">Powerful features designed for maximum productivity</p>
+          <p className="text-xl text-gray-600">
+            Built for ambitious minds who value deep work
+          </p>
         </div>
+
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="group p-8 rounded-2xl bg-linear-to-br from-white to-blue-50 border-2 border-blue-100 hover:border-blue-300 hover:shadow-2xl transition-all duration-300 hover:scale-105">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Smart Time Tracking</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">One-click start/stop controls with automatic session detection and real-time progress monitoring.</p>
-          </div>
-          <div className="group p-8 rounded-2xl bg-linear-to-br from-white to-emerald-50 border-2 border-emerald-100 hover:border-emerald-300 hover:shadow-2xl transition-all duration-300 hover:scale-105">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Auto Distraction Detection</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">AI-powered detection tracks tab switches with customizable whitelists for your workflow.</p>
-          </div>
-          <div className="group p-8 rounded-2xl bg-linear-to-br from-white to-purple-50 border-2 border-purple-100 hover:border-purple-300 hover:shadow-2xl transition-all duration-300 hover:scale-105">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Focus Score Analytics</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">Deep insights into your productivity patterns with actionable recommendations for improvement.</p>
-          </div>
+
+          {[
+            {
+              title: 'Smart Time Tracking',
+              color: 'text-indigo-600',
+              border: 'border-indigo-200 hover:border-indigo-400'
+            },
+            {
+              title: 'Auto Distraction Detection',
+              color: 'text-cyan-600',
+              border: 'border-cyan-200 hover:border-cyan-400'
+            },
+            {
+              title: 'Focus Score Analytics',
+              color: 'text-rose-500',
+              border: 'border-rose-200 hover:border-rose-400'
+            },
+          ].map((feature, i) => (
+            <div
+              key={i}
+              className={`p-8 rounded-2xl bg-white border-2 ${feature.border} shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2`}
+            >
+              <h3 className={`text-xl font-bold mb-4 ${feature.color}`}>
+                {feature.title}
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Powerful tools and intelligent systems designed to help you improve focus and build lasting productivity habits.
+              </p>
+            </div>
+          ))}
+
         </div>
       </section>
 
       {/* CTA */}
-      <section className="bg-linear-to-br from-blue-600 via-purple-600 to-emerald-500 py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-white/10"></div>
-        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-6 drop-shadow-lg">Ready to maximize your productivity?</h2>
-          <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">Join thousands of focused individuals achieving more every day. Start tracking for free, no credit card required.</p>
+      <section className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 py-24 text-center text-white relative overflow-hidden">
+
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
+
+        <div className="max-w-4xl mx-auto px-6 relative z-10 animate-fadeUp">
+          <h2 className="text-4xl md:text-5xl font-black mb-6">
+            Ready to unlock your peak performance?
+          </h2>
+
+          <p className="text-xl text-indigo-100 mb-10 max-w-2xl mx-auto">
+            Join thousands building unstoppable focus habits.
+          </p>
+
           <Link
             href={session ? '/dashboard' : '/auth/signup'}
-            className="inline-flex items-center gap-3 px-12 py-5 bg-white hover:bg-gray-100 text-gray-900 font-black rounded-xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all text-lg"
+            className="inline-flex items-center gap-3 px-12 py-5 bg-white text-indigo-600 font-black rounded-xl shadow-2xl transition-all duration-300 hover:scale-105"
           >
-            <span>{session ? 'Go to Dashboard' : 'Create Free Account'}</span>
-            <span>&rarr;</span>
+            {session ? 'Go to Dashboard' : 'Create Free Account'} →
           </Link>
         </div>
+
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-12 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-              <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
-                NeuroDesk
-              </Link>
-              <p className="text-sm text-gray-500 mt-2">© 2026 NeuroDesk. All rights reserved.</p>
-            </div>
-            <div className="flex gap-8 text-sm">
-              <Link href="#" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Privacy Policy</Link>
-              <Link href="#" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Terms of Service</Link>
-              <Link href="#" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Contact</Link>
-            </div>
+      <footer className="border-t border-indigo-100 py-12 bg-white">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div>
+            <Link
+              href="/"
+              className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent"
+            >
+              NeuroDesk
+            </Link>
+            <p className="text-sm text-gray-500 mt-2">
+              © 2026 NeuroDesk. All rights reserved.
+            </p>
+          </div>
+
+          <div className="flex gap-8 text-sm">
+            <Link href="#" className="text-gray-600 hover:text-indigo-600 transition">
+              Privacy Policy
+            </Link>
+            <Link href="#" className="text-gray-600 hover:text-indigo-600 transition">
+              Terms
+            </Link>
+            <Link href="#" className="text-gray-600 hover:text-indigo-600 transition">
+              Contact
+            </Link>
           </div>
         </div>
       </footer>
+
+      {/* Global Animations */}
+      <style jsx global>{`
+
+        @keyframes gradientShift {
+          0%, 100% { filter: hue-rotate(0deg); }
+          50% { filter: hue-rotate(15deg); }
+        }
+        .animate-gradientShift {
+          animation: gradientShift 25s ease infinite;
+        }
+
+        @keyframes floatSlow {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(25px); }
+        }
+        .animate-floatSlow {
+          animation: floatSlow 16s ease-in-out infinite;
+        }
+
+        @keyframes floatMedium {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-30px); }
+        }
+        .animate-floatMedium {
+          animation: floatMedium 14s ease-in-out infinite;
+        }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeUp {
+          animation: fadeUp 1s ease forwards;
+        }
+
+      `}</style>
+
     </div>
   );
 }

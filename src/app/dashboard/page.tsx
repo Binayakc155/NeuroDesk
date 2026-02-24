@@ -49,10 +49,10 @@ export default function Dashboard() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#2B1742]">
+      <div className="min-h-screen flex items-center justify-center bg-[#0e1117]">
         <div className="text-center">
-          <div className="h-10 w-10 border-4 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-300">Loading dashboard...</p>
+          <div className="h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-400">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -61,13 +61,18 @@ export default function Dashboard() {
   if (!session?.user) return null;
 
   return (
-    <div className="min-h-screen bg-[#2B1742] text-slate-100">
+    <div className="relative min-h-screen bg-[#0e1117] text-slate-100 overflow-hidden">
+
+      {/* Subtle Ambient Glow */}
+      <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-3xl -z-10" />
+
       {/* Header */}
-      <header className="border-b border-white/10 backdrop-blur-sm bg-black/20 sticky top-0 z-10">
+      <header className="border-b border-white/5 backdrop-blur-xl bg-black/30 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
             href="/"
-            className="text-xl font-semibold tracking-tight text-white hover:text-violet-400 transition"
+            className="text-xl font-semibold tracking-tight text-white hover:text-blue-400 transition"
           >
             NeuroDesk
           </Link>
@@ -75,14 +80,14 @@ export default function Dashboard() {
           <div className="flex items-center gap-6">
             <Link
               href="/settings"
-              className="text-sm text-slate-300 hover:text-violet-400 transition"
+              className="text-sm text-slate-400 hover:text-blue-400 transition"
             >
               Settings
             </Link>
 
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
-              className="text-sm text-slate-300 hover:text-rose-400 transition"
+              className="text-sm text-slate-400 hover:text-rose-400 transition"
             >
               Sign Out
             </button>
@@ -91,17 +96,19 @@ export default function Dashboard() {
       </header>
 
       {/* Main */}
-      <main className="max-w-5xl mx-auto px-6 py-16">
+      <main className="max-w-5xl mx-auto px-6 py-16 relative z-10">
+
         {/* Focus Card */}
-        <div className="bg-slate-900/70 border border-white/10 rounded-3xl p-10 mb-12 shadow-xl backdrop-blur-md">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 mb-12 shadow-2xl shadow-black/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-blue-500/10">
+
           <div className="text-center max-w-2xl mx-auto">
-            <h1 className="text-3xl font-semibold mb-8">
+            <h1 className="text-3xl font-semibold mb-8 text-white">
               Track Your Focus
             </h1>
 
             {activeSession ? (
               <div className="mb-10">
-                <div className="text-6xl font-mono font-bold text-violet-400 mb-4 drop-shadow-lg">
+                <div className="text-6xl font-mono font-bold text-blue-400 mb-4">
                   {formatTime(elapsedTime)}
                 </div>
 
@@ -135,7 +142,7 @@ export default function Dashboard() {
                 <button
                   onClick={handleStartSession}
                   disabled={isStarting || sessionLoading}
-                  className="px-8 py-3 bg-violet-500 hover:bg-violet-600 text-white font-medium rounded-xl transition shadow-lg shadow-violet-500/30 disabled:opacity-50"
+                  className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-xl transition shadow-lg shadow-blue-500/20 disabled:opacity-50"
                 >
                   {isStarting ? 'Starting...' : 'Start Session'}
                 </button>
@@ -146,7 +153,8 @@ export default function Dashboard() {
 
         {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-8 backdrop-blur-md flex flex-col items-center">
+
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 flex flex-col items-center shadow-xl shadow-black/30 transition hover:-translate-y-1 hover:shadow-blue-500/10">
             <p className="text-4xl font-bold text-white">
               {loading ? '-' : stats.totalSessions}
             </p>
@@ -155,7 +163,7 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-8 backdrop-blur-md flex flex-col items-center">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 flex flex-col items-center shadow-xl shadow-black/30 transition hover:-translate-y-1 hover:shadow-emerald-500/10">
             <p className="text-4xl font-bold text-emerald-400">
               {loading ? '-' : stats.totalHours}h
             </p>
@@ -164,7 +172,7 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-8 backdrop-blur-md flex flex-col items-center">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 flex flex-col items-center shadow-xl shadow-black/30 transition hover:-translate-y-1 hover:shadow-indigo-500/10">
             <p className="text-4xl font-bold text-indigo-400">
               {loading ? '-' : stats.focusScore}%
             </p>
@@ -172,14 +180,15 @@ export default function Dashboard() {
               Focus Score
             </p>
           </div>
+
         </div>
 
-        {/* Sound Player Section */}
         {activeSession && (
           <div className="mt-12">
             <SoundPlayer isPlaying={!!activeSession} />
           </div>
         )}
+
       </main>
     </div>
   );
