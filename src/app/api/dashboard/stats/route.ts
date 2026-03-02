@@ -21,7 +21,18 @@ export async function GET() {
 
     // Calculate stats
     const totalSessions = focusSessions.length;
-    const totalDuration = focusSessions.reduce((sum, session) => sum + session.duration, 0);
+    const now = Date.now();
+    const totalDuration = focusSessions.reduce((sum, session) => {
+      if (session.endTime) {
+        return sum + session.duration;
+      }
+
+      const liveDuration = Math.max(
+        0,
+        Math.floor((now - new Date(session.startTime).getTime()) / 1000)
+      );
+      return sum + liveDuration;
+    }, 0);
     const totalHours = Math.round((totalDuration / 3600) * 10) / 10;
 
     // Improved focus score calculation
@@ -30,14 +41,27 @@ export async function GET() {
       (sum, session) => sum + (session.distractionCount * DISTRACTION_PENALTY_SECONDS),
       0
     );
-    const focusScore = totalDuration > 0
-      ? Math.max(0, 100 - (totalDistractedTime / totalDuration) * 100)
-      : 0;
+    const totalDistractions = focusSessions.reduce(
+      (sum, session) => sum + session.distractionCount,
+      0
+    );
+
+    let focusScore = totalDuration > 0
+      ? Math.max(0, Math.min(100, 100 - (totalDistractedTime / totalDuration) * 100))
+      : 100;
+
+    if (totalDistractions > 0) {
+      focusScore = Math.min(focusScore, 99);
+    }
+
+    const safeFocusScore = Number.isFinite(focusScore)
+      ? Math.round(focusScore)
+      : 100;
 
     return NextResponse.json({
       totalSessions,
       totalHours,
-      focusScore: Math.round(focusScore),
+      focusScore: safeFocusScore,
       recentSessions: focusSessions.slice(0, 5),
     });
   } catch (error) {

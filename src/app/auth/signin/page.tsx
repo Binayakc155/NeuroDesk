@@ -45,23 +45,27 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-emerald-50 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
+    <div className="relative min-h-screen bg-[#0e1117] flex items-center justify-center px-4 py-12 overflow-hidden">
+      {/* Ambient Glow */}
+      <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-3xl -z-10" />
+
+      <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-10">
-          <Link href="/" className="text-3xl font-bold bg-linear-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity inline-block mb-6">
+          <Link href="/" className="text-3xl font-bold bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent hover:opacity-80 transition-opacity inline-block mb-6">
             NeuroDesk
           </Link>
-          <h1 className="text-4xl font-black bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-3">Welcome Back</h1>
-          <p className="text-gray-600 text-lg">Sign in to continue your focus journey</p>
+          <h1 className="text-4xl font-black text-white mb-3">Welcome Back</h1>
+          <p className="text-slate-400 text-lg">Sign in to continue your focus journey</p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white shadow-2xl rounded-2xl p-10 space-y-6 border border-gray-100">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-10 space-y-6">
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
-              <p className="text-red-800 font-semibold text-sm">{error}</p>
+            <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-4">
+              <p className="text-rose-400 font-semibold text-sm">{error}</p>
             </div>
           )}
 
@@ -69,7 +73,7 @@ export default function SignIn() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Input */}
             <div>
-              <label className="block text-sm font-bold text-gray-900 mb-2">
+              <label className="block text-sm font-bold text-slate-200 mb-2">
                 Email Address
               </label>
               <input
@@ -77,7 +81,7 @@ export default function SignIn() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:bg-white transition-all font-medium"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
                 placeholder="you@example.com"
               />
             </div>
@@ -85,10 +89,10 @@ export default function SignIn() {
             {/* Password Input */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-bold text-gray-900">
+                <label className="block text-sm font-bold text-slate-200">
                   Password
                 </label>
-                <Link href="/auth/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+                <Link href="/auth/forgot-password" className="text-sm text-blue-400 hover:text-blue-300 font-semibold transition-colors">
                   Forgot password?
                 </Link>
               </div>
@@ -97,7 +101,7 @@ export default function SignIn() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:bg-white transition-all font-medium"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -106,7 +110,7 @@ export default function SignIn() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-linear-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 disabled:from-gray-400 disabled:to-gray-400 rounded-xl font-bold text-white transition-all text-center shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100"
+              className="w-full py-4 bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-700 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl font-bold text-white transition-all text-center shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -115,10 +119,10 @@ export default function SignIn() {
           {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t-2 border-gray-200"></div>
+              <div className="w-full border-t border-white/10"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500 font-semibold">Or continue with</span>
+              <span className="px-4 bg-white/5 text-slate-400 font-semibold">Or continue with</span>
             </div>
           </div>
 
@@ -128,7 +132,7 @@ export default function SignIn() {
               type="button"
               onClick={() => handleOAuthSignIn('github')}
               disabled={loading}
-              className="py-3 bg-gray-900 hover:bg-black disabled:bg-gray-400 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100"
+              className="py-3 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed border border-white/20 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100"
             >
               <span>GitHub</span>
             </button>
@@ -136,16 +140,16 @@ export default function SignIn() {
               type="button"
               onClick={() => handleOAuthSignIn('google')}
               disabled={loading}
-              className="py-3 bg-white hover:bg-gray-50 disabled:bg-gray-200 border-2 border-gray-300 rounded-xl font-bold text-gray-900 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100"
+              className="py-3 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed border border-white/20 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100"
             >
               <span>Google</span>
             </button>
           </div>
 
           {/* Sign Up Link */}
-          <div className="text-center text-sm text-gray-600 pt-4">
+          <div className="text-center text-sm text-slate-400 pt-4">
             Don&apos;t have an account?{' '}
-            <Link href="/auth/signup" className="text-blue-600 hover:text-blue-700 font-bold transition-colors underline decoration-dotted">
+            <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 font-bold transition-colors underline decoration-dotted">
               Create one now &rarr;
             </Link>
           </div>
@@ -153,7 +157,7 @@ export default function SignIn() {
 
         {/* Footer Link */}
         <div className="text-center mt-6">
-          <Link href="/" className="text-gray-700 hover:text-blue-600 text-sm font-semibold transition-colors inline-flex items-center gap-2 hover:gap-3">
+          <Link href="/" className="text-slate-400 hover:text-blue-400 text-sm font-semibold transition-colors inline-flex items-center gap-2 hover:gap-3">
             <span>&larr;</span> Back to home
           </Link>
         </div>

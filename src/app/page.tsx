@@ -108,23 +108,140 @@ export default function Home() {
         <div className="grid md:grid-cols-3 gap-8">
 
           {[
-            { title: 'Smart Time Tracking', color: 'text-indigo-400' },
-            { title: 'Auto Distraction Detection', color: 'text-cyan-400' },
-            { title: 'Focus Score Analytics', color: 'text-rose-400' },
+            { 
+              title: 'Smart Time Tracking', 
+              color: 'text-indigo-400',
+              description: 'Automatically tracks your focus sessions with precision. Know exactly how much deep work you accomplish each day.' 
+            },
+            { 
+              title: 'Auto Distraction Detection', 
+              color: 'text-cyan-400',
+              description: 'Intelligent algorithms detect when you switch tabs or get distracted. Build awareness of your habits.' 
+            },
+            { 
+              title: 'Focus Score Analytics', 
+              color: 'text-rose-400',
+              description: 'Get detailed insights into your focus quality. Understand patterns and optimize your productivity.' 
+            },
+            {
+              title: 'Weekly Reports',
+              color: 'text-emerald-400',
+              description: 'Beautiful analytics dashboards show your progress. Track improvements over time with detailed metrics.'
+            },
+            {
+              title: 'Whitelist Management',
+              color: 'text-yellow-400',
+              description: 'Customize which websites count as work vs distractions. Get smarter tracking tailored to your workflow.'
+            },
+            {
+              title: 'Session History',
+              color: 'text-purple-400',
+              description: 'Access your complete focus history organized by day. Review past sessions and celebrate your wins.'
+            },
           ].map((feature, i) => (
             <div
               key={i}
-              className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:border-white/20"
             >
               <h3 className={`text-xl font-bold mb-4 ${feature.color}`}>
                 {feature.title}
               </h3>
               <p className="text-gray-400 text-sm leading-relaxed">
-                Powerful tools and intelligent systems designed to help you improve focus and build lasting productivity habits.
+                {feature.description}
               </p>
             </div>
           ))}
 
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="max-w-6xl mx-auto px-6 py-24 border-t border-white/10">
+
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent">
+            Trusted by focused professionals
+          </h2>
+          <p className="text-xl text-gray-400">
+            Join thousands of developers, designers, and creators achieving deep work
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            {
+              name: 'Himanshu',
+              role: 'Software Developer',
+              text: 'NeuroDesk helped me increase my focus time by 40%. The distraction detection is incredibly accurate.',
+            },
+            {
+              name: 'Brishen',
+              role: 'Product Designer',
+              text: 'Finally understand when I\'m most productive. The weekly insights have transformed my work schedule.',
+            },
+            {
+              name: 'Sugam',
+              role: 'Content Creator',
+              text: 'The focus score tracking gave me the accountability I needed. My productivity doubled in 3 weeks.',
+            },
+          ].map((testimonial, i) => (
+            <div
+              key={i}
+              className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, j) => (
+                  <div key={j} className="text-yellow-400">★</div>
+                ))}
+              </div>
+              <p className="text-gray-300 mb-6 italic text-sm leading-relaxed">
+                "{testimonial.text}"
+              </p>
+              <div className="border-t border-white/10 pt-4">
+                <p className="font-semibold text-white text-sm">{testimonial.name}</p>
+                <p className="text-gray-500 text-xs">{testimonial.role}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="max-w-4xl mx-auto px-6 py-24 border-t border-white/10">
+
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent">
+            Frequently asked questions
+          </h2>
+        </div>
+
+        <div className="space-y-4">
+          {[
+            {
+              question: 'How does NeuroDesk track focus sessions?',
+              answer: 'NeuroDesk uses intelligent browser APIs to detect when you leave or return to the tab. Sessions are tracked client-side for your privacy.',
+            },
+            {
+              question: 'Is my data private and secure?',
+              answer: 'Yes! We employ enterprise-grade encryption. Your focus data is stored securely and never shared with third parties.',
+            },
+            {
+              question: 'Can I export my data?',
+              answer: 'Pro and Team plans support data export in multiple formats. Free plan users can access their data anytime.',
+            },
+            {
+              question: 'Do you offer a free trial?',
+              answer: 'Yes! Start with our free plan to experience NeuroDesk. Upgrade to Pro anytime with a 7-day free trial.',
+            },
+          ].map((faq, i) => (
+            <div
+              key={i}
+              className="p-6 rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all"
+            >
+              <h3 className="font-bold text-white mb-2">{faq.question}</h3>
+              <p className="text-gray-400 text-sm">{faq.answer}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -155,30 +272,70 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-12 bg-black">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div>
-            <Link
-              href="/"
-              className="text-2xl font-black bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent"
-            >
-              NeuroDesk
-            </Link>
-            <p className="text-sm text-gray-400 mt-2">
-              © 2026 NeuroDesk. All rights reserved.
-            </p>
+      <footer className="border-t border-white/10 py-16 bg-black/50 backdrop-blur-xl">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-8 mb-12">
+            <div>
+              <Link
+                href="/"
+                className="text-2xl font-black bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent inline-block mb-4"
+              >
+                NeuroDesk
+              </Link>
+              <p className="text-sm text-gray-400">
+                Master your focus, own your productivity with intelligent distraction detection and advanced analytics.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-bold text-white mb-4 text-sm">Product</h4>
+              <div className="space-y-2">
+                {['Features', 'Pricing', 'Security', 'Roadmap'].map((item, i) => (
+                  <Link key={i} href="#" className="text-gray-400 hover:text-indigo-400 text-sm transition">
+                    {item}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-bold text-white mb-4 text-sm">Company</h4>
+              <div className="space-y-2">
+                {['About Us', 'Blog', 'Careers', 'Contact'].map((item, i) => (
+                  <Link key={i} href="#" className="text-gray-400 hover:text-indigo-400 text-sm transition flex items-center gap-1">
+                    {item}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-bold text-white mb-4 text-sm">Legal</h4>
+              <div className="space-y-2">
+                {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'GDPR'].map((item, i) => (
+                  <Link key={i} href="#" className="text-gray-400 hover:text-indigo-400 text-sm transition">
+                    {item}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="flex gap-8 text-sm">
-            <Link href="#" className="text-gray-400 hover:text-indigo-400 transition">
-              Privacy Policy
-            </Link>
-            <Link href="#" className="text-gray-400 hover:text-indigo-400 transition">
-              Terms
-            </Link>
-            <Link href="#" className="text-gray-400 hover:text-indigo-400 transition">
-              Contact
-            </Link>
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-sm text-gray-500">
+              © 2026 NeuroDesk. All rights reserved. Built with focus for the focused.
+            </p>
+            <div className="flex gap-4">
+              {[
+                { name: 'Twitter', icon: '𝕏' },
+                { name: 'GitHub', icon: '⚙' },
+                { name: 'Discord', icon: '◆' },
+              ].map((social, i) => (
+                <Link key={i} href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-indigo-500/20 border border-white/10 hover:border-indigo-500/50 flex items-center justify-center text-sm transition">
+                  {social.icon}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </footer>

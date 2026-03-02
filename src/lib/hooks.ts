@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function useDashboardStats() {
   const [stats, setStats] = useState({
@@ -206,38 +206,67 @@ export function useDistractionDetection(
   onDistractionDetected: () => void,
   whitelistedDomains: string[]
 ) {
+  const onDistractionDetectedRef = useRef(onDistractionDetected);
+
+  useEffect(() => {
+    onDistractionDetectedRef.current = onDistractionDetected;
+  }, [onDistractionDetected]);
+
   useEffect(() => {
     if (!isSessionActive) return;
 
-    let hideTime: number | null = null;
+    let awayStartedAt: number | null = null;
+    let lastRecordedAt = 0;
 
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        // User left the tab - record when they left
-        hideTime = Date.now();
-      } else {
-        // User came back to the tab
-        if (hideTime) {
-          const timeAway = Date.now() - hideTime;
+    const MIN_AWAY_MS = 1500;
+    const RECORD_COOLDOWN_MS = 1500;
 
-          // If away for more than 3 seconds, record as distraction
-          // Note: We can't detect which site they went to with Page Visibility API
-          // A browser extension would be needed to check against whitelist
-          if (timeAway > 3000) {
-            onDistractionDetected();
-          }
-
-          hideTime = null;
-        }
+    const markAwayStart = () => {
+      if (awayStartedAt === null) {
+        awayStartedAt = Date.now();
       }
     };
 
+    const maybeRecordDistraction = () => {
+      if (awayStartedAt === null) return;
+
+      const now = Date.now();
+      const timeAway = now - awayStartedAt;
+      awayStartedAt = null;
+
+      if (timeAway < MIN_AWAY_MS) return;
+      if (now - lastRecordedAt < RECORD_COOLDOWN_MS) return;
+
+      lastRecordedAt = now;
+      onDistractionDetectedRef.current();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        markAwayStart();
+      } else {
+        maybeRecordDistraction();
+      }
+    };
+
+    const handleBlur = () => {
+      markAwayStart();
+    };
+
+    const handleFocus = () => {
+      maybeRecordDistraction();
+    };
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
     };
-  }, [isSessionActive, onDistractionDetected, whitelistedDomains]);
+  }, [isSessionActive, whitelistedDomains]);
 }
 
 export { formatTime };
