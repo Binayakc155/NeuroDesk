@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function AuthError() {
+function ErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
 
@@ -30,7 +31,7 @@ export default function AuthError() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="text-3xl font-bold text-blue-600 hover:text-blue-700 inline-block mb-4">
-            Focus Intelligence
+            NeuroDesk
           </Link>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Authentication Error</h1>
           <p className="text-gray-500">Something went wrong</p>
@@ -69,5 +70,17 @@ export default function AuthError() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthError() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    }>
+      <ErrorContent />
+    </Suspense>
   );
 }
