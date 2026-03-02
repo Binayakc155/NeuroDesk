@@ -41,6 +41,27 @@ export default function Dashboard() {
     setIsStarting(false);
   };
 
+  const groupSessionsByDay = (sessions: any[]) => {
+    const grouped: { [key: string]: any[] } = {};
+    
+    sessions.forEach(session => {
+      const date = new Date(session.startTime);
+      const dateKey = date.toLocaleDateString('en-GB', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+      
+      if (!grouped[dateKey]) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey].push(session);
+    });
+    
+    return grouped;
+  };
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/auth/signin');
@@ -186,6 +207,57 @@ export default function Dashboard() {
         {activeSession && (
           <div className="mt-12">
             <SoundPlayer isPlaying={!!activeSession} />
+          </div>
+        )}
+
+        {/* Day-wise Sessions */}
+        {stats.recentSessions && stats.recentSessions.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-semibold text-white mb-8">Focus Sessions</h2>
+            <div className="space-y-8">
+              {Object.entries(groupSessionsByDay(stats.recentSessions)).map(([date, daySessions]: [string, any[]]) => (
+                <div key={date} className="space-y-3">
+                  <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide">{date}</h3>
+                  <div className="space-y-2">
+                    {daySessions.map((session) => (
+                      <div
+                        key={session.id}
+                        className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex items-center justify-between hover:bg-white/10 transition"
+                      >
+                        <div className="flex items-center gap-4 flex-1">
+                          <div className="flex flex-col">
+                            <p className="text-sm text-slate-200 font-medium">
+                              {new Date(session.startTime).toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                              })} - {session.endTime ? new Date(session.endTime).toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                              }) : 'In Progress'}
+                            </p>
+                            <p className="text-xs text-slate-500 mt-1">{formatTime(session.duration)}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          {session.distractionCount > 0 && (
+                            <div className="text-right">
+                              <p className="text-rose-400 text-sm font-semibold">{session.distractionCount}</p>
+                              <p className="text-xs text-slate-500">distraction{session.distractionCount !== 1 ? 's' : ''}</p>
+                            </div>
+                          )}
+                          <div className="text-right">
+                            <p className="text-emerald-400 text-sm font-semibold">{Math.round((session.duration / 3600) * 10) / 10}h</p>
+                            <p className="text-xs text-slate-500">focus</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

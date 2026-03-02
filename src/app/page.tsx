@@ -7,21 +7,21 @@ export default function Home() {
   const { data: session } = useSession();
 
   return (
-    <div className="relative min-h-screen text-gray-900 overflow-hidden">
+    <div className="relative min-h-screen text-gray-100 bg-black overflow-hidden">
 
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0 -z-30 bg-gradient-to-br from-indigo-100 via-white to-cyan-100 animate-gradientShift" />
+      {/* Animated Dark Gradient Background */}
+      <div className="absolute inset-0 -z-30 bg-gradient-to-br from-black via-gray-950 to-gray-900 animate-gradientShift" />
 
       {/* Floating Ambient Glow */}
-      <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-indigo-400/20 rounded-full blur-3xl animate-floatSlow -z-20" />
-      <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-cyan-400/20 rounded-full blur-3xl animate-floatMedium -z-20" />
+      <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-3xl animate-floatSlow -z-20" />
+      <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-3xl animate-floatMedium -z-20" />
 
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/70 border-b border-indigo-100">
+      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link
             href="/"
-            className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent"
+            className="text-2xl font-black bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent"
           >
             NeuroDesk
           </Link>
@@ -38,7 +38,7 @@ export default function Home() {
               <>
                 <Link
                   href="/auth/signin"
-                  className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-indigo-600 transition"
+                  className="px-4 py-2 text-sm font-semibold text-gray-300 hover:text-indigo-400 transition"
                 >
                   Sign in
                 </Link>
@@ -58,20 +58,20 @@ export default function Home() {
       {/* Hero Section */}
       <section className="max-w-5xl mx-auto px-6 py-24 md:py-32 text-center animate-fadeUp">
 
-        <div className="inline-flex items-center px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold mb-8">
+        <div className="inline-flex items-center px-4 py-2 bg-indigo-500/10 text-indigo-400 rounded-full text-sm font-semibold mb-8 border border-indigo-500/20">
           AI-Powered Focus Tracking
         </div>
 
         <h1 className="text-5xl md:text-7xl font-black leading-tight mb-8">
-          <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 bg-clip-text text-transparent">
+          <span className="block bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
             Master Your Focus
           </span>
-          <span className="block text-gray-900">
+          <span className="block text-white">
             Own Your Productivity
           </span>
         </h1>
 
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
+        <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
           Smart distraction detection, intelligent analytics, and personalized insights
           designed to help you reach deep work faster.
         </p>
@@ -86,7 +86,7 @@ export default function Home() {
 
           <Link
             href="#features"
-            className="px-10 py-4 bg-white border-2 border-indigo-200 text-gray-900 font-bold rounded-xl shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            className="px-10 py-4 bg-white/5 border border-white/10 text-gray-200 font-bold rounded-xl shadow-md transition-all duration-300 hover:scale-105 hover:bg-white/10"
           >
             Learn More
           </Link>
@@ -97,10 +97,10 @@ export default function Home() {
       <section id="features" className="max-w-6xl mx-auto px-6 py-24">
 
         <div className="text-center mb-20 animate-fadeUp">
-          <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent">
             Everything you need to stay locked in
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-400">
             Built for ambitious minds who value deep work
           </p>
         </div>
@@ -108,30 +108,18 @@ export default function Home() {
         <div className="grid md:grid-cols-3 gap-8">
 
           {[
-            {
-              title: 'Smart Time Tracking',
-              color: 'text-indigo-600',
-              border: 'border-indigo-200 hover:border-indigo-400'
-            },
-            {
-              title: 'Auto Distraction Detection',
-              color: 'text-cyan-600',
-              border: 'border-cyan-200 hover:border-cyan-400'
-            },
-            {
-              title: 'Focus Score Analytics',
-              color: 'text-rose-500',
-              border: 'border-rose-200 hover:border-rose-400'
-            },
+            { title: 'Smart Time Tracking', color: 'text-indigo-400' },
+            { title: 'Auto Distraction Detection', color: 'text-cyan-400' },
+            { title: 'Focus Score Analytics', color: 'text-rose-400' },
           ].map((feature, i) => (
             <div
               key={i}
-              className={`p-8 rounded-2xl bg-white border-2 ${feature.border} shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2`}
+              className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
             >
               <h3 className={`text-xl font-bold mb-4 ${feature.color}`}>
                 {feature.title}
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-400 text-sm leading-relaxed">
                 Powerful tools and intelligent systems designed to help you improve focus and build lasting productivity habits.
               </p>
             </div>
@@ -140,53 +128,55 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 py-24 text-center text-white relative overflow-hidden">
+      {/* Black CTA Section */}
+      <section className="relative bg-black py-28 overflow-hidden">
 
-        <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
+        {/* Soft ambient gradient glow */}
+        <div className="absolute inset-0 flex justify-center">
+          <div className="w-[900px] h-[400px] bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-cyan-500/20 blur-3xl opacity-40"></div>
+        </div>
 
-        <div className="max-w-4xl mx-auto px-6 relative z-10 animate-fadeUp">
-          <h2 className="text-4xl md:text-5xl font-black mb-6">
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center flex flex-col items-center">
+          <h2 className="text-4xl md:text-5xl font-black leading-tight mb-6 text-white">
             Ready to unlock your peak performance?
           </h2>
 
-          <p className="text-xl text-indigo-100 mb-10 max-w-2xl mx-auto">
-            Join thousands building unstoppable focus habits.
+          <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl leading-relaxed">
+            Join thousands building unstoppable focus habits and achieving deep work consistently.
           </p>
 
           <Link
             href={session ? '/dashboard' : '/auth/signup'}
-            className="inline-flex items-center gap-3 px-12 py-5 bg-white text-indigo-600 font-black rounded-xl shadow-2xl transition-all duration-300 hover:scale-105"
+            className="inline-flex items-center justify-center px-12 py-5 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white font-bold rounded-xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
           >
             {session ? 'Go to Dashboard' : 'Create Free Account'} →
           </Link>
         </div>
-
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-indigo-100 py-12 bg-white">
+      <footer className="border-t border-white/10 py-12 bg-black">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
             <Link
               href="/"
-              className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent"
+              className="text-2xl font-black bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent"
             >
               NeuroDesk
             </Link>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-gray-400 mt-2">
               © 2026 NeuroDesk. All rights reserved.
             </p>
           </div>
 
           <div className="flex gap-8 text-sm">
-            <Link href="#" className="text-gray-600 hover:text-indigo-600 transition">
+            <Link href="#" className="text-gray-400 hover:text-indigo-400 transition">
               Privacy Policy
             </Link>
-            <Link href="#" className="text-gray-600 hover:text-indigo-600 transition">
+            <Link href="#" className="text-gray-400 hover:text-indigo-400 transition">
               Terms
             </Link>
-            <Link href="#" className="text-gray-600 hover:text-indigo-600 transition">
+            <Link href="#" className="text-gray-400 hover:text-indigo-400 transition">
               Contact
             </Link>
           </div>

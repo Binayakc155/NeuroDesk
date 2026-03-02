@@ -104,10 +104,10 @@ export default function Settings() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-[#0e1117]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-400">Loading settings...</p>
         </div>
       </div>
     );
@@ -118,16 +118,24 @@ export default function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-emerald-50">
+    <div className="relative min-h-screen bg-[#0e1117] text-slate-100 overflow-hidden">
+      {/* Subtle Ambient Glow */}
+      <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-3xl -z-10" />
+
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="text-2xl font-bold bg-linear-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
+      <header className="border-b border-white/5 backdrop-blur-xl bg-black/30 sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link
+            href="/dashboard"
+            className="text-xl font-semibold tracking-tight text-white hover:text-blue-400 transition"
+          >
             NeuroDesk
           </Link>
+
           <button
             onClick={() => signOut({ callbackUrl: '/' })}
-            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+            className="text-sm text-slate-400 hover:text-rose-400 transition"
           >
             Sign Out
           </button>
@@ -135,27 +143,27 @@ export default function Settings() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-5xl mx-auto px-6 py-16 relative z-10">
         {/* Navigation */}
         <div className="mb-8">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-semibold hover:gap-3 transition-all"
+            className="inline-flex items-center gap-2 text-slate-400 hover:text-blue-400 text-sm font-semibold hover:gap-3 transition-all"
           >
             <span>←</span> Back to Dashboard
           </Link>
         </div>
 
         <div className="mb-10">
-          <h1 className="text-4xl font-black bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-3">Settings</h1>
-          <p className="text-gray-600 text-lg">Manage your focus session preferences</p>
+          <h1 className="text-4xl font-semibold text-white mb-3">Settings</h1>
+          <p className="text-slate-400 text-lg">Manage your focus session preferences</p>
         </div>
 
         {/* Whitelist Section */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-10 mb-8">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 mb-8 shadow-2xl shadow-black/40">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Allowed Websites</h2>
-            <p className="text-gray-600">
+            <h2 className="text-2xl font-bold text-white mb-2">Allowed Websites</h2>
+            <p className="text-slate-400">
               Add websites that you use for work. Switching to these tabs won&apos;t count as distractions.
             </p>
           </div>
@@ -168,7 +176,7 @@ export default function Settings() {
                 value={newDomain}
                 onChange={(e) => setNewDomain(e.target.value)}
                 placeholder="github.com"
-                className="px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
+                className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white/10 transition-all"
                 disabled={adding}
               />
               <input
@@ -176,44 +184,44 @@ export default function Settings() {
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
                 placeholder="Description (optional)"
-                className="px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
+                className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white/10 transition-all"
                 disabled={adding}
               />
               <button
                 type="submit"
                 disabled={adding}
-                className="px-6 py-3 bg-linear-to-r from-blue-600 to-emerald-500 hover:from-blue-700 hover:to-emerald-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100"
+                className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-slate-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 disabled:hover:shadow-blue-500/20"
               >
                 {adding ? 'Adding...' : 'Add'}
               </button>
             </div>
             {error && (
-              <p className="text-red-600 text-sm">{error}</p>
+              <p className="text-rose-400 text-sm">{error}</p>
             )}
           </form>
 
           {/* Domain List */}
           <div className="space-y-3">
             {domains.length === 0 ? (
-              <div className="text-center py-16 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
-                <p className="text-gray-700 font-semibold mb-1">No whitelisted domains yet</p>
-                <p className="text-sm text-gray-500">Add websites you use for work to prevent false distractions</p>
+              <div className="text-center py-16 bg-white/5 rounded-xl border-2 border-dashed border-white/20">
+                <p className="text-slate-100 font-semibold mb-1">No whitelisted domains yet</p>
+                <p className="text-sm text-slate-400">Add websites you use for work to prevent false distractions</p>
               </div>
             ) : (
               domains.map((domain) => (
                 <div
                   key={domain.id}
-                  className="group flex items-center justify-between p-5 bg-linear-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all"
+                  className="group flex items-center justify-between p-5 bg-white/5 rounded-xl border border-white/10 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 transition-all"
                 >
                   <div>
-                    <p className="font-bold text-gray-900">{domain.domain}</p>
+                    <p className="font-bold text-white">{domain.domain}</p>
                     {domain.description && (
-                      <p className="text-sm text-gray-600">{domain.description}</p>
+                      <p className="text-sm text-slate-400">{domain.description}</p>
                     )}
                   </div>
                   <button
                     onClick={() => handleDeleteDomain(domain.id)}
-                    className="px-4 py-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg text-sm font-bold transition-all opacity-0 group-hover:opacity-100"
+                    className="px-4 py-2 text-slate-400 hover:text-white hover:bg-rose-600/20 rounded-lg text-sm font-bold transition-all opacity-0 group-hover:opacity-100"
                   >
                     Remove
                   </button>
@@ -224,23 +232,23 @@ export default function Settings() {
         </div>
 
         {/* Info Box */}
-        <div className="bg-linear-to-br from-orange-50 to-yellow-50 border-2 border-orange-200 rounded-2xl p-8 shadow-lg">
-          <h3 className="text-xl font-black text-orange-900 mb-4">Current Limitations</h3>
-          <ul className="text-sm text-orange-800 space-y-3">
+        <div className="bg-white/5 backdrop-blur-xl border border-yellow-500/30 rounded-3xl p-8 shadow-2xl shadow-yellow-500/10">
+          <h3 className="text-xl font-semibold text-yellow-400 mb-4">Current Limitations</h3>
+          <ul className="text-sm text-slate-300 space-y-3">
             <li className="flex items-start gap-2">
-              <span className="text-orange-600 font-bold">⚠</span>
+              <span className="text-yellow-400 font-bold">⚠</span>
               <span><strong>Whitelist currently disabled:</strong> The browser&apos;s Page Visibility API can only detect when you leave this tab, but cannot see which site/app you switched to.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-orange-600 font-bold">⚠</span>
+              <span className="text-yellow-400 font-bold">⚠</span>
               <span><strong>All tab switches tracked:</strong> Any time you leave this tab for more than 3 seconds counts as a distraction for now.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-blue-600 font-bold">ℹ</span>
+              <span className="text-blue-400 font-bold">ℹ</span>
               <span><strong>Future enhancement:</strong> A browser extension would be needed to properly check which domains you visit against this whitelist.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-blue-600 font-bold">ℹ</span>
+              <span className="text-blue-400 font-bold">ℹ</span>
               <span>Desktop apps (VS Code, Slack, etc.) can&apos;t be detected by browsers at all.</span>
             </li>
           </ul>
