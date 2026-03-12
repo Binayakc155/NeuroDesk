@@ -12,6 +12,7 @@ import {
   useDistractionDetection,
 } from '@/lib/hooks';
 import SoundPlayer from '@/components/SoundPlayer';
+import Chatbot from '@/components/Chatbot';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -263,6 +264,9 @@ export default function Dashboard() {
         )}
 
       </main>
+
+      {/* Chatbot Widget */}
+      <Chatbot />
     </div>
   );
 }
