@@ -45,15 +45,14 @@ export default function SignIn() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0e1117] flex items-center justify-center px-4 py-12 overflow-hidden">
-      {/* Ambient Glow */}
-      <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-3xl -z-10" />
+    <div className="dashboard-shell relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-12 text-slate-100">
+      <div className="float-orb pointer-events-none absolute -top-40 -left-40 h-125 w-125 rounded-full bg-[#5568ff]/16 blur-3xl -z-10" />
+      <div className="float-orb-delay pointer-events-none absolute -bottom-40 -right-40 h-125 w-125 rounded-full bg-[#9370ff]/12 blur-3xl -z-10" />
 
       <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-10">
-          <Link href="/" className="text-3xl font-bold bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent hover:opacity-80 transition-opacity inline-block mb-6">
+          <Link href="/" className="inline-block mb-6 bg-linear-to-r from-[#8fd5ff] to-[#c4b1ff] bg-clip-text text-3xl font-bold text-transparent transition-opacity hover:opacity-80">
             NeuroDesk
           </Link>
           <h1 className="text-4xl font-black text-white mb-3">Welcome Back</h1>
@@ -61,7 +60,7 @@ export default function SignIn() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-10 space-y-6">
+        <div className="rounded-2xl border border-white/10 bg-[#08101f]/70 p-10 shadow-[0_18px_46px_rgba(0,0,0,0.35)] backdrop-blur-xl space-y-6">
           {/* Error Message */}
           {error && (
             <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-4">
@@ -81,7 +80,7 @@ export default function SignIn() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                className="w-full rounded-xl border border-white/10 bg-[#0b1122] px-4 py-3 text-white placeholder-slate-500 transition-all focus:border-[#6b7dff] focus:outline-none focus:ring-2 focus:ring-[#6b7dff]/20"
                 placeholder="you@example.com"
               />
             </div>
@@ -92,7 +91,7 @@ export default function SignIn() {
                 <label className="block text-sm font-bold text-slate-200">
                   Password
                 </label>
-                <Link href="/auth/forgot-password" className="text-sm text-blue-400 hover:text-blue-300 font-semibold transition-colors">
+                <Link href="/auth/forgot-password" className="text-sm font-semibold text-[#8fd5ff] transition-colors hover:text-[#b4e4ff]">
                   Forgot password?
                 </Link>
               </div>
@@ -101,7 +100,7 @@ export default function SignIn() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                className="w-full rounded-xl border border-white/10 bg-[#0b1122] px-4 py-3 text-white placeholder-slate-500 transition-all focus:border-[#6b7dff] focus:outline-none focus:ring-2 focus:ring-[#6b7dff]/20"
                 placeholder="••••••••"
               />
             </div>
@@ -110,7 +109,7 @@ export default function SignIn() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-700 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl font-bold text-white transition-all text-center shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100"
+              className="w-full rounded-xl bg-linear-to-r from-[#6b7dff] to-[#8f72ff] py-4 text-center font-bold text-white shadow-lg transition-all hover:scale-105 hover:from-[#7e8dff] hover:to-[#a082ff] hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -122,7 +121,7 @@ export default function SignIn() {
               <div className="w-full border-t border-white/10"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white/5 text-slate-400 font-semibold">Or continue with</span>
+              <span className="bg-[#08101f]/70 px-4 font-semibold text-slate-400">Or continue with</span>
             </div>
           </div>
 
@@ -132,7 +131,7 @@ export default function SignIn() {
               type="button"
               onClick={() => handleOAuthSignIn('github')}
               disabled={loading}
-              className="py-3 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed border border-white/20 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100"
+              className="flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/6 py-3 font-bold text-white shadow-lg transition-all hover:scale-105 hover:bg-white/12 hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
             >
               <span>GitHub</span>
             </button>
@@ -140,7 +139,7 @@ export default function SignIn() {
               type="button"
               onClick={() => handleOAuthSignIn('google')}
               disabled={loading}
-              className="py-3 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed border border-white/20 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100"
+              className="flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/6 py-3 font-bold text-white shadow-lg transition-all hover:scale-105 hover:bg-white/12 hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
             >
               <span>Google</span>
             </button>
@@ -149,7 +148,7 @@ export default function SignIn() {
           {/* Sign Up Link */}
           <div className="text-center text-sm text-slate-400 pt-4">
             Don&apos;t have an account?{' '}
-            <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 font-bold transition-colors underline decoration-dotted">
+            <Link href="/auth/signup" className="font-bold text-[#8fd5ff] underline decoration-dotted transition-colors hover:text-[#b4e4ff]">
               Create one now &rarr;
             </Link>
           </div>
@@ -157,7 +156,7 @@ export default function SignIn() {
 
         {/* Footer Link */}
         <div className="text-center mt-6">
-          <Link href="/" className="text-slate-400 hover:text-blue-400 text-sm font-semibold transition-colors inline-flex items-center gap-2 hover:gap-3">
+          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 transition-colors hover:gap-3 hover:text-[#8fd5ff]">
             <span>&larr;</span> Back to home
           </Link>
         </div>

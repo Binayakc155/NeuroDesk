@@ -152,7 +152,7 @@ export default function Home() {
         </div>
       </section >
 
-      {/* Testimonials Section */}
+      {/* Testimonials Section 
       < section className="max-w-6xl mx-auto px-6 py-24 border-t border-white/10" >
 
         <div className="text-center mb-20">
@@ -202,7 +202,7 @@ export default function Home() {
           ))}
         </div>
       </section >
-
+                   */}
       {/* FAQ Section */}
       < section className="max-w-4xl mx-auto px-6 py-24 border-t border-white/10" >
 
