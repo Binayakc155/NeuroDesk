@@ -1,5 +1,9 @@
 'use client';
 
+// Tell Next.js not to pre-render this page
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -68,7 +72,6 @@ export default function ResetPassword() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="text-3xl font-bold text-blue-600 hover:text-blue-700 inline-block mb-4">
             Focus Intelligence
@@ -77,7 +80,6 @@ export default function ResetPassword() {
           <p className="text-gray-500">Enter your new password</p>
         </div>
 
-        {/* Form Card */}
         <div className="bg-white shadow-lg rounded-2xl p-8 space-y-6">
           {success ? (
             <div className="text-center space-y-4">
@@ -91,16 +93,13 @@ export default function ResetPassword() {
             </div>
           ) : (
             <>
-              {/* Error Message */}
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600 text-sm">
                   {error}
                 </div>
               )}
 
-              {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Password Input */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     New Password
@@ -117,7 +116,6 @@ export default function ResetPassword() {
                   <p className="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
                 </div>
 
-                {/* Confirm Password Input */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Confirm New Password
@@ -133,7 +131,6 @@ export default function ResetPassword() {
                   />
                 </div>
 
-                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={loading || !token}
@@ -143,7 +140,6 @@ export default function ResetPassword() {
                 </button>
               </form>
 
-              {/* Back Link */}
               <div className="text-center text-sm text-gray-600">
                 <Link href="/auth/signin" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
                   ← Back to Sign In
