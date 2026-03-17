@@ -1,250 +1,156 @@
-# Focus Intelligence Platform (B2B)
+# NeuroDesk
 
-A sophisticated focus management and team analytics platform built with Next.js, Tailwind CSS, Prisma, and PostgreSQL.
+NeuroDesk is a  focus and deep-work tracker built with Next.js, Prisma, NextAuth, and PostgreSQL.
 
-## Features
+It helps users run focused sessions, track distractions, view progress, and maintain a clean focus routine through a modern galaxy-style UI.
 
-### User-Level Features
-- ✅ Start/stop deep work sessions
-- ✅ Track session duration automatically
-- ✅ Simple distraction detection (manual "I got disturbed" button)
-- ✅ Weekly reports (total focus hours + session count)
-- ✅ Focus score calculation with distraction penalty
+## Highlights
 
-### Team-Level Features
-- ✅ Team dashboard with average focus metrics
-- ✅ Basic team analytics (weekly team reports)
-- ✅ Team member invitations
-- ✅ Team invites management
+- Personal focus timer with start/end session flow
+- Live duration tracking and distraction counting
+- Dashboard analytics (sessions, hours, focus score, recent sessions)
+- Session journal grouped by day
+- Spotify embed player with custom links
+- Custom Spotify items persist in localStorage per browser
+- Whitelisted domains management in Settings
+- Authentication with credentials + optional GitHub/Google OAuth
+- Chatbot conversation and message endpoints
 
 ## Tech Stack
 
-### Frontend
-- **Framework**: Next.js 15 with App Router
-- **Styling**: Tailwind CSS
-- **UI Components**: Headless components with Tailwind
-
-### Backend
-- **API**: Next.js API Routes
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: NextAuth.js v5 (email, OAuth providers)
-
-### Additional Libraries
-- **Validation**: Zod
-- **Forms**: React Hook Form
-- **HTTP Client**: Axios
-- **Date Utils**: date-fns
-- **Password Hashing**: bcryptjs
+- Next.js 16 (App Router) + React 19
+- TypeScript + Tailwind CSS v4
+- NextAuth v5 (JWT session strategy)
+- Prisma ORM + PostgreSQL
+- Zod, React Hook Form, Axios, bcryptjs
 
 ## Project Structure
 
-```
-foinp/
-├── src/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── auth/[...nextauth]/      # NextAuth configuration
-│   │   │   ├── focus-sessions/          # Focus session endpoints
-│   │   │   ├── focus-sessions/[id]/     # Individual session endpoints
-│   │   │   ├── stats/                   # User statistics endpoint
-│   │   │   └── teams/                   # Team management endpoints
-│   │   ├── layout.tsx                   # Root layout
-│   │   └── page.tsx                     # Home page
-│   ├── components/                      # Reusable React components
-│   ├── lib/
-│   │   ├── auth.ts                      # NextAuth configuration
-│   │   ├── prisma.ts                    # Prisma client singleton
-│   │   └── utils.ts                     # Utility functions
-│   └── types/
-│       └── index.ts                     # TypeScript type definitions
-├── prisma/
-│   └── schema.prisma                    # Database schema
-├── .env.local                           # Local environment variables
-├── .env.example                         # Environment variable template
-├── package.json
-├── tsconfig.json
-├── tailwind.config.ts
-├── next.config.ts
-└── README.md
+```text
+src/
+	app/
+		api/
+			auth/[...nextauth]/
+			auth/signup/
+			auth/forgot-password/
+			auth/reset-password/
+			chatbot/conversations/
+			chatbot/messages/
+			dashboard/stats/
+			distractions/
+			focus-sessions/
+			focus-sessions/[id]/
+			focus-sessions/active/
+			sounds/
+			sounds/[id]/
+			stats/
+			teams/
+			user/preferences/
+			whitelist/
+			whitelist/[id]/
+		auth/signin/
+		auth/signup/
+		dashboard/
+		settings/
+		layout.tsx
+		page.tsx
+	components/
+	lib/
+	types/
+prisma/
+	schema.prisma
 ```
 
-## Database Schema
+## Environment Variables
 
-### Core Models
-- **User**: User accounts with email/password and OAuth
-- **Account**: OAuth provider accounts
-- **Session**: NextAuth session management
-- **Team**: Team/group management
-- **TeamMember**: User team membership
-- **TeamInvite**: Team invitation system
-- **FocusSession**: Individual focus/deep work sessions
-- **Distraction**: Distraction events during sessions
-- **WeeklyReport**: Weekly analytics and statistics
-- **Notification**: User notifications
-- **VerificationToken**: Email verification tokens
+Create a `.env.local` file at the project root.
+
+Required (core app):
+
+- `DATABASE_URL` - PostgreSQL connection string
+- `DIRECT_URL` - direct DB URL for Prisma migrations
+- `NEXTAUTH_SECRET` - random secret for NextAuth
+- `NEXTAUTH_URL` - app URL (for local: `http://localhost:3000`)
+
+Optional (OAuth):
+
+- `GITHUB_ID`, `GITHUB_SECRET`
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 
 ## Getting Started
 
-### Prerequisites
-- Node.js 18+ with npm or yarn
-- PostgreSQL 14+ (or Supabase)
+1. Install dependencies
 
-### Installation
-
-1. **Install dependencies**:
 ```bash
 npm install
 ```
 
-2. **Set up environment variables**:
-```bash
-cp .env.example .env.local
-```
+2. Set up `.env.local` (see variables above)
 
-Edit `.env.local` with your configuration:
-- `DATABASE_URL`: PostgreSQL connection string
-- `NEXTAUTH_URL`: Your application URL (http://localhost:3000 for dev)
-- `NEXTAUTH_SECRET`: Generate with `openssl rand -base64 32`
-- OAuth credentials (GitHub/Google - optional)
+3. Apply database schema
 
-3. **Set up the database**:
 ```bash
 npm run db:migrate
-# or if starting fresh:
+# or
 npm run db:push
 ```
 
-4. **Generate Prisma client**:
-```bash
-npm run db:generate
-```
+4. Start development server
 
-5. **Start the development server**:
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open `http://localhost:3000`.
 
-## API Endpoints
+## Scripts
 
-### Focus Sessions
-- `POST /api/focus-sessions` - Start a new focus session
-- `GET /api/focus-sessions` - Get user's focus sessions
-- `PATCH /api/focus-sessions/[id]` - End a focus session
-- `DELETE /api/focus-sessions/[id]` - Delete a focus session
+- `npm run dev` - start dev server
+- `npm run build` - production build
+- `npm run start` - run production server
+- `npm run lint` - run ESLint
+- `npm run db:migrate` - create/apply migration
+- `npm run db:push` - push Prisma schema
+- `npm run db:generate` - generate Prisma client
+- `npm run db:studio` - open Prisma Studio
 
-### User Statistics
-- `GET /api/stats` - Get user statistics and metrics
+## API Routes (Current)
 
-### Teams
-- `GET /api/teams` - Get user's teams
-- `POST /api/teams` - Create a new team
+Auth:
 
-### Authentication
-- `POST /api/auth/signin` - Sign in with email/password
-- `POST /api/auth/signup` - Register new account
-- `GET /api/auth/session` - Get current session
+- `GET/POST /api/auth/[...nextauth]`
+- `POST /api/auth/signup`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
 
-## Available Scripts
+Focus + Analytics:
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run db:migrate` - Run database migrations
-- `npm run db:push` - Push schema changes to database
-- `npm run db:generate` - Generate Prisma client
-- `npm run db:studio` - Open Prisma Studio
+- `GET/POST /api/focus-sessions`
+- `PATCH/DELETE /api/focus-sessions/[id]`
+- `GET /api/focus-sessions/active`
+- `POST /api/distractions`
+- `GET /api/dashboard/stats`
+- `GET /api/stats`
 
-## Authentication
+Settings + Personalization:
 
-The platform supports multiple authentication methods:
+- `GET/POST /api/whitelist`
+- `DELETE /api/whitelist/[id]`
+- `GET/POST /api/sounds`
+- `PATCH/DELETE /api/sounds/[id]`
+- `GET/PATCH /api/user/preferences`
 
-1. **Email/Password**: Built-in email authentication with bcrypt hashing
-2. **GitHub OAuth**: Optional GitHub sign-in
-3. **Google OAuth**: Optional Google sign-in
+Other:
 
-Configure OAuth providers by setting the appropriate environment variables.
+- `GET/POST /api/teams`
+- `GET/POST /api/chatbot/conversations`
+- `GET/POST /api/chatbot/messages`
 
-## Focus Score Calculation
+## Notes
 
-The focus score is calculated based on:
-- **Base Score**: Duration (normalized to 100 for 1 hour)
-- **Distraction Penalty**: -10 points per distraction
-- **Range**: 0-100
-
-Formula: `(durationMinutes / 60) * 100 - (distractionCount * 10)`
-
-## Weekly Reports
-
-Automatically generated every week containing:
-- Total focus hours
-- Session count
-- Weekly focus score
-- Average session duration
-- Total distraction count
-
-## Development Guidelines
-
-### Adding a New API Endpoint
-
-1. Create route file in `src/app/api/[resource]/route.ts`
-2. Import `auth` for authentication
-3. Import `prisma` for database operations
-4. Handle errors and return appropriate status codes
-5. Follow RESTful conventions
-
-### Adding a New Database Model
-
-1. Update `prisma/schema.prisma`
-2. Create migration: `npx prisma migrate dev --name your_migration_name`
-3. Update TypeScript types in `src/types/index.ts`
-4. Update API routes as needed
-
-## Deployment
-
-### Deploy to Vercel (Recommended)
-```bash
-npm install -g vercel
-vercel
-```
-
-### Deploy to Other Platforms
-
-1. Build: `npm run build`
-2. Set environment variables
-3. Start: `npm run start`
-
-## Contributing
-
-1. Create a feature branch
-2. Make your changes
-3. Run `npm run lint`
-4. Commit and push
-5. Open a pull request
+- The product direction is personal-focus-first  while retaining team-capable data models and APIs.
+- Spotify custom items are persisted in browser localStorage and are not synced server-side.
 
 ## License
 
 MIT
-
-## Support
-
-For issues and feature requests, please open an issue in the repository.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
