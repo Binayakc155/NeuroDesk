@@ -114,42 +114,72 @@ Open `http://localhost:3000`.
 - `npm run db:generate` - generate Prisma client
 - `npm run db:studio` - open Prisma Studio
 
-## API Routes (Current)
+## Authentication
 
-Auth:
+The platform supports multiple authentication methods:
 
-- `GET/POST /api/auth/[...nextauth]`
-- `POST /api/auth/signup`
-- `POST /api/auth/forgot-password`
-- `POST /api/auth/reset-password`
+1. **Email/Password**: Built-in email authentication with bcrypt hashing
+2. **GitHub OAuth**: Optional GitHub sign-in
+3. **Google OAuth**: Optional Google sign-in
 
-Focus + Analytics:
+Configure OAuth providers by setting the appropriate environment variables.
 
-- `GET/POST /api/focus-sessions`
-- `PATCH/DELETE /api/focus-sessions/[id]`
-- `GET /api/focus-sessions/active`
-- `POST /api/distractions`
-- `GET /api/dashboard/stats`
-- `GET /api/stats`
+## Focus Score Calculation
 
-Settings + Personalization:
+The focus score is calculated based on:
+- **Base Score**: Duration (normalized to 100 for 1 hour)
+- **Distraction Penalty**: -10 points per distraction
+- **Range**: 0-100
 
-- `GET/POST /api/whitelist`
-- `DELETE /api/whitelist/[id]`
-- `GET/POST /api/sounds`
-- `PATCH/DELETE /api/sounds/[id]`
-- `GET/PATCH /api/user/preferences`
+Formula: `(durationMinutes / 60) * 100 - (distractionCount * 10)`
 
-Other:
+## Weekly Reports
 
-- `GET/POST /api/teams`
-- `GET/POST /api/chatbot/conversations`
-- `GET/POST /api/chatbot/messages`
+Automatically generated every week containing:
+- Total focus hours
+- Session count
+- Weekly focus score
+- Average session duration
+- Total distraction count
 
-## Notes
+## Development Guidelines
 
-- The product direction is personal-focus-first  while retaining team-capable data models and APIs.
-- Spotify custom items are persisted in browser localStorage and are not synced server-side.
+### Adding a New API Endpoint
+
+1. Create route file in `src/app/api/[resource]/route.ts`
+2. Import `auth` for authentication
+3. Import `prisma` for database operations
+4. Handle errors and return appropriate status codes
+5. Follow RESTful conventions
+
+### Adding a New Database Model
+
+1. Update `prisma/schema.prisma`
+2. Create migration: `npx prisma migrate dev --name your_migration_name`
+3. Update TypeScript types in `src/types/index.ts`
+4. Update API routes as needed
+
+## Deployment
+
+### Deploy to Vercel (Recommended)
+```bash
+npm install -g vercel
+vercel
+```
+
+### Deploy to Other Platforms
+
+1. Build: `npm run build`
+2. Set environment variables
+3. Start: `npm run start`
+
+## Contributing
+
+1. Create a feature branch
+2. Make your changes
+3. Run `npm run lint`
+4. Commit and push
+5. Open a pull request
 
 ## License
 
