@@ -224,11 +224,11 @@ export default function Home() {
             },
             {
               question: 'Can I export my data?',
-              answer: 'Pro and Team plans support data export in multiple formats. Free plan users can access their data anytime.',
+              answer: 'Yes. You can export your focus data in multiple formats whenever you need.',
             },
             {
-              question: 'Do you offer a free trial?',
-              answer: 'Yes! Start with our free plan to experience NeuroDesk. Upgrade to Pro anytime with a 7-day free trial.',
+              question: 'How do I get started?',
+              answer: 'Create your account and begin tracking sessions instantly. Setup takes less than a minute.',
             },
           ].map((faq, i) => (
             <div
@@ -287,7 +287,7 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-white mb-4 text-sm">Product</h4>
               <div className="space-y-2">
-                {['Features', 'Pricing', 'Security', 'Roadmap'].map((item, i) => (
+                {['Features', 'Security', 'Roadmap', 'Status'].map((item, i) => (
                   <Link key={i} href="#" className="text-gray-400 hover:text-[#8fd5ff] text-sm transition">
                     {item}
                   </Link>
