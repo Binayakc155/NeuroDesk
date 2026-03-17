@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f4ea;
+  --foreground: #1b241f;
 }
 
 @theme inline {
@@ -22,5 +22,79 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(circle at top left, rgba(255, 209, 122, 0.35), transparent 28%),
+    radial-gradient(circle at 85% 18%, rgba(115, 204, 175, 0.2), transparent 24%),
+    linear-gradient(180deg, #fcfaf4 0%, #f5f0e4 52%, #f3eee2 100%);
+  background-attachment: fixed;
+}
+
+.dashboard-shell {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(255, 207, 122, 0.28), transparent 20%),
+    radial-gradient(circle at 88% 20%, rgba(125, 217, 183, 0.22), transparent 24%),
+    radial-gradient(circle at 45% 82%, rgba(140, 200, 255, 0.16), transparent 18%),
+    linear-gradient(180deg, rgba(253, 250, 243, 0.96) 0%, rgba(246, 240, 227, 0.98) 100%);
+}
+
+.dashboard-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(63, 93, 81, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63, 93, 81, 0.05) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(circle at center, black 45%, transparent 95%);
+}
+
+@keyframes driftFloat {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate3d(14px, -18px, 0) scale(1.03);
+  }
+
+  66% {
+    transform: translate3d(-10px, 12px, 0) scale(0.98);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes slowBob {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-orb {
+  animation: driftFloat 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+.float-orb-delay {
+  animation: driftFloat 22s ease-in-out infinite reverse;
+  will-change: transform;
+}
+
+.float-orb-soft {
+  animation: slowBob 12s ease-in-out infinite;
+  will-change: transform;
 }

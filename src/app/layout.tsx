@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Focus Intelligence Platform - Track Your Deep Work & Productivity",
-  description: "B2B SaaS platform for tracking focus sessions, measuring productivity, and analyzing team performance. Eliminate distractions and achieve more.",
-  keywords: ["focus", "productivity", "deep work", "time tracking", "team analytics"],
+  title: "FocusBloom - Personal Deep Work Tracker",
+  description: "A B2C focus companion to run deep-work sessions, reduce distractions, and build a healthier productivity routine.",
+  keywords: ["focus", "productivity", "deep work", "time tracking", "habit building"],
 };
 
 export default function RootLayout({
