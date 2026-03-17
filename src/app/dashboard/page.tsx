@@ -104,32 +104,32 @@ export default function Dashboard() {
   if (!session?.user) return null;
 
   return (
-    <div className="dashboard-shell relative min-h-screen overflow-hidden text-[#1f2a24]">
-      <div className="float-orb pointer-events-none absolute -top-24 left-[6%] h-104 w-104 rounded-full bg-[#ffd584]/35 blur-3xl" />
-      <div className="float-orb-delay pointer-events-none absolute top-36 right-[4%] h-96 w-96 rounded-full bg-[#8cd9bc]/28 blur-3xl" />
-      <div className="float-orb-soft pointer-events-none absolute bottom-12 left-[32%] h-72 w-72 rounded-full bg-[#9fd2ff]/18 blur-3xl" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/45 to-transparent" />
+    <div className="dashboard-shell relative min-h-screen overflow-hidden text-slate-100">
+      <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#5568ff]/16 blur-3xl" />
+      <div className="float-orb-delay pointer-events-none absolute top-20 right-[6%] h-96 w-96 rounded-full bg-[#9370ff]/12 blur-3xl" />
+      <div className="float-orb-soft pointer-events-none absolute bottom-10 left-[38%] h-72 w-72 rounded-full bg-[#78a6ff]/10 blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/6 to-transparent" />
 
-      <header className="sticky top-0 z-20 border-b border-black/5 bg-[#f7f5ef]/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-20 border-b border-white/10 bg-[#050814]/70 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-6">
           <Link
             href="/"
-            className="text-lg font-semibold tracking-tight text-[#1e2c24] transition hover:text-[#0f7a5d] sm:text-xl"
+            className="text-lg font-semibold tracking-tight text-white transition hover:text-[#a9b6ff] sm:text-xl"
           >
-            FocusBloom
+            NeuroDesk
           </Link>
 
           <div className="flex items-center gap-3 sm:gap-6">
             <Link
               href="/settings"
-              className="text-sm font-medium text-[#425248] transition hover:text-[#0f7a5d]"
+              className="text-sm font-medium text-slate-300 transition hover:text-white"
             >
               Settings
             </Link>
 
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
-              className="rounded-full border border-black/10 px-3 py-1.5 text-sm font-medium text-[#425248] transition hover:border-[#e87c6f] hover:text-[#b34f45]"
+              className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:text-white"
             >
               Sign Out
             </button>
@@ -138,20 +138,20 @@ export default function Dashboard() {
       </header>
 
       <main className="relative z-10 mx-auto w-full max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
-        <section className="mb-8 rounded-3xl border border-[#e6e2d6] bg-white/80 p-6 shadow-[0_10px_30px_rgba(62,70,64,0.08)] sm:p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#5d6d62]">
+        <section className="mb-8 rounded-3xl border border-white/10 bg-white/6 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">
             Personal focus cockpit
           </p>
           <div className="mt-3 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <h1 className="text-3xl font-semibold leading-tight text-[#1a2a22] sm:text-4xl">
+              <h1 className="text-3xl font-semibold leading-tight text-white sm:text-4xl">
                 Welcome back, {firstName}
               </h1>
-              <p className="mt-2 text-[#4c5a50]">
+              <p className="mt-2 text-slate-300">
                 Build calm momentum today. Small deep-work blocks add up fast.
               </p>
             </div>
-            <div className="rounded-2xl border border-[#d8e6df] bg-[#ecf9f2] px-4 py-3 text-sm text-[#1f5f49]">
+            <div className="rounded-2xl border border-[#8aa4ff]/25 bg-[#121a30]/75 px-4 py-3 text-sm text-[#d8e1ff] shadow-[0_10px_28px_rgba(0,0,0,0.28)]">
               <p className="font-semibold">Today: {todayFocusMinutes} minutes focused</p>
               <p className="opacity-80">{todaySessions.length} sessions recorded</p>
             </div>
@@ -159,35 +159,35 @@ export default function Dashboard() {
         </section>
 
         <section className="mb-8 grid gap-6 lg:grid-cols-[1.3fr_0.9fr]">
-          <div className="rounded-3xl border border-[#e6e2d6] bg-white p-7 shadow-[0_12px_32px_rgba(62,70,64,0.1)] sm:p-8">
+          <div className="rounded-3xl border border-white/10 bg-[#0b1020]/70 p-7 shadow-[0_18px_44px_rgba(0,0,0,0.38)] backdrop-blur-xl sm:p-8">
             <div className="mb-6 flex items-start justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#647368]">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
                   Focus session
                 </p>
-                <h2 className="mt-2 text-2xl font-semibold text-[#1a2a22]">Deep Work Timer</h2>
+                <h2 className="mt-2 text-2xl font-semibold text-white">Deep Work Timer</h2>
               </div>
-              <span className="rounded-full bg-[#f4f2ea] px-3 py-1 text-xs font-medium text-[#5a655f]">
+              <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1 text-xs font-medium text-slate-300">
                 {activeSession ? 'Live now' : 'Ready'}
               </span>
             </div>
 
             {activeSession ? (
               <div className="mb-8">
-                <div className="mb-2 text-5xl font-semibold text-[#0f7a5d] sm:text-6xl">
+                <div className="mb-2 text-5xl font-semibold text-[#dbe2ff] sm:text-6xl">
                   {formatTime(elapsedTime)}
                 </div>
 
-                <p className="text-sm text-[#4f5f55]">
+                <p className="text-sm text-slate-300">
                   You are in the zone. Keep this tab active for your best score.
                 </p>
 
-                <p className="mt-2 text-sm font-medium text-[#b8554c]">
+                <p className="mt-2 text-sm font-medium text-rose-300">
                   Distractions noticed: {distractionCount}
                 </p>
               </div>
             ) : (
-              <p className="mb-8 text-[#4f5f55]">
+              <p className="mb-8 text-slate-300">
                 Start a new session and let the app track your focus quality automatically.
               </p>
             )}
@@ -197,7 +197,7 @@ export default function Dashboard() {
                 <button
                   onClick={endSession}
                   disabled={sessionLoading}
-                  className="rounded-xl bg-[#d96456] px-6 py-3 font-semibold text-white transition hover:bg-[#c35347] disabled:opacity-50"
+                  className="rounded-xl bg-linear-to-r from-rose-500 to-pink-500 px-6 py-3 font-semibold text-white transition hover:from-rose-400 hover:to-pink-400 disabled:opacity-50"
                 >
                   {sessionLoading ? 'Saving...' : 'End Session'}
                 </button>
@@ -205,41 +205,41 @@ export default function Dashboard() {
                 <button
                   onClick={handleStartSession}
                   disabled={isStarting || sessionLoading}
-                  className="rounded-xl bg-[#0f7a5d] px-6 py-3 font-semibold text-white transition hover:bg-[#0b644c] disabled:opacity-50"
+                  className="rounded-xl bg-linear-to-r from-[#6b7dff] to-[#8f72ff] px-6 py-3 font-semibold text-white transition hover:from-[#7e8dff] hover:to-[#a082ff] disabled:opacity-50"
                 >
                   {isStarting ? 'Starting...' : 'Start Session'}
                 </button>
               )}
               <Link
                 href="/settings"
-                className="rounded-xl border border-[#d9d5c8] bg-[#f7f3e8] px-6 py-3 font-semibold text-[#3f5147] transition hover:bg-[#f1ecde]"
+                className="rounded-xl border border-white/12 bg-white/6 px-6 py-3 font-semibold text-slate-200 transition hover:bg-white/10"
               >
                 Tune Preferences
               </Link>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[#d8e6df] bg-linear-to-br from-[#f3fbf8] to-[#e8f4ff] p-7 shadow-[0_12px_32px_rgba(62,70,64,0.08)] sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#607a6c]">
+          <div className="rounded-3xl border border-white/10 bg-linear-to-br from-[#0d1430]/90 via-[#0f1738]/85 to-[#12122d]/88 p-7 shadow-[0_18px_44px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
               Weekly target
             </p>
-            <h3 className="mt-3 text-2xl font-semibold text-[#1a2a22]">10 hours focus goal</h3>
-            <p className="mt-2 text-sm text-[#4f6156]">
+            <h3 className="mt-3 text-2xl font-semibold text-white">10 hours focus goal</h3>
+            <p className="mt-2 text-sm text-slate-300">
               Keep your momentum with consistent short sessions.
             </p>
 
             <div className="mt-6">
-              <div className="mb-2 flex items-center justify-between text-sm font-medium text-[#3d574b]">
+              <div className="mb-2 flex items-center justify-between text-sm font-medium text-slate-300">
                 <span>Progress</span>
                 <span>{weeklyProgressPercent}%</span>
               </div>
-              <div className="h-3 overflow-hidden rounded-full bg-white/70">
+              <div className="h-3 overflow-hidden rounded-full bg-white/10">
                 <div
-                  className="h-full rounded-full bg-linear-to-r from-[#0f7a5d] to-[#2fa17e] transition-all"
+                  className="h-full rounded-full bg-linear-to-r from-[#94a0ff] to-[#6fd4ff] transition-all"
                   style={{ width: `${weeklyProgressPercent}%` }}
                 />
               </div>
-              <p className="mt-2 text-xs text-[#5d7268]">
+              <p className="mt-2 text-xs text-slate-400">
                 {loading ? '...' : `${stats.totalHours}h completed this week`}
               </p>
             </div>
@@ -247,35 +247,35 @@ export default function Dashboard() {
         </section>
 
         <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-[#e6e2d6] bg-white p-5 shadow-[0_8px_22px_rgba(62,70,64,0.08)]">
-            <p className="text-sm text-[#68766d]">Total sessions</p>
-            <p className="mt-2 text-3xl font-semibold text-[#1e2b24]">{loading ? '-' : stats.totalSessions}</p>
+          <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+            <p className="text-sm text-slate-400">Total sessions</p>
+            <p className="mt-2 text-3xl font-semibold text-white">{loading ? '-' : stats.totalSessions}</p>
           </div>
 
-          <div className="rounded-2xl border border-[#e6e2d6] bg-white p-5 shadow-[0_8px_22px_rgba(62,70,64,0.08)]">
-            <p className="text-sm text-[#68766d]">Focus hours</p>
-            <p className="mt-2 text-3xl font-semibold text-[#0f7a5d]">{loading ? '-' : `${stats.totalHours}h`}</p>
+          <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+            <p className="text-sm text-slate-400">Focus hours</p>
+            <p className="mt-2 text-3xl font-semibold text-[#8fd5ff]">{loading ? '-' : `${stats.totalHours}h`}</p>
           </div>
 
-          <div className="rounded-2xl border border-[#e6e2d6] bg-white p-5 shadow-[0_8px_22px_rgba(62,70,64,0.08)]">
-            <p className="text-sm text-[#68766d]">Focus score</p>
-            <p className="mt-2 text-3xl font-semibold text-[#2f65a9]">{loading ? '-' : `${stats.focusScore}%`}</p>
+          <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+            <p className="text-sm text-slate-400">Focus score</p>
+            <p className="mt-2 text-3xl font-semibold text-[#c4b1ff]">{loading ? '-' : `${stats.focusScore}%`}</p>
           </div>
 
-          <div className="rounded-2xl border border-[#e6e2d6] bg-white p-5 shadow-[0_8px_22px_rgba(62,70,64,0.08)]">
-            <p className="text-sm text-[#68766d]">Distraction guard</p>
-            <p className="mt-2 text-3xl font-semibold text-[#b8554c]">{activeSession ? distractionCount : 0}</p>
-            <p className="mt-1 text-xs text-[#839188]">Current session events</p>
+          <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+            <p className="text-sm text-slate-400">Distraction guard</p>
+            <p className="mt-2 text-3xl font-semibold text-rose-300">{activeSession ? distractionCount : 0}</p>
+            <p className="mt-1 text-xs text-slate-500">Current session events</p>
           </div>
         </section>
 
         {stats.recentSessions && stats.recentSessions.length > 0 && (
-          <section className="mt-12 rounded-3xl border border-[#e6e2d6] bg-white p-6 shadow-[0_10px_28px_rgba(62,70,64,0.08)] sm:p-8">
+          <section className="mt-12 rounded-3xl border border-white/10 bg-[#08101f]/70 p-6 shadow-[0_18px_46px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8">
             <div className="mb-7 flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-[#1a2a22]">Session Journal</h2>
+              <h2 className="text-2xl font-semibold text-white">Session Journal</h2>
               <button
                 onClick={() => setShowSessions(!showSessions)}
-                className="rounded-lg border border-[#d8d4c8] bg-[#f7f3e8] px-4 py-2 text-sm font-medium text-[#44564d] transition hover:bg-[#eee8d9]"
+                className="rounded-lg border border-white/10 bg-white/6 px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10"
               >
                 {showSessions ? 'Hide list' : 'Show list'}
               </button>
@@ -284,16 +284,16 @@ export default function Dashboard() {
               <div className="space-y-7">
                 {Object.entries(groupSessionsByDay(stats.recentSessions)).map(([date, daySessions]: [string, any[]]) => (
                   <div key={date} className="space-y-3">
-                    <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-[#647368]">{date}</h3>
+                    <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-400">{date}</h3>
                     <div className="space-y-2">
                       {daySessions.map((session) => (
                         <div
                           key={session.id}
-                          className="flex items-center justify-between rounded-2xl border border-[#ece8dc] bg-[#fefcf7] p-4 transition hover:bg-[#faf6ed]"
+                          className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/5 p-4 transition hover:bg-white/8"
                         >
                           <div className="flex items-center gap-4 flex-1">
                             <div className="flex flex-col flex-1">
-                              <p className="text-sm font-semibold text-[#2f3f36]">
+                              <p className="text-sm font-semibold text-slate-100">
                                 {new Date(session.startTime).toLocaleTimeString('en-US', {
                                   hour: '2-digit',
                                   minute: '2-digit',
@@ -304,12 +304,12 @@ export default function Dashboard() {
                                   hour12: true
                                 }) : 'In Progress'}
                               </p>
-                              <p className="mt-1 text-xs text-[#738179]">{formatTime(session.duration)}</p>
+                              <p className="mt-1 text-xs text-slate-400">{formatTime(session.duration)}</p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-semibold text-[#0f7a5d]">{Math.round((session.duration / 3600) * 10) / 10}h</p>
-                            <p className="text-xs text-[#738179]">focus</p>
+                            <p className="text-sm font-semibold text-[#8fd5ff]">{Math.round((session.duration / 3600) * 10) / 10}h</p>
+                            <p className="text-xs text-slate-500">focus</p>
                           </div>
                         </div>
                       ))}

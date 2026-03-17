@@ -19,8 +19,19 @@ const DEFAULT_ITEMS: SpotifyItem[] = [
   { name: 'Peaceful Piano', id: '37i9dQZF1DWZqd5JICZI0u', type: 'playlist' },
 ];
 
+const STORAGE_KEY = 'neurodesk_spotify_custom_items';
+
 export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
-  const [items, setItems] = useState<SpotifyItem[]>(DEFAULT_ITEMS);
+  const [items, setItems] = useState<SpotifyItem[]>(() => {
+    if (typeof window === 'undefined') return DEFAULT_ITEMS;
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const custom: SpotifyItem[] = stored ? JSON.parse(stored) : [];
+      return [...DEFAULT_ITEMS, ...custom];
+    } catch {
+      return DEFAULT_ITEMS;
+    }
+  });
   const [selectedId, setSelectedId] = useState(items[0].id);
   const [showAddForm, setShowAddForm] = useState(false);
   const [itemName, setItemName] = useState('');
@@ -57,7 +68,12 @@ export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
       isCustom: true,
     };
 
-    setItems((prev) => [...prev, newItem]);
+    setItems((prev) => {
+      const updated = [...prev, newItem];
+      const custom = updated.filter((i) => i.isCustom);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(custom));
+      return updated;
+    });
     setSelectedId(newItem.id);
     setItemName('');
     setItemUrl('');
@@ -66,8 +82,13 @@ export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
   };
 
   const handleDelete = (id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
-    if (selectedId === id) setSelectedId(items[0].id);
+    setItems((prev) => {
+      const updated = prev.filter((i) => i.id !== id);
+      const custom = updated.filter((i) => i.isCustom);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(custom));
+      return updated;
+    });
+    if (selectedId === id) setSelectedId(DEFAULT_ITEMS[0].id);
   };
 
   const embedUrl = (item: SpotifyItem) =>
@@ -82,12 +103,12 @@ export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
   };
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-[#d9d5c8] bg-linear-to-br from-[#fffef9] via-[#f9f5e8] to-[#f1f8f4] p-5 shadow-[0_12px_28px_rgba(62,70,64,0.12)] sm:p-6">
+    <div className="overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-[#0b1020]/88 via-[#0f1530]/85 to-[#12142a]/88 p-5 shadow-[0_20px_48px_rgba(0,0,0,0.36)] backdrop-blur-xl sm:p-6">
       <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#617368]">Soundscape</p>
-          <h3 className="text-xl font-semibold text-[#1d2b23]">Spotify Focus Player</h3>
-          <p className="mt-1 text-xs text-[#5a6a60] sm:text-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Soundscape</p>
+          <h3 className="text-xl font-semibold text-white">Spotify Focus Player</h3>
+          <p className="mt-1 text-xs text-slate-300 sm:text-sm">
             {isPlaying
               ? 'Session active: keep the flow going with uninterrupted sound.'
               : 'Set your mood first, then start your deep-work session.'}
@@ -96,14 +117,14 @@ export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
 
         <div className="flex items-center gap-2">
           <span
-            className={`rounded-full px-3 py-1 text-xs font-semibold ${isPlaying ? 'bg-[#dff5eb] text-[#1a7a5b]' : 'bg-[#f2eee2] text-[#5a655f]'
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${isPlaying ? 'bg-[#16253f] text-[#9ed3ff]' : 'bg-white/8 text-slate-300'
               }`}
           >
             {isPlaying ? 'Session Live' : 'Session Idle'}
           </span>
           <button
             onClick={() => setShowOptions((prev) => !prev)}
-            className="rounded-full border border-[#d4d0c3] bg-white/80 px-3 py-1.5 text-xs font-semibold text-[#44564d] transition hover:bg-white"
+            className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-semibold text-slate-200 transition hover:bg-white/10"
           >
             {showOptions ? 'Hide Controls' : 'Show Controls'}
           </button>
@@ -118,13 +139,13 @@ export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
                 <button
                   onClick={() => setSelectedId(item.id)}
                   className={`rounded-xl border px-3 py-2 text-sm font-medium transition sm:px-4 ${selectedId === item.id
-                      ? 'border-[#0f7a5d] bg-[#0f7a5d] text-white shadow-[0_6px_18px_rgba(15,122,93,0.35)]'
-                      : 'border-[#d7d3c7] bg-white/85 text-[#495a51] hover:bg-white'
+                    ? 'border-[#7189ff] bg-linear-to-r from-[#6377ff] to-[#8d71ff] text-white shadow-[0_8px_20px_rgba(99,119,255,0.35)]'
+                    : 'border-white/10 bg-white/6 text-slate-200 hover:bg-white/10'
                     }`}
                 >
                   <span className="block">{item.name}</span>
                   <span
-                    className={`block text-[10px] uppercase tracking-wide ${selectedId === item.id ? 'text-[#d7f4ea]' : 'text-[#819086]'
+                    className={`block text-[10px] uppercase tracking-wide ${selectedId === item.id ? 'text-[#dce3ff]' : 'text-slate-500'
                       }`}
                   >
                     {itemTypeLabel(item.type)}
@@ -133,7 +154,7 @@ export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
                 {item.isCustom && (
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="absolute -right-1 -top-1 rounded-full bg-[#fce8e5] px-1.5 py-0.5 text-[10px] font-semibold text-[#b8554c]"
+                    className="absolute -right-1 -top-1 rounded-full bg-[#331827] px-1.5 py-0.5 text-[10px] font-semibold text-rose-200"
                   >
                     ✕
                   </button>
@@ -143,13 +164,13 @@ export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
           </div>
 
           {showAddForm ? (
-            <form onSubmit={handleAddItem} className="mb-4 space-y-3 rounded-2xl border border-[#e4dfd2] bg-white/75 p-4">
+            <form onSubmit={handleAddItem} className="mb-4 space-y-3 rounded-2xl border border-white/10 bg-white/6 p-4">
               <input
                 type="text"
                 placeholder="Name (optional)"
                 value={itemName}
                 onChange={(e) => setItemName(e.target.value)}
-                className="w-full rounded-lg border border-[#d9d5c8] bg-white px-3 py-2 text-sm text-[#25352d] placeholder:text-[#90a095] outline-none transition focus:border-[#0f7a5d]"
+                className="w-full rounded-lg border border-white/10 bg-[#0b1122] px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-[#7189ff]"
               />
               <input
                 type="url"
@@ -157,13 +178,13 @@ export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
                 value={itemUrl}
                 onChange={(e) => setItemUrl(e.target.value)}
                 required
-                className="w-full rounded-lg border border-[#d9d5c8] bg-white px-3 py-2 text-sm text-[#25352d] placeholder:text-[#90a095] outline-none transition focus:border-[#0f7a5d]"
+                className="w-full rounded-lg border border-white/10 bg-[#0b1122] px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-[#7189ff]"
               />
-              {error && <p className="text-sm text-[#b8554c]">{error}</p>}
+              {error && <p className="text-sm text-rose-300">{error}</p>}
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  className="rounded-lg bg-[#0f7a5d] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0b644c]"
+                  className="rounded-lg bg-linear-to-r from-[#6377ff] to-[#8d71ff] px-4 py-2 text-sm font-semibold text-white transition hover:from-[#7687ff] hover:to-[#a286ff]"
                 >
                   Add
                 </button>
@@ -173,7 +194,7 @@ export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
                     setShowAddForm(false);
                     setError(null);
                   }}
-                  className="rounded-lg border border-[#d9d5c8] bg-white px-4 py-2 text-sm font-medium text-[#4a5d53] transition hover:bg-[#f8f6ef]"
+                  className="rounded-lg border border-white/10 bg-white/6 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
                 >
                   Cancel
                 </button>
@@ -182,7 +203,7 @@ export default function SoundPlayer({ isPlaying }: SoundPlayerProps) {
           ) : (
             <button
               onClick={() => setShowAddForm(true)}
-              className="mb-4 rounded-lg border border-dashed border-[#c8d4cd] bg-[#eef7f1] px-3 py-2 text-sm font-medium text-[#1d7459] transition hover:bg-[#e4f3ea]"
+              className="mb-4 rounded-lg border border-dashed border-white/12 bg-white/6 px-3 py-2 text-sm font-medium text-[#b7c7ff] transition hover:bg-white/10"
             >
               + Add Spotify Item
             </button>

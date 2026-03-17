@@ -35,10 +35,10 @@ body {
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(circle at 8% 12%, rgba(255, 207, 122, 0.28), transparent 20%),
-    radial-gradient(circle at 88% 20%, rgba(125, 217, 183, 0.22), transparent 24%),
-    radial-gradient(circle at 45% 82%, rgba(140, 200, 255, 0.16), transparent 18%),
-    linear-gradient(180deg, rgba(253, 250, 243, 0.96) 0%, rgba(246, 240, 227, 0.98) 100%);
+    radial-gradient(circle at 18% 20%, rgba(110, 126, 255, 0.16), transparent 18%),
+    radial-gradient(circle at 72% 18%, rgba(162, 119, 255, 0.14), transparent 20%),
+    radial-gradient(circle at 82% 58%, rgba(117, 181, 255, 0.12), transparent 22%),
+    linear-gradient(180deg, #090d18 0%, #070b14 45%, #04070f 100%);
 }
 
 .dashboard-shell::before {
@@ -48,10 +48,29 @@ body {
   z-index: -1;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(63, 93, 81, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(63, 93, 81, 0.05) 1px, transparent 1px);
-  background-size: 34px 34px;
-  mask-image: radial-gradient(circle at center, black 45%, transparent 95%);
+    radial-gradient(1.5px 1.5px at 28px 34px, rgba(255, 255, 255, 0.92), transparent 56%),
+    radial-gradient(1px 1px at 120px 82px, rgba(186, 203, 255, 0.88), transparent 55%),
+    radial-gradient(1.4px 1.4px at 204px 126px, rgba(255, 255, 255, 0.84), transparent 56%),
+    radial-gradient(1px 1px at 72px 188px, rgba(161, 203, 255, 0.72), transparent 55%),
+    radial-gradient(1.8px 1.8px at 240px 42px, rgba(208, 194, 255, 0.8), transparent 56%),
+    radial-gradient(1px 1px at 198px 224px, rgba(255, 255, 255, 0.65), transparent 56%);
+  background-size: 280px 280px;
+  opacity: 0.8;
+}
+
+.dashboard-shell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 18%, rgba(191, 197, 255, 0.2), transparent 22%),
+    radial-gradient(ellipse at 62% 24%, rgba(150, 132, 255, 0.16), transparent 18%),
+    radial-gradient(ellipse at 78% 28%, rgba(214, 220, 255, 0.12), transparent 18%),
+    linear-gradient(12deg, transparent 34%, rgba(160, 170, 255, 0.08) 46%, rgba(210, 215, 255, 0.12) 50%, rgba(110, 129, 255, 0.08) 56%, transparent 66%);
+  filter: blur(28px);
+  opacity: 0.9;
 }
 
 @keyframes driftFloat {
