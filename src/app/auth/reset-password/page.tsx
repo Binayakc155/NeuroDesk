@@ -1,8 +1,7 @@
 'use client';
 
-// Tell Next.js not to pre-render this page
+// Force dynamic rendering, prevents prerender errors on Vercel
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -11,7 +10,7 @@ import Link from 'next/link';
 export default function ResetPassword() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  const token = searchParams.get('token'); // get token from URL
   
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,9 +19,7 @@ export default function ResetPassword() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (!token) {
-      setError('Invalid or missing reset token');
-    }
+    if (!token) setError('Invalid or missing reset token');
   }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,7 +30,6 @@ export default function ResetPassword() {
       setError('Password must be at least 8 characters');
       return;
     }
-
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -56,13 +52,10 @@ export default function ResetPassword() {
       }
 
       setSuccess(true);
-      
-      // Redirect to signin after 2 seconds
-      setTimeout(() => {
-        router.push('/auth/signin');
-      }, 2000);
-    } catch (error) {
-      console.error('Reset password error:', error);
+
+      setTimeout(() => router.push('/auth/signin'), 2000);
+    } catch (err) {
+      console.error('Reset password error:', err);
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -73,7 +66,7 @@ export default function ResetPassword() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="text-3xl font-bold text-blue-600 hover:text-blue-700 inline-block mb-4">
+          <Link href="/" className="text-3xl font-bold text-blue-600 hover:text-blue-700 mb-4 inline-block">
             Focus Intelligence
           </Link>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Reset Password</h1>
@@ -87,9 +80,7 @@ export default function ResetPassword() {
                 <span className="text-3xl">✓</span>
               </div>
               <h2 className="text-xl font-semibold text-gray-900">Password Reset Successful</h2>
-              <p className="text-gray-600">
-                Redirecting to sign in...
-              </p>
+              <p className="text-gray-600">Redirecting to sign in...</p>
             </div>
           ) : (
             <>
@@ -101,33 +92,29 @@ export default function ResetPassword() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    New Password
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     disabled={!token}
-                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-gray-100"
                     placeholder="••••••••"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-gray-100"
                   />
                   <p className="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Confirm New Password
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
                   <input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     disabled={!token}
-                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-gray-100"
                     placeholder="••••••••"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-gray-100"
                   />
                 </div>
 
