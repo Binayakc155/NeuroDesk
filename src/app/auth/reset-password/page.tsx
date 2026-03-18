@@ -1,17 +1,14 @@
 'use client';
 
-// Force dynamic rendering, prevents prerender errors on Vercel
-export const dynamic = "force-dynamic";
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function ResetPassword() {
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get('token'); // get token from URL
-  
+  const token = searchParams.get('token');
+
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -63,6 +60,73 @@ export default function ResetPassword() {
   };
 
   return (
+    <div className="bg-white shadow-lg rounded-2xl p-8 space-y-6">
+      {success ? (
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
+            <span className="text-3xl">✓</span>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900">Password Reset Successful</h2>
+          <p className="text-gray-600">Redirecting to sign in...</p>
+        </div>
+      ) : (
+        <>
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600 text-sm">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={!token}
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-gray-100"
+              />
+              <p className="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                disabled={!token}
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-gray-100"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading || !token}
+              className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-400 rounded-lg font-semibold text-white transition-all text-center shadow-sm"
+            >
+              {loading ? 'Resetting...' : 'Reset Password'}
+            </button>
+          </form>
+
+          <div className="text-center text-sm text-gray-600">
+            <Link href="/auth/signin" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+              ← Back to Sign In
+            </Link>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default function ResetPassword() {
+  return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
@@ -73,68 +137,9 @@ export default function ResetPassword() {
           <p className="text-gray-500">Enter your new password</p>
         </div>
 
-        <div className="bg-white shadow-lg rounded-2xl p-8 space-y-6">
-          {success ? (
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-3xl">✓</span>
-              </div>
-              <h2 className="text-xl font-semibold text-gray-900">Password Reset Successful</h2>
-              <p className="text-gray-600">Redirecting to sign in...</p>
-            </div>
-          ) : (
-            <>
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600 text-sm">
-                  {error}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={!token}
-                    placeholder="••••••••"
-                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-gray-100"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    disabled={!token}
-                    placeholder="••••••••"
-                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-gray-100"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading || !token}
-                  className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-400 rounded-lg font-semibold text-white transition-all text-center shadow-sm"
-                >
-                  {loading ? 'Resetting...' : 'Reset Password'}
-                </button>
-              </form>
-
-              <div className="text-center text-sm text-gray-600">
-                <Link href="/auth/signin" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
-                  ← Back to Sign In
-                </Link>
-              </div>
-            </>
-          )}
-        </div>
+        <Suspense fallback={<div className="bg-white shadow-lg rounded-2xl p-8 text-center text-gray-500">Loading...</div>}>
+          <ResetPasswordForm />
+        </Suspense>
       </div>
     </div>
   );
