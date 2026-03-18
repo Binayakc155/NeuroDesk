@@ -218,14 +218,8 @@ export default function Home() {
               question: 'How does NeuroDesk track focus sessions?',
               answer: 'NeuroDesk uses intelligent browser APIs to detect when you leave or return to the tab. Sessions are tracked client-side for your privacy.',
             },
-            {
-              question: 'Is my data private and secure?',
-              answer: 'Yes! We employ enterprise-grade encryption. Your focus data is stored securely and never shared with third parties.',
-            },
-            {
-              question: 'Can I export my data?',
-              answer: 'Yes. You can export your focus data in multiple formats whenever you need.',
-            },
+  
+    
             {
               question: 'How do I get started?',
               answer: 'Create your account and begin tracking sessions instantly. Setup takes less than a minute.',
@@ -284,43 +278,13 @@ export default function Home() {
               </p>
             </div>
 
-            <div>
-              <h4 className="font-bold text-white mb-4 text-sm">Product</h4>
-              <div className="space-y-2">
-                {['Features', 'Security', 'Roadmap', 'Status'].map((item, i) => (
-                  <Link key={i} href="#" className="text-gray-400 hover:text-[#8fd5ff] text-sm transition">
-                    {item}
-                  </Link>
-                ))}
-              </div>
-            </div>
+            
 
-            <div>
-              <h4 className="font-bold text-white mb-4 text-sm">Company</h4>
-              <div className="space-y-2">
-                {['About Us', 'Blog', 'Careers', 'Contact'].map((item, i) => (
-                  <Link key={i} href="#" className="text-gray-400 hover:text-[#8fd5ff] text-sm transition flex items-center gap-1">
-                    {item}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-white mb-4 text-sm">Legal</h4>
-              <div className="space-y-2">
-                {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'GDPR'].map((item, i) => (
-                  <Link key={i} href="#" className="text-gray-400 hover:text-[#8fd5ff] text-sm transition">
-                    {item}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
+            
 
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-sm text-gray-500">
-              © 2026 NeuroDesk. All rights reserved. Built with focus for the focused.
+               NeuroDesk. All rights reserved. Built with focus for the focused.
             </p>
             <div className="flex gap-4">
               {[
