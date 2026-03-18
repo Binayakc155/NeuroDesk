@@ -262,45 +262,44 @@ export default function Home() {
         </div>
       </section >
 
-      {/* Footer */}
-      < footer className="border-t border-white/8 py-16 bg-[#04070f]/80 backdrop-blur-xl" >
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8 mb-12">
-            <div>
-              <Link
-                href="/"
-                className="text-2xl font-black bg-linear-to-r from-[#8fd5ff] to-[#c4b1ff] bg-clip-text text-transparent inline-block mb-4"
-              >
-                NeuroDesk
-              </Link>
-              <p className="text-sm text-gray-400">
-                Master your focus, own your productivity with intelligent distraction detection and advanced analytics.
-              </p>
-            </div>
+      <footer className="border-t border-white/8 py-16 bg-[#04070f]/80 backdrop-blur-xl">
+  <div className="max-w-6xl mx-auto px-6">
+    <div className="grid md:grid-cols-4 gap-8 mb-12">
+      <div>
+        <Link
+          href="/"
+          className="text-2xl font-black bg-linear-to-r from-[#8fd5ff] to-[#c4b1ff] bg-clip-text text-transparent inline-block mb-4"
+        >
+          NeuroDesk
+        </Link>
+        <p className="text-sm text-gray-400">
+          Master your focus, own your productivity with intelligent distraction detection and advanced analytics.
+        </p>
+      </div>
+    </div> {/* ✅ closed missing div */}
 
-            
-
-            
-
-          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-sm text-gray-500">
-               NeuroDesk. All rights reserved. Built with focus for the focused.
-            </p>
-            <div className="flex gap-4">
-              {[
-                { name: 'Twitter', icon: '𝕏' },
-                { name: 'GitHub', icon: '⚙' },
-                { name: 'Discord', icon: '◆' },
-              ].map((social, i) => (
-                <Link key={i} href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-[#5568ff]/20 border border-white/10 hover:border-[#5568ff]/50 flex items-center justify-center text-sm transition">
-                  {social.icon}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </footer >
-
+    <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+      <p className="text-sm text-gray-500">
+        NeuroDesk. All rights reserved. Built with focus for the focused.
+      </p>
+      <div className="flex gap-4">
+        {[
+          { name: 'Twitter', icon: '𝕏' },
+          { name: 'GitHub', icon: '⚙' },
+          { name: 'Discord', icon: '◆' },
+        ].map((social, i) => (
+          <Link
+            key={i}
+            href="#"
+            className="w-10 h-10 rounded-lg bg-white/5 hover:bg-[#5568ff]/20 border border-white/10 hover:border-[#5568ff]/50 flex items-center justify-center text-sm transition"
+          >
+            {social.icon}
+          </Link>
+        ))}
+      </div>
+    </div>
+  </div>
+</footer>
       {/* Global Animations */}
       < style jsx global > {`
 
