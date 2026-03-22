@@ -27,13 +27,44 @@ body {
 }
 
 .app-neural-background {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+}
+
+.app-neural-background::before {
+  content: '';
+  position: fixed;
+  inset: -16%;
+  z-index: -3;
+  pointer-events: none;
   background-image:
-    linear-gradient(180deg, rgba(4, 10, 20, 0.38) 0%, rgba(4, 10, 20, 0.56) 100%),
+    linear-gradient(180deg, rgba(4, 10, 20, 0.34) 0%, rgba(4, 10, 20, 0.58) 100%),
     url('/dashboard-neural-bg.svg');
-  background-size: 100% 100%, cover;
-  background-position: center, center;
+  background-size: 100% 100%, 170% 170%;
+  background-position: center, 40% 58%;
   background-repeat: no-repeat;
-  background-attachment: scroll;
+  opacity: 0.95;
+  transform: translate3d(0, 0, 0) scale(1.08);
+  animation: appNeuralFloat 14s ease-in-out infinite alternate;
+  will-change: transform, background-position;
+}
+
+.app-neural-background::after {
+  content: '';
+  position: fixed;
+  inset: -14%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(43, 199, 183, 0.24), transparent 25%),
+    radial-gradient(circle at 82% 20%, rgba(73, 183, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 50% 82%, rgba(110, 126, 255, 0.18), transparent 34%);
+  filter: blur(22px);
+  opacity: 0.62;
+  transform: translate3d(0, 0, 0) scale(1.05);
+  animation: appNeuralLayerDrift 10s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
 .dashboard-shell {
@@ -42,15 +73,65 @@ body {
 }
 
 @media (max-width: 768px) {
-  .app-neural-background {
-    background-size: 100% 100%, cover;
-    background-attachment: scroll;
+  .app-neural-background::before {
+    inset: -22%;
+    background-size: 100% 100%, 215% 215%;
+    animation-duration: 16s;
+  }
+
+  .app-neural-background::after {
+    inset: -18%;
+    opacity: 0.54;
+    animation-duration: 12s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-neural-background::before {
+    animation: none;
+    transform: none;
+  }
+
+  .app-neural-background::after {
+    animation: none;
+    transform: none;
+  }
+}
+
+@keyframes appNeuralFloat {
+  0% {
+    background-position: center, 34% 64%;
+    transform: translate3d(-26px, 18px, 0) scale(1.08);
+  }
+
+  50% {
+    background-position: center, 62% 40%;
+    transform: translate3d(30px, -24px, 0) scale(1.14);
+  }
+
+  100% {
+    background-position: center, 48% 70%;
+    transform: translate3d(-18px, 24px, 0) scale(1.1);
+  }
+}
+
+@keyframes appNeuralLayerDrift {
+  0% {
+    transform: translate3d(-22px, 14px, 0) scale(1.06);
+  }
+
+  50% {
+    transform: translate3d(28px, -20px, 0) scale(1.11);
+  }
+
+  100% {
+    transform: translate3d(-16px, 24px, 0) scale(1.07);
   }
 }
 
 .dashboard-shell::before {
   content: '';
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
@@ -67,7 +148,7 @@ body {
 
 .dashboard-shell::after {
   content: '';
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
