@@ -7,14 +7,14 @@ export default function Home() {
   const { data: session } = useSession();
 
   return (
-    <div className="relative min-h-screen text-gray-100 dashboard-shell overflow-hidden">
+    <div className="relative min-h-screen pt-20 md:pt-24 text-gray-100 dashboard-shell overflow-hidden">
 
       {/* Floating Ambient Glow */}
       <div className="absolute -top-40 -left-40 w-125 h-125 bg-[#5568ff]/16 rounded-full blur-3xl animate-floatSlow -z-20" />
       <div className="absolute -bottom-40 -right-40 w-125 h-125 bg-[#9370ff]/12 rounded-full blur-3xl animate-floatMedium -z-20" />
 
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-[#050814]/70 border-b border-white/8">
+      <nav className="fixed inset-x-0 top-0 z-50 backdrop-blur-xl bg-[#050814]/70 border-b border-white/8">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link
             href="/"
