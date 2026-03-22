@@ -26,8 +26,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="preload"
+          href="/dashboard-neural-bg.svg"
+          as="image"
+          type="image/svg+xml"
+        />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} app-neural-background antialiased`}
       >
         <Providers>
           {children}

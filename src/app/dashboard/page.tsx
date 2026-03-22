@@ -3,7 +3,7 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useDashboardStats,
   useFocusSession,
@@ -15,10 +15,6 @@ import SoundPlayer from '@/components/SoundPlayer';
 import Chatbot from '@/components/Chatbot';
 
 export default function Dashboard() {
-  const dashboardBackgroundStyle = {
-    '--dashboard-game-image': "url('/dashboard-neural-bg.svg')",
-  } as CSSProperties;
-
   const { data: session, status } = useSession();
   const router = useRouter();
   const { stats, loading, refetch } = useDashboardStats();
@@ -108,10 +104,7 @@ export default function Dashboard() {
   if (!session?.user) return null;
 
   return (
-    <div
-      className="dashboard-shell dashboard-game-background relative min-h-screen overflow-hidden text-slate-100"
-      style={dashboardBackgroundStyle}
-    >
+    <div className="dashboard-shell relative min-h-screen overflow-hidden text-slate-100">
       <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#5568ff]/16 blur-3xl" />
       <div className="float-orb-delay pointer-events-none absolute top-20 right-[6%] h-96 w-96 rounded-full bg-[#9370ff]/12 blur-3xl" />
       <div className="float-orb-soft pointer-events-none absolute bottom-10 left-[38%] h-72 w-72 rounded-full bg-[#78a6ff]/10 blur-3xl" />
