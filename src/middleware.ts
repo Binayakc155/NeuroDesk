@@ -1,12 +1,12 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export default auth((request: any) => {
+export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Public routes that don't require authentication
-  const publicRoutes = ["/", "/auth", "/api/auth"];
+  const publicRoutes = ["/", "/auth"];
   const isPublicRoute = publicRoutes.some((route) =>
     pathname === route || pathname.startsWith(route + "/")
   );
@@ -15,14 +15,19 @@ export default auth((request: any) => {
     return NextResponse.next();
   }
 
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
+  });
+
   // Protect all other routes (dashboard, settings, etc.)
-  if (!request.auth) {
+  if (!token) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico).*)"],
 };

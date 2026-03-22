@@ -41,6 +41,30 @@ body {
     linear-gradient(180deg, #090d18 0%, #070b14 45%, #04070f 100%);
 }
 
+.dashboard-game-background {
+  background-image:
+    linear-gradient(180deg, rgba(4, 8, 18, 0.32) 0%, rgba(4, 8, 18, 0.48) 100%),
+    var(--dashboard-game-image, url('/hill-climb-bg.jpg'));
+  background-size: 100% 100%, 120% auto;
+  background-position: 50% 50%, 50% 52%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  animation: dashboardGamePan 28s ease-in-out infinite alternate;
+}
+
+@media (max-width: 768px) {
+  .dashboard-game-background {
+    background-size: 100% 100%, cover;
+    background-attachment: scroll;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-game-background {
+    animation: none;
+  }
+}
+
 .dashboard-shell::before {
   content: '';
   position: absolute;
@@ -71,6 +95,28 @@ body {
     linear-gradient(12deg, transparent 34%, rgba(160, 170, 255, 0.08) 46%, rgba(210, 215, 255, 0.12) 50%, rgba(110, 129, 255, 0.08) 56%, transparent 66%);
   filter: blur(28px);
   opacity: 0.9;
+}
+
+.dashboard-shell.dashboard-game-background::before {
+  opacity: 0.12;
+}
+
+.dashboard-shell.dashboard-game-background::after {
+  opacity: 0.1;
+}
+
+@keyframes dashboardGamePan {
+  0% {
+    background-position: 50% 50%, 46% 52%;
+  }
+
+  50% {
+    background-position: 50% 50%, 54% 48%;
+  }
+
+  100% {
+    background-position: 50% 50%, 50% 55%;
+  }
 }
 
 @keyframes driftFloat {

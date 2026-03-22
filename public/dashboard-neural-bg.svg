@@ -1,0 +1,77 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#071426"/>
+      <stop offset="0.5" stop-color="#0A1F32"/>
+      <stop offset="1" stop-color="#06101D"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(380 220) rotate(19) scale(560 360)">
+      <stop stop-color="#2BC7B7" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#2BC7B7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1530 280) rotate(-8) scale(520 360)">
+      <stop stop-color="#49B7FF" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#49B7FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowC" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(970 900) rotate(-15) scale(760 360)">
+      <stop stop-color="#59D5CA" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#59D5CA" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softBlur" x="-40%" y="-40%" width="180%" height="180%" filterUnits="objectBoundingBox">
+      <feGaussianBlur stdDeviation="1.2"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#glowA)"/>
+  <rect width="1920" height="1080" fill="url(#glowB)"/>
+  <rect width="1920" height="1080" fill="url(#glowC)"/>
+
+  <g opacity="0.24" stroke="#93D8FF" stroke-width="1.2">
+    <path d="M120 760L290 640L480 700L650 590L860 640L1050 520L1240 580L1470 470L1680 540"/>
+    <path d="M210 330L420 290L610 350L790 280L970 340L1170 270L1380 330L1610 250"/>
+    <path d="M90 510L260 430L450 490L620 400L800 450L980 380L1160 430L1380 360L1570 420L1790 350"/>
+  </g>
+
+  <g opacity="0.18" stroke="#86CFF0" stroke-width="1">
+    <path d="M170 850L360 780L540 840L730 760L920 810L1100 730L1280 790L1490 700L1710 770"/>
+    <path d="M140 180L330 130L520 200L700 120L890 180L1090 120L1280 190L1500 110L1730 170"/>
+  </g>
+
+  <g fill="#C7EEFF">
+    <circle cx="290" cy="640" r="4.2"/>
+    <circle cx="650" cy="590" r="3.8"/>
+    <circle cx="1050" cy="520" r="4.6"/>
+    <circle cx="1470" cy="470" r="4.1"/>
+    <circle cx="420" cy="290" r="3.6"/>
+    <circle cx="790" cy="280" r="4.2"/>
+    <circle cx="1170" cy="270" r="3.8"/>
+    <circle cx="1610" cy="250" r="4.4"/>
+    <circle cx="620" cy="400" r="3.9"/>
+    <circle cx="980" cy="380" r="4.1"/>
+    <circle cx="1380" cy="360" r="3.6"/>
+    <circle cx="1490" cy="700" r="4"/>
+    <circle cx="730" cy="760" r="3.7"/>
+    <circle cx="1100" cy="730" r="4.2"/>
+  </g>
+
+  <g fill="#D7FAF3" opacity="0.65" filter="url(#softBlur)">
+    <circle cx="312" cy="622" r="8"/>
+    <circle cx="1042" cy="508" r="9"/>
+    <circle cx="1616" cy="242" r="9"/>
+    <circle cx="1498" cy="694" r="8"/>
+  </g>
+
+  <g opacity="0.08" stroke="#A9D8EE" stroke-width="1">
+    <path d="M0 120H1920"/>
+    <path d="M0 300H1920"/>
+    <path d="M0 480H1920"/>
+    <path d="M0 660H1920"/>
+    <path d="M0 840H1920"/>
+    <path d="M320 0V1080"/>
+    <path d="M640 0V1080"/>
+    <path d="M960 0V1080"/>
+    <path d="M1280 0V1080"/>
+    <path d="M1600 0V1080"/>
+  </g>
+</svg>
