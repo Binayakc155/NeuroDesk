@@ -106,7 +106,7 @@ export default function Settings() {
     return (
       <div className="dashboard-shell min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="h-10 w-10 border-4 border-[#6b7dff] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="h-10 w-10 border-4 border-[#2bc7b7] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-slate-400">Loading settings...</p>
         </div>
       </div>
@@ -118,24 +118,24 @@ export default function Settings() {
   }
 
   return (
-    <div className="dashboard-shell relative min-h-screen overflow-hidden text-slate-100">
-      <div className="float-orb pointer-events-none absolute -top-40 -left-40 h-125 w-125 rounded-full bg-[#5568ff]/16 blur-3xl" />
-      <div className="float-orb-delay pointer-events-none absolute -bottom-40 -right-40 h-125 w-125 rounded-full bg-[#9370ff]/12 blur-3xl" />
+    <div className="dashboard-shell relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
+      <div className="float-orb pointer-events-none absolute -top-40 -left-40 h-125 w-125 rounded-full bg-[#2bc7b7]/18 blur-3xl" />
+      <div className="float-orb-delay pointer-events-none absolute -bottom-40 -right-40 h-125 w-125 rounded-full bg-[#3b82f6]/14 blur-3xl" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/6 to-transparent" />
 
       {/* Header */}
-      <header className="border-b border-white/10 backdrop-blur-xl bg-[#050814]/70 sticky top-0 z-10">
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-[#7bd4ff]/20 bg-[#04101f]/72 shadow-[0_10px_40px_rgba(4,10,20,0.55)] backdrop-blur-xl">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
             href="/dashboard"
-            className="text-xl font-semibold tracking-tight text-white hover:text-[#a9b6ff] transition"
+            className="text-xl font-semibold tracking-tight text-white hover:text-[#9de9ff] transition"
           >
             NeuroDesk
           </Link>
 
           <button
             onClick={() => signOut({ callbackUrl: '/' })}
-            className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:text-white"
+            className="rounded-full border border-[#6ab5dc]/30 bg-[#0a1a2e]/65 px-3 py-1.5 text-sm font-medium text-[#d3f3ff] transition hover:border-[#8de1ff]/60 hover:text-white"
           >
             Sign Out
           </button>
@@ -148,7 +148,7 @@ export default function Settings() {
         <div className="mb-8">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-slate-400 hover:text-[#8fd5ff] text-sm font-semibold hover:gap-3 transition-all"
+            className="inline-flex items-center gap-2 text-slate-400 hover:text-[#9de9ff] text-sm font-semibold hover:gap-3 transition-all"
           >
             <span>←</span> Back to Dashboard
           </Link>
@@ -176,7 +176,7 @@ export default function Settings() {
                 value={newDomain}
                 onChange={(e) => setNewDomain(e.target.value)}
                 placeholder="github.com"
-                className="px-4 py-3 bg-[#0b1122] border border-white/10 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#6b7dff] focus:border-transparent focus:bg-[#111a34] transition-all"
+                className="px-4 py-3 bg-[#0b1122] border border-white/10 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#2bc7b7] focus:border-transparent focus:bg-[#0f2036] transition-all"
                 disabled={adding}
               />
               <input
@@ -184,13 +184,13 @@ export default function Settings() {
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
                 placeholder="Description (optional)"
-                className="px-4 py-3 bg-[#0b1122] border border-white/10 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#6b7dff] focus:border-transparent focus:bg-[#111a34] transition-all"
+                className="px-4 py-3 bg-[#0b1122] border border-white/10 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#2bc7b7] focus:border-transparent focus:bg-[#0f2036] transition-all"
                 disabled={adding}
               />
               <button
                 type="submit"
                 disabled={adding}
-                className="px-6 py-3 bg-linear-to-r from-[#6b7dff] to-[#8f72ff] hover:from-[#7e8dff] hover:to-[#a082ff] disabled:from-slate-600 disabled:to-slate-600 text-white font-bold rounded-xl transition-all shadow-lg"
+                className="px-6 py-3 bg-linear-to-r from-[#14b8a6] to-[#3b82f6] hover:from-[#2dd4bf] hover:to-[#60a5fa] disabled:from-slate-600 disabled:to-slate-600 text-white font-bold rounded-xl transition-all shadow-lg"
               >
                 {adding ? 'Adding...' : 'Add'}
               </button>
@@ -211,7 +211,7 @@ export default function Settings() {
               domains.map((domain) => (
                 <div
                   key={domain.id}
-                  className="group flex items-center justify-between p-5 bg-white/5 rounded-xl border border-white/10 hover:border-[#8aa4ff]/40 hover:shadow-lg hover:shadow-[#5568ff]/10 transition-all"
+                  className="group flex items-center justify-between p-5 bg-white/5 rounded-xl border border-white/10 hover:border-[#67d8ff]/45 hover:shadow-lg hover:shadow-[#2bc7b7]/10 transition-all"
                 >
                   <div>
                     <p className="font-bold text-white">{domain.domain}</p>
@@ -232,8 +232,8 @@ export default function Settings() {
         </div>
 
         {/* Info Box */}
-        <div className="bg-white/5 backdrop-blur-xl border border-[#8aa4ff]/30 rounded-3xl p-8 shadow-2xl shadow-[#5568ff]/10">
-          <h3 className="text-xl font-semibold text-[#c4b1ff] mb-4">Current Limitations</h3>
+        <div className="bg-white/5 backdrop-blur-xl border border-[#66d8f5]/32 rounded-3xl p-8 shadow-2xl shadow-[#2bc7b7]/10">
+          <h3 className="text-xl font-semibold text-[#99e8ff] mb-4">Current Limitations</h3>
           <ul className="text-sm text-slate-300 space-y-3">
             <li className="flex items-start gap-2">
               <span className="text-amber-300 font-bold">⚠</span>
@@ -244,11 +244,11 @@ export default function Settings() {
               <span><strong>All tab switches tracked:</strong> Any time you leave this tab for more than 3 seconds counts as a distraction for now.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[#8fd5ff] font-bold">ℹ</span>
+              <span className="text-[#7de9ff] font-bold">ℹ</span>
               <span><strong>Future enhancement:</strong> A browser extension would be needed to properly check which domains you visit against this whitelist.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[#8fd5ff] font-bold">ℹ</span>
+              <span className="text-[#7de9ff] font-bold">ℹ</span>
               <span>Desktop apps (VS Code, Slack, etc.) can&apos;t be detected by browsers at all.</span>
             </li>
           </ul>

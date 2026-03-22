@@ -88,8 +88,10 @@ export default function SignUp() {
 
   return (
     <div className="dashboard-shell relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-12 text-slate-100">
-      <div className="float-orb pointer-events-none absolute -top-40 -left-40 h-125 w-125 rounded-full bg-[#5568ff]/16 blur-3xl -z-10" />
-      <div className="float-orb-delay pointer-events-none absolute -bottom-40 -right-40 h-125 w-125 rounded-full bg-[#9370ff]/12 blur-3xl -z-10" />
+      <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#2bc7b7]/18 blur-3xl -z-10" />
+      <div className="float-orb-delay pointer-events-none absolute top-20 right-[6%] h-96 w-96 rounded-full bg-[#3b82f6]/14 blur-3xl -z-10" />
+      <div className="float-orb-soft pointer-events-none absolute bottom-10 left-[38%] h-72 w-72 rounded-full bg-[#67e8f9]/12 blur-3xl -z-10" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/6 to-transparent -z-10" />
 
       <div className="w-full max-w-md relative z-10">
         {/* Header */}

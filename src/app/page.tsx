@@ -7,11 +7,13 @@ export default function Home() {
   const { data: session } = useSession();
 
   return (
-    <div className="relative min-h-screen pt-20 md:pt-24 text-gray-100 dashboard-shell overflow-hidden">
+    <div className="dashboard-shell relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
 
       {/* Floating Ambient Glow */}
-      <div className="absolute -top-40 -left-40 w-125 h-125 bg-[#5568ff]/16 rounded-full blur-3xl animate-floatSlow -z-20" />
-      <div className="absolute -bottom-40 -right-40 w-125 h-125 bg-[#9370ff]/12 rounded-full blur-3xl animate-floatMedium -z-20" />
+      <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#2bc7b7]/18 blur-3xl -z-10" />
+      <div className="float-orb-delay pointer-events-none absolute top-20 right-[6%] h-96 w-96 rounded-full bg-[#3b82f6]/14 blur-3xl -z-10" />
+      <div className="float-orb-soft pointer-events-none absolute bottom-10 left-[38%] h-72 w-72 rounded-full bg-[#67e8f9]/12 blur-3xl -z-10" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/6 to-transparent -z-10" />
 
       {/* Navigation */}
       <nav className="fixed inset-x-0 top-0 z-50 backdrop-blur-xl bg-[#050814]/70 border-b border-white/8">

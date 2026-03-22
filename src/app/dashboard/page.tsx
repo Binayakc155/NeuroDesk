@@ -104,17 +104,17 @@ export default function Dashboard() {
   if (!session?.user) return null;
 
   return (
-    <div className="dashboard-shell relative min-h-screen overflow-hidden text-slate-100">
-      <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#5568ff]/16 blur-3xl" />
-      <div className="float-orb-delay pointer-events-none absolute top-20 right-[6%] h-96 w-96 rounded-full bg-[#9370ff]/12 blur-3xl" />
-      <div className="float-orb-soft pointer-events-none absolute bottom-10 left-[38%] h-72 w-72 rounded-full bg-[#78a6ff]/10 blur-3xl" />
+    <div className="dashboard-shell relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
+      <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#2bc7b7]/18 blur-3xl" />
+      <div className="float-orb-delay pointer-events-none absolute top-20 right-[6%] h-96 w-96 rounded-full bg-[#3b82f6]/14 blur-3xl" />
+      <div className="float-orb-soft pointer-events-none absolute bottom-10 left-[38%] h-72 w-72 rounded-full bg-[#67e8f9]/12 blur-3xl" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/6 to-transparent" />
 
-      <header className="sticky top-0 z-20 border-b border-white/10 bg-[#050814]/70 backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-[#7bd4ff]/20 bg-[#04101f]/72 shadow-[0_10px_40px_rgba(4,10,20,0.55)] backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-6">
           <Link
             href="/"
-            className="text-lg font-semibold tracking-tight text-white transition hover:text-[#a9b6ff] sm:text-xl"
+            className="text-lg font-semibold tracking-tight text-white transition hover:text-[#9de9ff] sm:text-xl"
           >
             NeuroDesk
           </Link>
@@ -122,14 +122,14 @@ export default function Dashboard() {
           <div className="flex items-center gap-3 sm:gap-6">
             <Link
               href="/settings"
-              className="text-sm font-medium text-slate-300 transition hover:text-white"
+              className="text-sm font-medium text-slate-300 transition hover:text-[#a8efff]"
             >
               Settings
             </Link>
 
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
-              className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:text-white"
+              className="rounded-full border border-[#6ab5dc]/30 bg-[#0a1a2e]/65 px-3 py-1.5 text-sm font-medium text-[#d3f3ff] transition hover:border-[#8de1ff]/60 hover:text-white"
             >
               Sign Out
             </button>
@@ -151,7 +151,7 @@ export default function Dashboard() {
                 Build calm momentum today. Small deep-work blocks add up fast.
               </p>
             </div>
-            <div className="rounded-2xl border border-[#8aa4ff]/25 bg-[#121a30]/75 px-4 py-3 text-sm text-[#d8e1ff] shadow-[0_10px_28px_rgba(0,0,0,0.28)]">
+            <div className="rounded-2xl border border-[#65c8e7]/30 bg-[#0a1d30]/80 px-4 py-3 text-sm text-[#d7f5ff] shadow-[0_10px_28px_rgba(0,0,0,0.28)]">
               <p className="font-semibold">Today: {todayFocusMinutes} minutes focused</p>
               <p className="opacity-80">{todaySessions.length} sessions recorded</p>
             </div>
@@ -205,7 +205,7 @@ export default function Dashboard() {
                 <button
                   onClick={handleStartSession}
                   disabled={isStarting || sessionLoading}
-                  className="rounded-xl bg-linear-to-r from-[#6b7dff] to-[#8f72ff] px-6 py-3 font-semibold text-white transition hover:from-[#7e8dff] hover:to-[#a082ff] disabled:opacity-50"
+                  className="rounded-xl bg-linear-to-r from-[#14b8a6] to-[#3b82f6] px-6 py-3 font-semibold text-white shadow-[0_8px_26px_rgba(20,184,166,0.3)] transition hover:from-[#2dd4bf] hover:to-[#60a5fa] disabled:opacity-50"
                 >
                   {isStarting ? 'Starting...' : 'Start Session'}
                 </button>
@@ -219,7 +219,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-linear-to-br from-[#0d1430]/90 via-[#0f1738]/85 to-[#12122d]/88 p-7 shadow-[0_18px_44px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:p-8">
+          <div className="rounded-3xl border border-white/10 bg-linear-to-br from-[#0b1d35]/90 via-[#112948]/86 to-[#0f2e3f]/88 p-7 shadow-[0_18px_44px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
               Weekly target
             </p>
@@ -235,7 +235,7 @@ export default function Dashboard() {
               </div>
               <div className="h-3 overflow-hidden rounded-full bg-white/10">
                 <div
-                  className="h-full rounded-full bg-linear-to-r from-[#94a0ff] to-[#6fd4ff] transition-all"
+                  className="h-full rounded-full bg-linear-to-r from-[#2dd4bf] to-[#60a5fa] transition-all"
                   style={{ width: `${weeklyProgressPercent}%` }}
                 />
               </div>
@@ -254,12 +254,12 @@ export default function Dashboard() {
 
           <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
             <p className="text-sm text-slate-400">Focus hours</p>
-            <p className="mt-2 text-3xl font-semibold text-[#8fd5ff]">{loading ? '-' : `${stats.totalHours}h`}</p>
+            <p className="mt-2 text-3xl font-semibold text-[#8ff3ec]">{loading ? '-' : `${stats.totalHours}h`}</p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
             <p className="text-sm text-slate-400">Focus score</p>
-            <p className="mt-2 text-3xl font-semibold text-[#c4b1ff]">{loading ? '-' : `${stats.focusScore}%`}</p>
+            <p className="mt-2 text-3xl font-semibold text-[#93c5fd]">{loading ? '-' : `${stats.focusScore}%`}</p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
@@ -308,7 +308,7 @@ export default function Dashboard() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-semibold text-[#8fd5ff]">{Math.round((session.duration / 3600) * 10) / 10}h</p>
+                            <p className="text-sm font-semibold text-[#7de9ff]">{Math.round((session.duration / 3600) * 10) / 10}h</p>
                             <p className="text-xs text-slate-500">focus</p>
                           </div>
                         </div>
