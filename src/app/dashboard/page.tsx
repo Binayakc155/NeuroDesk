@@ -138,7 +138,7 @@ export default function Dashboard() {
       </header>
 
       <main className="relative z-10 mx-auto w-full max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
-        <section className="mb-8 rounded-3xl border border-white/10 bg-white/6 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8">
+        <section className="mb-8 rounded-3xl border border-[#2bc7b7]/40 bg-linear-to-br from-[#0a1a2e]/60 via-[#081820]/50 to-[#0a1d2e]/60 p-6 shadow-[0_20px_60px_rgba(43,199,183,0.1)] backdrop-blur-xl sm:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">
             Personal focus cockpit
           </p>
@@ -151,7 +151,7 @@ export default function Dashboard() {
                 Build calm momentum today. Small deep-work blocks add up fast.
               </p>
             </div>
-            <div className="rounded-2xl border border-[#65c8e7]/30 bg-[#0a1d30]/80 px-4 py-3 text-sm text-[#d7f5ff] shadow-[0_10px_28px_rgba(0,0,0,0.28)]">
+            <div className="rounded-2xl border border-[#2bc7b7]/50 bg-linear-to-br from-[#0a2228]/80 to-[#081f2a]/70 px-4 py-3 text-sm text-[#a8f0ea] shadow-[0_10px_28px_rgba(43,199,183,0.15)]">
               <p className="font-semibold">Today: {todayFocusMinutes} minutes focused</p>
               <p className="opacity-80">{todaySessions.length} sessions recorded</p>
             </div>
@@ -159,7 +159,7 @@ export default function Dashboard() {
         </section>
 
         <section className="mb-8 grid gap-6 lg:grid-cols-[1.3fr_0.9fr]">
-          <div className="rounded-3xl border border-white/10 bg-[#0b1020]/70 p-7 shadow-[0_18px_44px_rgba(0,0,0,0.38)] backdrop-blur-xl sm:p-8">
+          <div className="rounded-3xl border border-[#2bc7b7]/35 bg-linear-to-br from-[#08131f]/70 via-[#0a1620]/60 to-[#081a26]/65 p-7 shadow-[0_18px_44px_rgba(43,199,183,0.12)] backdrop-blur-xl sm:p-8">
             <div className="mb-6 flex items-start justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
@@ -219,7 +219,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-linear-to-br from-[#0b1d35]/90 via-[#112948]/86 to-[#0f2e3f]/88 p-7 shadow-[0_18px_44px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:p-8">
+          <div className="rounded-3xl border border-[#3b82f6]/35 bg-linear-to-br from-[#081a2e]/80 via-[#0a1f30]/75 to-[#0d2636]/80 p-7 shadow-[0_18px_44px_rgba(59,130,246,0.12)] backdrop-blur-xl sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
               Weekly target
             </p>
@@ -247,22 +247,22 @@ export default function Dashboard() {
         </section>
 
         <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+          <div className="rounded-2xl border border-[#2bc7b7]/40 bg-linear-to-br from-[#0a1620]/70 to-[#081a24]/60 p-5 shadow-[0_14px_32px_rgba(43,199,183,0.1)] backdrop-blur-xl">
             <p className="text-sm text-slate-400">Total sessions</p>
             <p className="mt-2 text-3xl font-semibold text-white">{loading ? '-' : stats.totalSessions}</p>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+          <div className="rounded-2xl border border-[#2dd4bf]/40 bg-linear-to-br from-[#0a1a24]/70 to-[#081f28]/60 p-5 shadow-[0_14px_32px_rgba(45,212,191,0.1)] backdrop-blur-xl">
             <p className="text-sm text-slate-400">Focus hours</p>
             <p className="mt-2 text-3xl font-semibold text-[#8ff3ec]">{loading ? '-' : `${stats.totalHours}h`}</p>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+          <div className="rounded-2xl border border-[#60a5fa]/40 bg-linear-to-br from-[#091a2e]/70 to-[#0a1f2a]/60 p-5 shadow-[0_14px_32px_rgba(96,165,250,0.1)] backdrop-blur-xl">
             <p className="text-sm text-slate-400">Focus score</p>
             <p className="mt-2 text-3xl font-semibold text-[#93c5fd]">{loading ? '-' : `${stats.focusScore}%`}</p>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+          <div className="rounded-2xl border border-rose-400/30 bg-linear-to-br from-[#1a0f14]/70 to-[#180a12]/60 p-5 shadow-[0_14px_32px_rgba(251,146,60,0.08)] backdrop-blur-xl">
             <p className="text-sm text-slate-400">Distraction guard</p>
             <p className="mt-2 text-3xl font-semibold text-rose-300">{activeSession ? distractionCount : 0}</p>
             <p className="mt-1 text-xs text-slate-500">Current session events</p>
@@ -270,7 +270,7 @@ export default function Dashboard() {
         </section>
 
         {stats.recentSessions && stats.recentSessions.length > 0 && (
-          <section className="mt-12 rounded-3xl border border-white/10 bg-[#08101f]/70 p-6 shadow-[0_18px_46px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8">
+          <section className="mt-12 rounded-3xl border border-[#3b82f6]/30 bg-linear-to-br from-[#081220]/75 via-[#0a151f]/70 to-[#081a28]/75 p-6 shadow-[0_18px_46px_rgba(59,130,246,0.1)] backdrop-blur-xl sm:p-8">
             <div className="mb-7 flex items-center justify-between">
               <h2 className="text-2xl font-semibold text-white">Session Journal</h2>
               <button
@@ -289,7 +289,7 @@ export default function Dashboard() {
                       {daySessions.map((session) => (
                         <div
                           key={session.id}
-                          className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/5 p-4 transition hover:bg-white/8"
+                          className="flex items-center justify-between rounded-2xl border border-[#2bc7b7]/25 bg-linear-to-r from-[#0a1620]/50 to-[#081a24]/40 p-4 transition hover:border-[#2bc7b7]/40 hover:bg-linear-to-r hover:from-[#0a1a28]/60 hover:to-[#081f2a]/50"
                         >
                           <div className="flex items-center gap-4 flex-1">
                             <div className="flex flex-col flex-1">

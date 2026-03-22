@@ -45,12 +45,7 @@ function SignInForm() {
   };
 
   return (
-    <div className="dashboard-shell relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-12 text-slate-100">
-      <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#2bc7b7]/18 blur-3xl -z-10" />
-      <div className="float-orb-delay pointer-events-none absolute top-20 right-[6%] h-96 w-96 rounded-full bg-[#3b82f6]/14 blur-3xl -z-10" />
-      <div className="float-orb-soft pointer-events-none absolute bottom-10 left-[38%] h-72 w-72 rounded-full bg-[#67e8f9]/12 blur-3xl -z-10" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/6 to-transparent -z-10" />
-
+    <div className="app-neural-background relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-12 text-slate-100">
       <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-10">
@@ -82,7 +77,7 @@ function SignInForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-xl border border-white/10 bg-[#0b1122] px-4 py-3 text-white placeholder-slate-500 transition-all focus:border-[#6b7dff] focus:outline-none focus:ring-2 focus:ring-[#6b7dff]/20"
+                className="w-full rounded-xl border border-white/10 bg-[#0b1122] px-4 py-3 text-white placeholder-slate-500 transition-all focus:border-[#2bc7b7] focus:outline-none focus:ring-2 focus:ring-[#2bc7b7]/20"
                 placeholder="you@example.com"
               />
             </div>
@@ -93,7 +88,7 @@ function SignInForm() {
                 <label className="block text-sm font-bold text-slate-200">
                   Password
                 </label>
-                <Link href="/auth/forgot-password" className="text-sm font-semibold text-[#8fd5ff] transition-colors hover:text-[#b4e4ff]">
+                <Link href="/auth/forgot-password" className="text-sm font-semibold text-[#2dd4bf] transition-colors hover:text-[#5eead4]">
                   Forgot password?
                 </Link>
               </div>
@@ -102,7 +97,7 @@ function SignInForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full rounded-xl border border-white/10 bg-[#0b1122] px-4 py-3 text-white placeholder-slate-500 transition-all focus:border-[#6b7dff] focus:outline-none focus:ring-2 focus:ring-[#6b7dff]/20"
+                className="w-full rounded-xl border border-white/10 bg-[#0b1122] px-4 py-3 text-white placeholder-slate-500 transition-all focus:border-[#2bc7b7] focus:outline-none focus:ring-2 focus:ring-[#2bc7b7]/20"
                 placeholder="••••••••"
               />
             </div>
@@ -111,7 +106,7 @@ function SignInForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-linear-to-r from-[#6b7dff] to-[#8f72ff] py-4 text-center font-bold text-white shadow-lg transition-all hover:scale-105 hover:from-[#7e8dff] hover:to-[#a082ff] hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+              className="w-full rounded-xl bg-linear-to-r from-[#14b8a6] to-[#3b82f6] py-4 text-center font-bold text-white shadow-lg transition-all hover:scale-105 hover:from-[#2dd4bf] hover:to-[#60a5fa] hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -150,7 +145,7 @@ function SignInForm() {
           {/* Sign Up Link */}
           <div className="text-center text-sm text-slate-400 pt-4">
             Don&apos;t have an account?{' '}
-            <Link href="/auth/signup" className="font-bold text-[#8fd5ff] underline decoration-dotted transition-colors hover:text-[#b4e4ff]">
+            <Link href="/auth/signup" className="font-bold text-[#2dd4bf] underline decoration-dotted transition-colors hover:text-[#5eead4]">
               Create one now &rarr;
             </Link>
           </div>
@@ -158,7 +153,7 @@ function SignInForm() {
 
         {/* Footer Link */}
         <div className="text-center mt-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 transition-colors hover:gap-3 hover:text-[#8fd5ff]">
+          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 transition-colors hover:gap-3 hover:text-[#2dd4bf]">
             <span>&larr;</span> Back to home
           </Link>
         </div>

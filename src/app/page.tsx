@@ -7,7 +7,7 @@ export default function Home() {
   const { data: session } = useSession();
 
   return (
-    <div className="dashboard-shell relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
+    <div className="app-neural-background dashboard-shell relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
 
       {/* Floating Ambient Glow */}
       <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#2bc7b7]/18 blur-3xl -z-10" />
