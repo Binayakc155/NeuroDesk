@@ -21,20 +21,14 @@ function SignInForm() {
     setLoading(true);
 
     try {
-      const result = await signIn('credentials', {
+      await signIn('credentials', {
         email,
         password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: callbackUrl,
       });
-
-      if (result?.error) {
-        setError(result.error === 'CredentialsSignin' ? 'Invalid email or password' : result.error);
-      } else if (result?.ok) {
-        router.push(callbackUrl);
-      }
     } catch (err) {
       setError('An error occurred. Please try again.');
-    } finally {
       setLoading(false);
     }
   };
@@ -153,7 +147,7 @@ function SignInForm() {
 
         {/* Footer Link */}
         <div className="text-center mt-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 transition-colors hover:gap-3 hover:text-[#2dd4bf]">
+          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 transition-colors hover:gap-3 hover:text-[#8fd5ff]">
             <span>&larr;</span> Back to home
           </Link>
         </div>

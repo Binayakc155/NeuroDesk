@@ -25,7 +25,6 @@ export default function SignUp() {
     e.preventDefault();
     setError('');
 
-    // Validation
     if (!formData.name || !formData.email || !formData.password) {
       setError('Please fill in all fields');
       return;
@@ -61,20 +60,13 @@ export default function SignUp() {
         return;
       }
 
-      // Auto sign in after signup
       const signInResult = await signIn('credentials', {
         email: formData.email,
         password: formData.password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: '/dashboard',
       });
-
-      if (signInResult?.ok) {
-        router.push('/dashboard');
-      } else {
-        // Sign up successful but auto sign in failed, redirect to sign in
-        router.push('/auth/signin');
-      }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -87,149 +79,132 @@ export default function SignUp() {
   };
 
   return (
-    <div className="app-neural-background relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-12 text-slate-100">
-      <div className="w-full max-w-md relative z-10">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <Link href="/" className="inline-block mb-6 bg-linear-to-r from-[#8fd5ff] to-[#c4b1ff] bg-clip-text text-3xl font-bold text-transparent transition-opacity hover:opacity-80">
-            NeuroDesk
-          </Link>
-          <h1 className="text-4xl font-black text-white mb-3">Get Started</h1>
-          <p className="text-slate-400 text-lg">Create your account and start tracking focus</p>
-        </div>
+    <>
+      {/* Neural SVG background */}
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundImage: "url('/dashboard-neural-bg-bright.svg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          zIndex: -1000,
+        }}
+      />
 
-        {/* Form Card */}
-        <div className="rounded-2xl border border-white/10 bg-[#08101f]/70 p-10 shadow-[0_18px_46px_rgba(0,0,0,0.35)] backdrop-blur-xl space-y-6">
-          {/* Error Message */}
-          {error && (
-            <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-4">
-              <p className="text-rose-400 font-semibold text-sm">{error}</p>
-            </div>
-          )}
+      {/* Minimal overlay for readability */}
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.02)',
+          zIndex: -999,
+        }}
+      />
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name Input */}
-            <div>
-              <label className="block text-sm font-bold text-slate-200 mb-2">
-                Full Name
-              </label>
+      <div className="min-h-screen flex items-center justify-center px-4 py-12 text-slate-100">
+        <div className="w-full max-w-md">
+          {/* Header */}
+          <div className="text-center mb-10">
+            <Link
+              href="/"
+              className="inline-block mb-6 bg-gradient-to-r from-[#8fd5ff] to-[#c4b1ff] bg-clip-text text-3xl font-bold text-transparent"
+            >
+              NeuroDesk
+            </Link>
+            <h1 className="text-4xl font-black text-white mb-3">Get Started</h1>
+            <p className="text-slate-300 text-lg">
+              Create your account and start tracking focus
+            </p>
+          </div>
+
+          {/* Glass Form Card */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-3xl p-10 shadow-lg space-y-6">
+            {error && (
+              <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-4">
+                <p className="text-rose-400 text-sm font-semibold">{error}</p>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 type="text"
                 name="name"
+                placeholder="Full Name"
                 value={formData.name}
                 onChange={handleChange}
-                required
-                className="w-full rounded-xl border border-white/10 bg-[#0b1122] px-4 py-3 text-white placeholder-slate-500 transition-all focus:border-[#2bc7b7] focus:outline-none focus:ring-2 focus:ring-[#2bc7b7]/20"
-                placeholder="John Doe"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-400 backdrop-blur-lg focus:border-[#2bc7b7] focus:ring-2 focus:ring-[#2bc7b7]/20 outline-none"
               />
-            </div>
 
-            {/* Email Input */}
-            <div>
-              <label className="block text-sm font-bold text-slate-200 mb-2">
-                Email Address
-              </label>
               <input
                 type="email"
                 name="email"
+                placeholder="Email Address"
                 value={formData.email}
                 onChange={handleChange}
-                required
-                className="w-full rounded-xl border border-white/10 bg-[#0b1122] px-4 py-3 text-white placeholder-slate-500 transition-all focus:border-[#2bc7b7] focus:outline-none focus:ring-2 focus:ring-[#2bc7b7]/20"
-                placeholder="you@example.com"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-400 backdrop-blur-lg focus:border-[#2bc7b7] focus:ring-2 focus:ring-[#2bc7b7]/20 outline-none"
               />
-            </div>
 
-            {/* Password Input */}
-            <div>
-              <label className="block text-sm font-bold text-slate-200 mb-2">
-                Password
-              </label>
               <input
                 type="password"
                 name="password"
+                placeholder="Password (min 8 chars)"
                 value={formData.password}
                 onChange={handleChange}
-                required
-                className="w-full rounded-xl border border-white/10 bg-[#0b1122] px-4 py-3 text-white placeholder-slate-500 transition-all focus:border-[#2bc7b7] focus:outline-none focus:ring-2 focus:ring-[#2bc7b7]/20"
-                placeholder="••••••••"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-400 backdrop-blur-lg focus:border-[#2bc7b7] focus:ring-2 focus:ring-[#2bc7b7]/20 outline-none"
               />
-              <p className="text-xs text-slate-500 mt-2 font-medium">Minimum 8 characters</p>
-            </div>
 
-            {/* Confirm Password Input */}
-            <div>
-              <label className="block text-sm font-bold text-slate-200 mb-2">
-                Confirm Password
-              </label>
               <input
                 type="password"
                 name="confirmPassword"
+                placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                required
-                className="w-full rounded-xl border border-white/10 bg-[#0b1122] px-4 py-3 text-white placeholder-slate-500 transition-all focus:border-[#2bc7b7] focus:outline-none focus:ring-2 focus:ring-[#2bc7b7]/20"
-                placeholder="••••••••"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-400 backdrop-blur-lg focus:border-[#2bc7b7] focus:ring-2 focus:ring-[#2bc7b7]/20 outline-none"
               />
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-xl bg-gradient-to-r from-[#14b8a6] to-[#3b82f6] py-4 font-bold text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+              >
+                {loading ? 'Creating account...' : 'Create Account'}
+              </button>
+            </form>
+
+            <p className="text-center text-sm text-slate-400">Or sign up with</p>
+
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => handleOAuthSignUp('github')}
+                className="rounded-xl border border-white/20 bg-white/5 py-3 hover:bg-white/10 transition"
+              >
+                GitHub
+              </button>
+              <button
+                onClick={() => handleOAuthSignUp('google')}
+                className="rounded-xl border border-white/20 bg-white/5 py-3 hover:bg-white/10 transition"
+              >
+                Google
+              </button>
             </div>
 
-            {/* Sign Up Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-xl bg-linear-to-r from-[#14b8a6] to-[#3b82f6] py-4 text-center font-bold text-white shadow-lg transition-all hover:scale-105 hover:from-[#2dd4bf] hover:to-[#60a5fa] hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
-            >
-              {loading ? 'Creating account...' : 'Create Account'}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-[#08101f]/70 px-4 font-semibold text-slate-400">Or sign up with</span>
-            </div>
+            <p className="text-center text-sm text-slate-400">
+              Already have an account?{' '}
+              <Link href="/auth/signin" className="text-[#2dd4bf] font-semibold">
+                Sign in
+              </Link>
+            </p>
           </div>
 
-          {/* OAuth Buttons */}
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              type="button"
-              onClick={() => handleOAuthSignUp('github')}
-              disabled={loading}
-              className="flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/6 py-3 font-bold text-white shadow-lg transition-all hover:scale-105 hover:bg-white/12 hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
-            >
-              <span>GitHub</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleOAuthSignUp('google')}
-              disabled={loading}
-              className="flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/6 py-3 font-bold text-white shadow-lg transition-all hover:scale-105 hover:bg-white/12 hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
-            >
-              <span>Google</span>
-            </button>
-          </div>
-
-          {/* Sign In Link */}
-          <div className="text-center text-sm text-slate-400 pt-4">
-            Already have an account?{' '}
-            <Link href="/auth/signin" className="font-bold text-[#2dd4bf] underline decoration-dotted transition-colors hover:text-[#5eead4]">
-              Sign in now &rarr;
+          <div className="text-center mt-6">
+            <Link href="/" className="text-sm text-slate-400 hover:text-[#2dd4bf]">
+              ← Back to home
             </Link>
           </div>
         </div>
-
-        {/* Footer Link */}
-        <div className="text-center mt-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 transition-colors hover:gap-3 hover:text-[#2dd4bf]">
-            <span>&larr;</span> Back to home
-          </Link>
-        </div>
       </div>
-    </div>
+    </>
   );
 }

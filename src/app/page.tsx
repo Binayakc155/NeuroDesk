@@ -1,13 +1,14 @@
-'use client';
-
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+import { auth } from '@/lib/auth';
 
-export default function Home() {
-  const { data: session } = useSession();
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
+
+export default async function Home() {
+  const session = await auth();
 
   return (
-    <div className="app-neural-background dashboard-shell relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
+    <div className="relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
 
       {/* Floating Ambient Glow */}
       <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#2bc7b7]/18 blur-3xl -z-10" />
@@ -56,7 +57,6 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="max-w-5xl mx-auto px-6 py-24 md:py-32 text-center animate-fadeUp">
-
         <div className="inline-flex items-center px-4 py-2 bg-[#5568ff]/10 text-[#8fd5ff] rounded-full text-sm font-semibold mb-8 border border-[#5568ff]/20">
           AI-Powered Focus Tracking
         </div>
@@ -71,8 +71,7 @@ export default function Home() {
         </h1>
 
         <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-          Smart distraction detection, intelligent analytics, and personalized insights
-          designed to help you reach deep work faster.
+          Smart distraction detection, intelligent analytics, and personalized insights designed to help you reach deep work faster.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -90,11 +89,10 @@ export default function Home() {
             Learn More
           </Link>
         </div>
-      </section >
+      </section>
 
       {/* Features */}
-      < section id="features" className="max-w-6xl mx-auto px-6 py-24" >
-
+      <section id="features" className="max-w-6xl mx-auto px-6 py-24">
         <div className="text-center mb-20 animate-fadeUp">
           <h2 className="text-4xl md:text-5xl font-black mb-6 bg-linear-to-r from-[#8fd5ff] to-[#c4b1ff] bg-clip-text text-transparent">
             Everything you need to stay locked in
@@ -105,7 +103,6 @@ export default function Home() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-
           {[
             {
               title: 'Smart Time Tracking',
@@ -150,64 +147,11 @@ export default function Home() {
               </p>
             </div>
           ))}
-
         </div>
-      </section >
+      </section>
 
-      {/* Testimonials Section 
-      < section className="max-w-6xl mx-auto px-6 py-24 border-t border-white/10" >
-
-        <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-black mb-6 bg-linear-to-r from-[#8fd5ff] to-[#c4b1ff] bg-clip-text text-transparent">
-            Trusted by focused professionals
-          </h2>
-          <p className="text-xl text-gray-400">
-            Join thousands of developers, designers, and creators achieving deep work
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              name: 'Himanshu',
-              role: 'Software Developer',
-              text: 'NeuroDesk helped me increase my focus time by 40%. The distraction detection is incredibly accurate.',
-            },
-            {
-              name: 'Brishen',
-              role: 'Product Designer',
-              text: 'Finally understand when I\'m most productive. The weekly insights have transformed my work schedule.',
-            },
-            {
-              name: 'Sugam',
-              role: 'Content Creator',
-              text: 'The focus score tracking gave me the accountability I needed. My productivity doubled in 3 weeks.',
-            },
-          ].map((testimonial, i) => (
-            <div
-              key={i}
-              className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
-            >
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, j) => (
-                  <div key={j} className="text-yellow-400">★</div>
-                ))}
-              </div>
-              <p className="text-gray-300 mb-6 italic text-sm leading-relaxed">
-                "{testimonial.text}"
-              </p>
-              <div className="border-t border-white/10 pt-4">
-                <p className="font-semibold text-white text-sm">{testimonial.name}</p>
-                <p className="text-gray-500 text-xs">{testimonial.role}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section >
-                   */}
       {/* FAQ Section */}
-      < section className="max-w-4xl mx-auto px-6 py-24 border-t border-white/10" >
-
+      <section className="max-w-4xl mx-auto px-6 py-24 border-t border-white/10">
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-black mb-6 bg-linear-to-r from-[#8fd5ff] to-[#c4b1ff] bg-clip-text text-transparent">
             Frequently asked questions
@@ -220,8 +164,6 @@ export default function Home() {
               question: 'How does NeuroDesk track focus sessions?',
               answer: 'NeuroDesk uses intelligent browser APIs to detect when you leave or return to the tab. Sessions are tracked client-side for your privacy.',
             },
-
-
             {
               question: 'How do I get started?',
               answer: 'Create your account and begin tracking sessions instantly. Setup takes less than a minute.',
@@ -236,15 +178,13 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section >
+      </section>
 
-      {/* Black CTA Section */}
-      < section className="relative py-28 overflow-hidden border-y border-white/10 bg-linear-to-b from-[#020817]/36 via-[#030a1a]/18 to-[#020817]/36" >
-
-        {/* Soft ambient gradient glow */}
-        < div className="absolute inset-0 flex justify-center" >
+      {/* CTA Section */}
+      <section className="relative py-28 overflow-hidden border-y border-white/10 bg-linear-to-b from-[#020817]/36 via-[#030a1a]/18 to-[#020817]/36">
+        <div className="absolute inset-0 flex justify-center">
           <div className="w-225 h-100 bg-linear-to-r from-[#5568ff]/28 via-[#9370ff]/30 to-[#78a6ff]/26 blur-3xl opacity-70 animate-floatMedium"></div>
-        </div >
+        </div>
         <div className="pointer-events-none absolute left-1/2 top-8 h-52 w-52 -translate-x-1/2 rounded-full bg-[#8fd5ff]/18 blur-3xl animate-floatSlow" />
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center flex flex-col items-center">
@@ -263,8 +203,9 @@ export default function Home() {
             {session ? 'Go to Dashboard' : 'Create Free Account'} →
           </Link>
         </div>
-      </section >
+      </section>
 
+      {/* Footer */}
       <footer className="relative overflow-hidden border-t border-white/8 py-16 bg-[#020614]/35 backdrop-blur-md">
         <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center">
           <div className="h-32 w-96 rounded-full bg-linear-to-r from-[#5568ff]/0 via-[#5568ff]/20 to-[#5568ff]/0 blur-3xl" />
@@ -282,7 +223,7 @@ export default function Home() {
                 Master your focus, own your productivity with intelligent distraction detection and advanced analytics.
               </p>
             </div>
-          </div> {/* ✅ closed missing div */}
+          </div>
 
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-sm text-gray-500">
@@ -306,43 +247,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      {/* Global Animations */}
-      < style jsx global > {`
-
-        @keyframes gradientShift {
-          0%, 100% { filter: hue-rotate(0deg); }
-          50% { filter: hue-rotate(15deg); }
-        }
-        .animate-gradientShift {
-          animation: gradientShift 25s ease infinite;
-        }
-
-        @keyframes floatSlow {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(25px); }
-        }
-        .animate-floatSlow {
-          animation: floatSlow 16s ease-in-out infinite;
-        }
-
-        @keyframes floatMedium {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-30px); }
-        }
-        .animate-floatMedium {
-          animation: floatMedium 14s ease-in-out infinite;
-        }
-
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeUp {
-          animation: fadeUp 1s ease forwards;
-        }
-
-      `}</style >
-
-    </div >
+    </div>
   );
 }
