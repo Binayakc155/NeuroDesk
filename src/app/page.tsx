@@ -19,13 +19,6 @@ export default async function Home() {
       {/* Navigation */}
       <nav className="fixed inset-x-0 top-0 z-50 backdrop-blur-xl bg-[#050814]/70 border-b border-white/8">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link
-            href="/"
-            className="text-2xl font-black bg-linear-to-r from-[#8fd5ff] to-[#c4b1ff] bg-clip-text text-transparent"
-          >
-            NeuroDesk
-          </Link>
-
           <div className="flex items-center gap-4">
             {session ? (
               <Link
