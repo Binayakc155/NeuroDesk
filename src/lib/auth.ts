@@ -15,6 +15,7 @@ declare module "next-auth" {
 
 export const authOptions: NextAuthConfig = {
   secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
+  trustHost: true,
   session: {
     strategy: "jwt",
   },
