@@ -119,9 +119,6 @@ export default function Settings() {
 
   return (
     <div className="dashboard-shell relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
-      <div className="float-orb pointer-events-none absolute -top-40 -left-40 h-125 w-125 rounded-full bg-[#2bc7b7]/18 blur-3xl" />
-      <div className="float-orb-delay pointer-events-none absolute -bottom-40 -right-40 h-125 w-125 rounded-full bg-[#3b82f6]/14 blur-3xl" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/6 to-transparent" />
 
       {/* Header */}
       <header className="fixed inset-x-0 top-0 z-40 border-b border-[#7bd4ff]/20 bg-[#04101f]/72 shadow-[0_10px_40px_rgba(4,10,20,0.55)] backdrop-blur-xl">
@@ -145,14 +142,7 @@ export default function Settings() {
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-6 py-16 relative z-10">
         {/* Navigation */}
-        <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 text-slate-400 hover:text-[#9de9ff] text-sm font-semibold hover:gap-3 transition-all"
-          >
-            <span>←</span> Back to Dashboard
-          </Link>
-        </div>
+      
 
         <div className="mb-10">
           <h1 className="text-4xl font-semibold text-white mb-3">Settings</h1>

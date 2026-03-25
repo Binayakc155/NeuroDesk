@@ -8,16 +8,26 @@ export default async function Home() {
   const session = await auth();
 
   return (
-    <div className="relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
+    <div
+      className="relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24"
+      style={{
+        backgroundImage: `linear-gradient(180deg, rgba(6, 17, 32, 0.42) 0%, rgba(4, 12, 24, 0.48) 100%), url('/dashboard-neural-bg.svg')`,
+        backgroundSize: 'auto, cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        backgroundColor: '#061120'
+      }}
+    >
 
       {/* Floating Ambient Glow */}
-      <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#2bc7b7]/18 blur-3xl -z-10" />
-      <div className="float-orb-delay pointer-events-none absolute top-20 right-[6%] h-96 w-96 rounded-full bg-[#3b82f6]/14 blur-3xl -z-10" />
-      <div className="float-orb-soft pointer-events-none absolute bottom-10 left-[38%] h-72 w-72 rounded-full bg-[#67e8f9]/12 blur-3xl -z-10" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/6 to-transparent -z-10" />
+      <div className="float-orb pointer-events-none absolute -top-28 left-[10%] h-104 w-104 rounded-full bg-[#2bc7b7]/18 blur-3xl" />
+      <div className="float-orb-delay pointer-events-none absolute top-20 right-[6%] h-96 w-96 rounded-full bg-[#3b82f6]/14 blur-3xl" />
+      <div className="float-orb-soft pointer-events-none absolute bottom-10 left-[38%] h-72 w-72 rounded-full bg-[#67e8f9]/12 blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/6 to-transparent" />
 
       {/* Navigation */}
-      <nav className="fixed inset-x-0 top-0 z-50 backdrop-blur-xl bg-[#050814]/70 border-b border-white/8">
+      <nav className="fixed inset-x-0 top-0 z-50 backdrop-blur-xl bg-[#04101f]/72 border-b border-[#7bd4ff]/20 shadow-[0_10px_40px_rgba(4,10,20,0.55)]">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
             {session ? (
@@ -121,11 +131,6 @@ export default async function Home() {
               title: 'Whitelist Management',
               color: 'text-yellow-400',
               description: 'Customize which websites count as work vs distractions. Get smarter tracking tailored to your workflow.'
-            },
-            {
-              title: 'Session History',
-              color: 'text-purple-400',
-              description: 'Access your complete focus history organized by day. Review past sessions and celebrate your wins.'
             },
           ].map((feature, i) => (
             <div

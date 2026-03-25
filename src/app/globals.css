@@ -48,7 +48,7 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   opacity: 1;
-  animation: appNeuralBgDrift 18s ease-in-out infinite;
+  animation: appNeuralBgDrift 50s ease-in-out infinite;
   will-change: transform;
 }
 
@@ -67,7 +67,7 @@ body {
     radial-gradient(circle at 50% 80%, rgba(110, 126, 255, 0.05), transparent 36%);
   filter: blur(28px);
   opacity: 0.35;
-  animation: appNeuralGlowDrift 16s ease-in-out infinite;
+  animation: appNeuralGlowDrift 45s ease-in-out infinite;
   animation-delay: -8s;
   will-change: transform;
 }
@@ -91,7 +91,7 @@ body {
     radial-gradient(1.8px 1.8px at 240px 42px, rgba(208, 194, 255, 0.8), transparent 56%),
     radial-gradient(1px 1px at 198px 224px, rgba(255, 255, 255, 0.65), transparent 56%);
   background-size: 280px 280px;
-  opacity: 0.8;
+  opacity: 0.15;
 }
 
 .dashboard-shell::after {
@@ -106,18 +106,18 @@ body {
     radial-gradient(ellipse at 78% 28%, rgba(214, 220, 255, 0.12), transparent 18%),
     linear-gradient(12deg, transparent 34%, rgba(160, 170, 255, 0.08) 46%, rgba(210, 215, 255, 0.12) 50%, rgba(110, 129, 255, 0.08) 56%, transparent 66%);
   filter: blur(28px);
-  opacity: 0.9;
+  opacity: 0.12;
 }
 
 @media (max-width: 768px) {
   .app-neural-background::before {
     background-size: 100% 100%, 215% 215%;
-    animation-duration: 20s;
+    animation-duration: 50s;
   }
 
   .app-neural-background::after {
     opacity: 0.54;
-    animation-duration: 18s;
+    animation-duration: 45s;
   }
 }
 

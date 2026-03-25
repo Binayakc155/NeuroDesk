@@ -39,7 +39,18 @@ function SignInForm() {
   };
 
   return (
-    <div className="app-neural-background relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-12 text-slate-100">
+    <div
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-12 text-slate-100"
+      style={{
+        backgroundImage: `linear-gradient(180deg, rgba(6, 17, 32, 0.42) 0%, rgba(4, 12, 24, 0.48) 100%), url('/dashboard-neural-bg.svg')`,
+        backgroundSize: 'auto, cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        backgroundColor: '#061120'
+      }}
+    >
+
       <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-10">
