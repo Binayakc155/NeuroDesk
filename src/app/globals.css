@@ -48,7 +48,7 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   opacity: 1;
-  animation: appNeuralBgDrift 50s ease-in-out infinite;
+  animation: appNeuralBgDrift 120s ease-in-out infinite;
   will-change: transform;
 }
 
@@ -67,7 +67,7 @@ body {
     radial-gradient(circle at 50% 80%, rgba(110, 126, 255, 0.05), transparent 36%);
   filter: blur(28px);
   opacity: 0.35;
-  animation: appNeuralGlowDrift 45s ease-in-out infinite;
+  animation: appNeuralGlowDrift 110s ease-in-out infinite;
   animation-delay: -8s;
   will-change: transform;
 }
@@ -112,12 +112,12 @@ body {
 @media (max-width: 768px) {
   .app-neural-background::before {
     background-size: 100% 100%, 215% 215%;
-    animation-duration: 50s;
+    animation-duration: 120s;
   }
 
   .app-neural-background::after {
     opacity: 0.54;
-    animation-duration: 45s;
+    animation-duration: 110s;
   }
 }
 
