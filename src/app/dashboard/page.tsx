@@ -13,6 +13,8 @@ import {
   useWhitelistedDomains,
   useDistractionDetection,
 } from '@/lib/hooks';
+import SoundPlayer from '@/components/SoundPlayer';
+import Chatbot from '@/components/Chatbot';
 
 interface FocusSession {
   id: string;
@@ -27,9 +29,6 @@ interface FocusSession {
   createdAt: Date | string;
   updatedAt: Date | string;
 }
-// import SoundPlayer from '@/components/SoundPlayer';
-// import Chatbot from '@/components/Chatbot';
-
 export default function Dashboard() {
   const { user } = useUser();
   const { isLoaded, isSignedIn } = useAuth();
@@ -287,6 +286,10 @@ export default function Dashboard() {
           </div>
         </section>
 
+        <section className="mt-8">
+          <SoundPlayer isPlaying={!!activeSession} />
+        </section>
+
         {recentSessions.length > 0 && (
           <section className="mt-12 rounded-3xl border border-white/10 bg-[#08101f]/70 p-6 shadow-[0_18px_46px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8">
             <div className="mb-7 flex items-center justify-between">
@@ -339,12 +342,9 @@ export default function Dashboard() {
           </section>
         )}
 
-        <div className="mt-12 rounded-2xl border border-white/10 bg-white/6 p-4 text-sm text-slate-300">
-          Optional widgets are temporarily disabled while auth rendering is stabilized.
-        </div>
       </main>
 
-      {/* <Chatbot /> */}
+      <Chatbot />
     </div>
   );
 }

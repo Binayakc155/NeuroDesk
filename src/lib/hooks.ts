@@ -116,6 +116,10 @@ export function useFocusSession(refetchStats?: () => void) {
         const session = await response.json();
         setActiveSession(session);
         setElapsedTime(0);
+        setDistractionCount(session?.distractionCount || 0);
+        if (refetchStats) {
+          refetchStats();
+        }
       }
     } catch (error) {
       console.error('Error starting session:', error);
@@ -140,6 +144,7 @@ export function useFocusSession(refetchStats?: () => void) {
       if (response.ok) {
         setActiveSession(null);
         setElapsedTime(0);
+        setDistractionCount(0);
         // Refresh stats
         if (refetchStats) {
           refetchStats();
