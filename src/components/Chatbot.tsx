@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '@clerk/nextjs';
 
 interface Message {
   id: string;
@@ -11,7 +11,7 @@ interface Message {
 }
 
 export default function Chatbot() {
-  const { data: session } = useSession();
+  const { isSignedIn } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,8 +26,8 @@ export default function Chatbot() {
 
   // Initialize or load conversation
   useEffect(() => {
-    if (!session?.user || !isOpen) return;
-    
+    if (!isSignedIn || !isOpen) return;
+
     const loadOrCreateConversation = async () => {
       try {
         const res = await fetch('/api/chatbot/conversations');
@@ -56,11 +56,11 @@ export default function Chatbot() {
     };
 
     loadOrCreateConversation();
-  }, [session, isOpen]);
+  }, [isSignedIn, isOpen]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!input.trim() || !conversationId) return;
 
     const userMessage = input;
@@ -191,16 +191,14 @@ export default function Chatbot() {
               messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`flex ${
-                    msg.role === 'user' ? 'justify-end' : 'justify-start'
-                  }`}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'
+                    }`}
                 >
                   <div
-                    className={`max-w-xs px-4 py-2 rounded-lg ${
-                      msg.role === 'user'
+                    className={`max-w-xs px-4 py-2 rounded-lg ${msg.role === 'user'
                         ? 'bg-blue-600 text-white rounded-br-none'
                         : 'bg-slate-700 text-slate-100 rounded-bl-none'
-                    }`}
+                      }`}
                   >
                     <p className="text-sm break-words">{msg.content}</p>
                   </div>

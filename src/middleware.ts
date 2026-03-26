@@ -1,33 +1,23 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/auth/signin(.*)",
+  "/auth/signup(.*)",
+  "/api/public(.*)",
+]);
 
-  // Public routes that don't require authentication
-  const publicRoutes = ["/", "/auth"];
-  const isPublicRoute = publicRoutes.some((route) =>
-    pathname === route || pathname.startsWith(route + "/")
-  );
-
-  if (isPublicRoute) {
-    return NextResponse.next();
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request)) {
+    await auth.protect();
   }
-
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
-  });
-
-  // Protect all other routes (dashboard, settings, etc.)
-  if (!token) {
-    return NextResponse.redirect(new URL("/auth/signin", request.url));
-  }
-
-  return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
+  ],
 };

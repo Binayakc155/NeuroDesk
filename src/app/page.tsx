@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import { auth } from '@/lib/auth';
+import { auth } from '@clerk/nextjs/server';
 
 export const revalidate = 0;
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const session = await auth();
+  const { userId } = await auth();
 
   return (
     <div
@@ -34,7 +34,7 @@ export default async function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            {session ? (
+            {userId ? (
               <Link
                 href="/dashboard"
                 className="px-6 py-2.5 bg-linear-to-r from-[#6b7dff] to-[#8f72ff] text-white rounded-xl text-sm font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
@@ -83,10 +83,10 @@ export default async function Home() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href={session ? '/dashboard' : '/auth/signup'}
+            href={userId ? '/dashboard' : '/auth/signup'}
             className="px-10 py-4 bg-linear-to-r from-[#6b7dff] to-[#8f72ff] text-white font-bold rounded-xl shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-3xl"
           >
-            {session ? 'Go to Dashboard' : 'Start Free'}
+            {userId ? 'Go to Dashboard' : 'Start Free'}
           </Link>
 
           <Link
@@ -199,10 +199,10 @@ export default async function Home() {
           </p>
 
           <Link
-            href={session ? '/dashboard' : '/auth/signup'}
+            href={userId ? '/dashboard' : '/auth/signup'}
             className="inline-flex items-center justify-center px-12 py-5 bg-linear-to-r from-[#6b7dff] to-[#8f72ff] text-white font-bold rounded-xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
           >
-            {session ? 'Go to Dashboard' : 'Create Free Account'} →
+            {userId ? 'Go to Dashboard' : 'Create Free Account'} →
           </Link>
         </div>
       </section>

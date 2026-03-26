@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useUser, useClerk, useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -11,41 +11,44 @@ import {
   useWhitelistedDomains,
   useDistractionDetection,
 } from '@/lib/hooks';
-import SoundPlayer from '@/components/SoundPlayer';
-import Chatbot from '@/components/Chatbot';
+// import SoundPlayer from '@/components/SoundPlayer';
+// import Chatbot from '@/components/Chatbot';
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
+  const { user } = useUser();
+  const { isLoaded, isSignedIn } = useAuth();
+  const { signOut } = useClerk();
   const router = useRouter();
-  const { stats, loading, refetch } = useDashboardStats();
+  const { stats = { recentSessions: [], totalSessions: 0, totalHours: 0, focusScore: 0 }, loading, refetch } = useDashboardStats();
   const {
     activeSession,
-    elapsedTime,
-    distractionCount,
+    elapsedTime = 0,
+    distractionCount = 0,
     loading: sessionLoading,
     startSession,
     endSession,
     recordDistraction,
   } = useFocusSession(refetch);
-  const { domains: whitelistedDomains } = useWhitelistedDomains();
+  const { domains: whitelistedDomains = [] } = useWhitelistedDomains();
   const [isStarting, setIsStarting] = useState(false);
   const [showSessions, setShowSessions] = useState(true);
 
   const firstName =
-    session?.user?.name?.split(' ')[0] ||
-    session?.user?.email?.split('@')[0] ||
+    user?.firstName ||
+    user?.primaryEmailAddress?.emailAddress?.split('@')[0] ||
     'Friend';
 
   const todayKey = new Date().toDateString();
-  const todaySessions = stats.recentSessions.filter(
-    (session: any) => new Date(session.startTime).toDateString() === todayKey
+  const recentSessions = Array.isArray(stats?.recentSessions) ? stats.recentSessions : [];
+  const todaySessions = recentSessions.filter(
+    (session: any) => session?.startTime && new Date(session.startTime).toDateString() === todayKey
   );
   const todayFocusMinutes = Math.round(
-    todaySessions.reduce((acc: number, session: any) => acc + (session.duration || 0), 0) / 60
+    todaySessions.reduce((acc: number, session: any) => acc + (session?.duration || 0), 0) / 60
   );
   const weeklyGoalMinutes = 600;
   const weeklyProgressPercent = Math.min(
-    Math.round(((stats.totalHours * 60) / weeklyGoalMinutes) * 100),
+    Math.round(((stats?.totalHours || 0) * 60 / weeklyGoalMinutes) * 100),
     100
   );
 
@@ -65,6 +68,7 @@ export default function Dashboard() {
     const grouped: { [key: string]: any[] } = {};
 
     sessions.forEach(session => {
+      if (!session?.startTime) return;
       const date = new Date(session.startTime);
       const dateKey = date.toLocaleDateString('en-GB', {
         weekday: 'short',
@@ -82,15 +86,18 @@ export default function Dashboard() {
     return grouped;
   };
 
-
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
+  };
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin');
+    if (isLoaded && !isSignedIn) {
+      router.replace('/auth/signin');
     }
-  }, [status, router]);
+  }, [isLoaded, isSignedIn, router]);
 
-  if (status === 'loading') {
+  if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0e1117]">
         <div className="text-center">
@@ -101,7 +108,13 @@ export default function Dashboard() {
     );
   }
 
-  if (!session?.user) return null;
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0e1117]">
+        <p className="text-slate-400">Redirecting to sign in...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-shell relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
@@ -117,7 +130,7 @@ export default function Dashboard() {
             </Link>
 
             <button
-              onClick={() => signOut({ callbackUrl: '/' })}
+              onClick={handleSignOut}
               className="rounded-full border border-[#6ab5dc]/30 bg-[#0a1a2e]/65 px-3 py-1.5 text-sm font-medium text-[#d3f3ff] transition hover:border-[#8de1ff]/60 hover:text-white"
             >
               Sign Out
@@ -229,7 +242,7 @@ export default function Dashboard() {
                 />
               </div>
               <p className="mt-2 text-xs text-slate-400">
-                {loading ? '...' : `${stats.totalHours}h completed this week`}
+                {loading ? '...' : `${stats?.totalHours || 0}h completed this week`}
               </p>
             </div>
           </div>
@@ -238,17 +251,17 @@ export default function Dashboard() {
         <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
             <p className="text-sm text-slate-400">Total sessions</p>
-            <p className="mt-2 text-3xl font-semibold text-white">{loading ? '-' : stats.totalSessions}</p>
+            <p className="mt-2 text-3xl font-semibold text-white">{loading ? '-' : (stats?.totalSessions || 0)}</p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
             <p className="text-sm text-slate-400">Focus hours</p>
-            <p className="mt-2 text-3xl font-semibold text-[#8ff3ec]">{loading ? '-' : `${stats.totalHours}h`}</p>
+            <p className="mt-2 text-3xl font-semibold text-[#8ff3ec]">{loading ? '-' : `${stats?.totalHours || 0}h`}</p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
             <p className="text-sm text-slate-400">Focus score</p>
-            <p className="mt-2 text-3xl font-semibold text-[#93c5fd]">{loading ? '-' : `${stats.focusScore}%`}</p>
+            <p className="mt-2 text-3xl font-semibold text-[#93c5fd]">{loading ? '-' : `${stats?.focusScore || 0}%`}</p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/6 p-5 shadow-[0_14px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
@@ -258,7 +271,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {stats.recentSessions && stats.recentSessions.length > 0 && (
+        {recentSessions.length > 0 && (
           <section className="mt-12 rounded-3xl border border-white/10 bg-[#08101f]/70 p-6 shadow-[0_18px_46px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8">
             <div className="mb-7 flex items-center justify-between">
               <h2 className="text-2xl font-semibold text-white">Session Journal</h2>
@@ -271,33 +284,33 @@ export default function Dashboard() {
             </div>
             {showSessions && (
               <div className="space-y-7">
-                {Object.entries(groupSessionsByDay(stats.recentSessions)).map(([date, daySessions]: [string, any[]]) => (
+                {Object.entries(groupSessionsByDay(recentSessions)).map(([date, daySessions]: [string, any[]]) => (
                   <div key={date} className="space-y-3">
                     <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-400">{date}</h3>
                     <div className="space-y-2">
                       {daySessions.map((session) => (
                         <div
-                          key={session.id}
+                          key={session?.id ?? `${date}-${Math.random()}`}
                           className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/5 p-4 transition hover:bg-white/8"
                         >
                           <div className="flex items-center gap-4 flex-1">
                             <div className="flex flex-col flex-1">
                               <p className="text-sm font-semibold text-slate-100">
-                                {new Date(session.startTime).toLocaleTimeString('en-US', {
+                                {new Date(session?.startTime).toLocaleTimeString('en-US', {
                                   hour: '2-digit',
                                   minute: '2-digit',
                                   hour12: true
-                                })} - {session.endTime ? new Date(session.endTime).toLocaleTimeString('en-US', {
+                                })} - {session?.endTime ? new Date(session.endTime).toLocaleTimeString('en-US', {
                                   hour: '2-digit',
                                   minute: '2-digit',
                                   hour12: true
                                 }) : 'In Progress'}
                               </p>
-                              <p className="mt-1 text-xs text-slate-400">{formatTime(session.duration)}</p>
+                              <p className="mt-1 text-xs text-slate-400">{formatTime(session?.duration || 0)}</p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-semibold text-[#7de9ff]">{Math.round((session.duration / 3600) * 10) / 10}h</p>
+                            <p className="text-sm font-semibold text-[#7de9ff]">{Math.round(((session?.duration || 0) / 3600) * 10) / 10}h</p>
                             <p className="text-xs text-slate-500">focus</p>
                           </div>
                         </div>
@@ -310,12 +323,12 @@ export default function Dashboard() {
           </section>
         )}
 
-        <div className="mt-12">
-          <SoundPlayer isPlaying={!!activeSession} />
+        <div className="mt-12 rounded-2xl border border-white/10 bg-white/6 p-4 text-sm text-slate-300">
+          Optional widgets are temporarily disabled while auth rendering is stabilized.
         </div>
       </main>
 
-      <Chatbot />
+      {/* <Chatbot /> */}
     </div>
   );
 }
