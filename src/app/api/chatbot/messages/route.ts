@@ -1,36 +1,16 @@
-import { auth } from '@/lib/auth';
+import { requireAuth } from '@/lib/clerk-auth';
 import prisma from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
+    const user = await requireAuth();
     const { conversationId, message } = await request.json();
 
     if (!conversationId || !message) {
       return NextResponse.json(
         { error: 'Missing conversationId or message' },
         { status: 400 }
-      );
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: { id: true },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
       );
     }
 

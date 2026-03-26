@@ -1,21 +1,14 @@
-import { auth } from '@/lib/auth';
+import { requireAuth, AuthError } from '@/lib/clerk-auth';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const session = await auth();
-
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    const user = await requireAuth();
 
     // Get user stats
     const focusSessions = await prisma.focusSession.findMany({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       orderBy: { startTime: 'desc' },
     });
 
@@ -65,6 +58,9 @@ export async function GET() {
       recentSessions: focusSessions.slice(0, 5),
     });
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
     console.error('Error fetching stats:', error);
     return NextResponse.json(
       { error: 'Failed to fetch stats' },

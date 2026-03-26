@@ -13,6 +13,7 @@ datasource db {
 
 model User {
   id                    String                 @id @default(cuid())
+  clerkId               String?
   email                 String                 @unique
   name                  String?
   image                 String?
@@ -36,6 +37,7 @@ model User {
   chatConversations     ChatConversation[]
   
   @@index([email])
+  @@index([clerkId])
 }
 
 model Account {

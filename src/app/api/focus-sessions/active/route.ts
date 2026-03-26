@@ -1,39 +1,10 @@
-import { auth } from '@/lib/auth';
+import { requireAuth, AuthError } from '@/lib/clerk-auth';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
-async function resolveCurrentUser() {
-  const session = await auth();
-
-  if (!session?.user) {
-    return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
-  }
-
-  const user = session.user.id
-    ? await prisma.user.findUnique({ where: { id: session.user.id } })
-    : null;
-
-  const fallbackUser = !user && session.user.email
-    ? await prisma.user.findUnique({ where: { email: session.user.email } })
-    : null;
-
-  const resolvedUser = user || fallbackUser;
-
-  if (!resolvedUser) {
-    return { error: NextResponse.json({ error: 'User not found' }, { status: 404 }) };
-  }
-
-  return { user: resolvedUser };
-}
-
 export async function POST() {
   try {
-    const current = await resolveCurrentUser();
-    if (current.error) {
-      return current.error;
-    }
-
-    const { user } = current;
+    const user = await requireAuth();
 
     const existingActiveSession = await prisma.focusSession.findFirst({
       where: {
@@ -57,6 +28,9 @@ export async function POST() {
 
     return NextResponse.json(focusSession, { status: 201 });
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
     console.error('Error creating focus session:', error);
     return NextResponse.json(
       { error: 'Failed to create session' },
@@ -67,12 +41,7 @@ export async function POST() {
 
 export async function GET() {
   try {
-    const current = await resolveCurrentUser();
-    if (current.error) {
-      return current.error;
-    }
-
-    const { user } = current;
+    const user = await requireAuth();
 
     // Get active focus session (no end time)
     const activeSession = await prisma.focusSession.findFirst({
@@ -85,6 +54,9 @@ export async function GET() {
 
     return NextResponse.json({ activeSession });
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
     console.error('Error fetching active session:', error);
     return NextResponse.json(
       { error: 'Failed to fetch session' },

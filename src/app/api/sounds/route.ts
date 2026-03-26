@@ -1,29 +1,11 @@
-import { auth } from '@/lib/auth';
+import { requireAuth } from '@/lib/clerk-auth';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET - Fetch all custom sounds for the user
 export async function GET() {
   try {
-    const session = await auth();
-
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
-    }
+    const user = await requireAuth();
 
     const sounds = await prisma.customSound.findMany({
       where: { userId: user.id },
@@ -43,25 +25,7 @@ export async function GET() {
 // POST - Add a new custom sound
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
-    }
+    const user = await requireAuth();
 
     const body = await request.json();
     const { name, url, icon } = body;

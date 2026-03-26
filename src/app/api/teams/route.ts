@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/clerk-auth";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -12,13 +12,8 @@ function slugify(str: string): string {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
-
-  if (!session?.user?.email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
+    const user = await requireAuth();
     const body = await request.json();
     const { name, description } = body;
 
@@ -27,14 +22,6 @@ export async function POST(request: NextRequest) {
         { error: "Team name is required" },
         { status: 400 }
       );
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const slug = slugify(name);
@@ -76,15 +63,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  const session = await auth();
-
-  if (!session?.user?.email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+    const user = await requireAuth();
+
+    const userWithTeams = await prisma.user.findUnique({
+      where: { id: user.id },
       include: {
         teamMembers: {
           include: {
@@ -98,11 +81,11 @@ export async function GET() {
       },
     });
 
-    if (!user) {
+    if (!userWithTeams) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const teams = user.teamMembers.map((tm) => ({
+    const teams = userWithTeams.teamMembers.map((tm) => ({
       ...tm.team,
       userRole: tm.role,
       memberCount: tm.team.members.length,

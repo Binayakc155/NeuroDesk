@@ -1,33 +1,11 @@
-import { auth } from '@/lib/auth';
+import { requireAuth } from '@/lib/clerk-auth';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET - Fetch user preferences
 export async function GET() {
   try {
-    const session = await auth();
-
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: {
-        preferredSound: true,
-        soundVolume: true,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
-    }
+    const user = await requireAuth();
 
     return NextResponse.json({
       preferredSound: user.preferredSound || 'none',
@@ -45,20 +23,12 @@ export async function GET() {
 // PATCH - Update user preferences
 export async function PATCH(request: NextRequest) {
   try {
-    const session = await auth();
-
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
+    const user = await requireAuth();
     const body = await request.json();
     const { preferredSound, soundVolume } = body;
 
     const updatedUser = await prisma.user.update({
-      where: { email: session.user.email },
+      where: { id: user.id },
       data: {
         ...(preferredSound !== undefined && { preferredSound }),
         ...(soundVolume !== undefined && { soundVolume }),

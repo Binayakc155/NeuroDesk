@@ -1,19 +1,11 @@
-import { auth } from '@/lib/auth';
+import { requireAuth, AuthError } from '@/lib/clerk-auth';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 // POST - Record a distraction during an active session
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
+    const user = await requireAuth();
     const body = await request.json();
     const { focusSessionId, description } = body;
 
@@ -36,7 +28,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (focusSession.userId !== session.user.id) {
+    if (focusSession.userId !== user.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 403 }
@@ -72,6 +64,9 @@ export async function POST(request: NextRequest) {
       totalDistractions: updatedSession.distractionCount,
     });
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
     console.error('Error recording distraction:', error);
     return NextResponse.json(
       { error: 'Failed to record distraction' },

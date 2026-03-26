@@ -1,23 +1,11 @@
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/clerk-auth";
 import { prisma } from "@/lib/prisma";
 import { getWeekRange } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await auth();
-
-  if (!session?.user?.email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    const user = await requireAuth();
 
     // Get all time stats
     const allSessions = await prisma.focusSession.findMany({
@@ -41,9 +29,9 @@ export async function GET() {
     const overallFocusScore =
       totalSessions > 0
         ? Math.max(
-            0,
-            Math.min(100, 100 - (totalDistractions / totalSessions) * 10)
-          )
+          0,
+          Math.min(100, 100 - (totalDistractions / totalSessions) * 10)
+        )
         : 0;
 
     // Get current week stats
@@ -67,15 +55,15 @@ export async function GET() {
     const weekFocusScore =
       weekSessions.length > 0
         ? Math.max(
-            0,
-            Math.min(
-              100,
-              100 -
-                (weekSessions.reduce((sum, s) => sum + s.distractionCount, 0) /
-                  weekSessions.length) *
-                  10
-            )
+          0,
+          Math.min(
+            100,
+            100 -
+            (weekSessions.reduce((sum, s) => sum + s.distractionCount, 0) /
+              weekSessions.length) *
+            10
           )
+        )
         : 0;
 
     return NextResponse.json({
