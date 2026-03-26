@@ -135,13 +135,15 @@ export default function Dashboard() {
     <div className="dashboard-shell relative min-h-screen overflow-hidden pt-20 text-slate-100 md:pt-24">
 
       <header className="fixed inset-x-0 top-0 z-40 border-b border-[#7bd4ff]/20 bg-[#04101f]/72 shadow-[0_10px_40px_rgba(4,10,20,0.55)] backdrop-blur-xl">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-end px-5 py-4 sm:px-6">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-6">
+
+          {/* LEFT SIDE (Logo / Title) */}
+          <div className="text-xl font-semibold text-white cursor-pointer">
+            NeuroDesk
+          </div>
+
+          {/* RIGHT SIDE (Actions) */}
           <div className="flex items-center gap-3 sm:gap-6">
-              <div className="flex justify-start">
-                 <div className="text-xl font-semibold text-white">
-                    NeuroDesk
-                  </div>
-                </div>
             <Link
               href="/settings"
               className="text-sm font-medium text-slate-300 transition hover:text-[#a8efff]"
