@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -13,7 +15,8 @@ interface WhitelistedDomain {
 }
 
 export default function Settings() {
-  const { data: session, status } = useSession();
+  const sessionResult = useSession();
+  const { data: session, status } = sessionResult || { data: null, status: 'loading' };
   const router = useRouter();
   const [domains, setDomains] = useState<WhitelistedDomain[]>([]);
   const [loading, setLoading] = useState(true);
@@ -142,7 +145,7 @@ export default function Settings() {
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-6 py-16 relative z-10">
         {/* Navigation */}
-      
+
 
         <div className="mb-10">
           <h1 className="text-4xl font-semibold text-white mb-3">Settings</h1>
