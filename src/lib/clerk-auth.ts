@@ -29,6 +29,7 @@ export async function getClerkUser() {
 /**
  * Get the authenticated user from Clerk and resolve to DB user.
  * Returns the DB user or throws an AuthError.
+ * Auto-creates users in the database if they don't exist (first-time Clerk auth).
  */
 export async function getAuthenticatedUser() {
     const session = await auth();
@@ -51,22 +52,21 @@ export async function getAuthenticatedUser() {
         throw new AuthError(400, 'User email not found');
     }
 
-    // Try to find user by email (primary lookup)
-    let user = await prisma.user.findUnique({
+    // Try to find or create user by email (upsert pattern)
+    const user = await prisma.user.upsert({
         where: { email: userEmail },
+        update: {
+            clerkId: clerkUser.id,
+            name: clerkUser.firstName || clerkUser.username,
+            image: clerkUser.imageUrl,
+        },
+        create: {
+            email: userEmail,
+            clerkId: clerkUser.id,
+            name: clerkUser.firstName || clerkUser.username || null,
+            image: clerkUser.imageUrl || null,
+        },
     });
-
-    if (!user) {
-        throw new AuthError(404, 'User not found');
-    }
-
-    // Update clerkId if not already set
-    if (!user.clerkId) {
-        user = await prisma.user.update({
-            where: { id: user.id },
-            data: { clerkId: session.userId },
-        });
-    }
 
     return user;
 }
