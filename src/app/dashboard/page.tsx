@@ -286,12 +286,8 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="mt-8">
-          <SoundPlayer isPlaying={!!activeSession} />
-        </section>
-
         {recentSessions.length > 0 && (
-          <section className="mt-12 rounded-3xl border border-white/10 bg-[#08101f]/70 p-6 shadow-[0_18px_46px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8">
+          <section className="mt-8 rounded-3xl border border-white/10 bg-[#08101f]/70 p-6 shadow-[0_18px_46px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8">
             <div className="mb-7 flex items-center justify-between">
               <h2 className="text-2xl font-semibold text-white">Session Journal</h2>
               <button
@@ -341,6 +337,10 @@ export default function Dashboard() {
             )}
           </section>
         )}
+
+        <section className="mt-12">
+          <SoundPlayer isPlaying={!!activeSession} />
+        </section>
 
       </main>
 
