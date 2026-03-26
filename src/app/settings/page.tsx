@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useUser, useClerk } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -15,8 +15,8 @@ interface WhitelistedDomain {
 }
 
 export default function Settings() {
-  const sessionResult = useSession();
-  const { data: session, status } = sessionResult || { data: null, status: 'loading' };
+  const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
   const router = useRouter();
   const [domains, setDomains] = useState<WhitelistedDomain[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,16 +26,16 @@ export default function Settings() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (isLoaded && !user) {
       router.push('/auth/signin');
     }
-  }, [status, router]);
+  }, [isLoaded, user, router]);
 
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (isLoaded && user) {
       fetchDomains();
     }
-  }, [status]);
+  }, [isLoaded, user]);
 
   const fetchDomains = async () => {
     try {
@@ -105,7 +105,7 @@ export default function Settings() {
     }
   };
 
-  if (status === 'loading' || loading) {
+  if (!isLoaded || loading) {
     return (
       <div className="dashboard-shell min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -116,7 +116,7 @@ export default function Settings() {
     );
   }
 
-  if (!session?.user) {
+  if (!user) {
     return null;
   }
 
@@ -134,7 +134,7 @@ export default function Settings() {
           </Link>
 
           <button
-            onClick={() => signOut({ callbackUrl: '/' })}
+            onClick={() => signOut({ redirectUrl: '/' })}
             className="rounded-full border border-[#6ab5dc]/30 bg-[#0a1a2e]/65 px-3 py-1.5 text-sm font-medium text-[#d3f3ff] transition hover:border-[#8de1ff]/60 hover:text-white"
           >
             Sign Out

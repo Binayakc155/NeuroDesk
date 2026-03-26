@@ -13,6 +13,20 @@ import {
   useWhitelistedDomains,
   useDistractionDetection,
 } from '@/lib/hooks';
+
+interface FocusSession {
+  id: string;
+  userId: string;
+  teamId?: string;
+  startTime: Date | string;
+  endTime?: Date | string;
+  duration: number;
+  isDistracted: boolean;
+  distractionCount: number;
+  notes?: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
 // import SoundPlayer from '@/components/SoundPlayer';
 // import Chatbot from '@/components/Chatbot';
 
@@ -41,12 +55,12 @@ export default function Dashboard() {
     'Friend';
 
   const todayKey = new Date().toDateString();
-  const recentSessions = Array.isArray(stats?.recentSessions) ? stats.recentSessions : [];
+  const recentSessions: FocusSession[] = Array.isArray(stats?.recentSessions) ? stats.recentSessions : [];
   const todaySessions = recentSessions.filter(
-    (session: any) => session?.startTime && new Date(session.startTime).toDateString() === todayKey
+    (session: FocusSession) => session?.startTime && new Date(session.startTime).toDateString() === todayKey
   );
   const todayFocusMinutes = Math.round(
-    todaySessions.reduce((acc: number, session: any) => acc + (session?.duration || 0), 0) / 60
+    todaySessions.reduce((acc: number, session: FocusSession) => acc + (session?.duration || 0), 0) / 60
   );
   const weeklyGoalMinutes = 600;
   const weeklyProgressPercent = Math.min(
@@ -66,8 +80,8 @@ export default function Dashboard() {
     setIsStarting(false);
   };
 
-  const groupSessionsByDay = (sessions: any[]) => {
-    const grouped: { [key: string]: any[] } = {};
+  const groupSessionsByDay = (sessions: FocusSession[]) => {
+    const grouped: { [key: string]: FocusSession[] } = {};
 
     sessions.forEach(session => {
       if (!session?.startTime) return;
@@ -286,7 +300,7 @@ export default function Dashboard() {
             </div>
             {showSessions && (
               <div className="space-y-7">
-                {Object.entries(groupSessionsByDay(recentSessions)).map(([date, daySessions]: [string, any[]]) => (
+                {Object.entries(groupSessionsByDay(recentSessions)).map(([date, daySessions]: [string, FocusSession[]]) => (
                   <div key={date} className="space-y-3">
                     <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-400">{date}</h3>
                     <div className="space-y-2">

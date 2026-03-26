@@ -118,7 +118,7 @@ export default function Chatbot() {
       {!isOpen ? (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+          className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
         >
           <svg
             className="w-5 h-5"
@@ -138,7 +138,7 @@ export default function Chatbot() {
       ) : (
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-96 max-h-96 flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 flex items-center justify-between text-white">
+          <div className="bg-linear-to-r from-blue-600 to-cyan-600 p-4 flex items-center justify-between text-white">
             <div className="flex items-center gap-2">
               <svg
                 className="w-5 h-5"
@@ -196,11 +196,11 @@ export default function Chatbot() {
                 >
                   <div
                     className={`max-w-xs px-4 py-2 rounded-lg ${msg.role === 'user'
-                        ? 'bg-blue-600 text-white rounded-br-none'
-                        : 'bg-slate-700 text-slate-100 rounded-bl-none'
+                      ? 'bg-blue-600 text-white rounded-br-none'
+                      : 'bg-slate-700 text-slate-100 rounded-bl-none'
                       }`}
                   >
-                    <p className="text-sm break-words">{msg.content}</p>
+                    <p className="text-sm wrap-break-word">{msg.content}</p>
                   </div>
                 </div>
               ))
