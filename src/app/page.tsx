@@ -231,21 +231,7 @@ export default async function Home() {
             <p className="text-sm text-gray-500">
               NeuroDesk. All rights reserved. Built with focus for the focused.
             </p>
-            <div className="flex gap-4">
-              {[
-                { name: 'Twitter', icon: '𝕏' },
-                { name: 'GitHub', icon: '⚙' },
-                { name: 'Discord', icon: '◆' },
-              ].map((social, i) => (
-                <Link
-                  key={i}
-                  href="#"
-                  className="w-10 h-10 rounded-lg bg-white/5 hover:bg-[#5568ff]/20 border border-white/10 hover:border-[#5568ff]/50 flex items-center justify-center text-sm transition"
-                >
-                  {social.icon}
-                </Link>
-              ))}
-            </div>
+
           </div>
         </div>
       </footer>
