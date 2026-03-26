@@ -137,6 +137,9 @@ export default function Dashboard() {
       <header className="fixed inset-x-0 top-0 z-40 border-b border-[#7bd4ff]/20 bg-[#04101f]/72 shadow-[0_10px_40px_rgba(4,10,20,0.55)] backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-end px-5 py-4 sm:px-6">
           <div className="flex items-center gap-3 sm:gap-6">
+            <div className="text-xl font-semibold text-white">
+              NeuroDesk
+            </div>
             <Link
               href="/settings"
               className="text-sm font-medium text-slate-300 transition hover:text-[#a8efff]"
