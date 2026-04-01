@@ -169,7 +169,7 @@ export default function Dashboard() {
           <div className="mt-3 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <h1 className="text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                Welcome back, {firstName}
+                Welcome  {firstName}
               </h1>
               <p className="mt-2 text-slate-300">
                 Build calm momentum today. Small deep-work blocks add up fast.
