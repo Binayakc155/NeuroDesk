@@ -9,6 +9,9 @@ const isPublicRoute = createRouteMatcher([
     "/auth/error(.*)",
     "/api/auth(.*)",
     "/api/public(.*)",
+    // Whitelist validation is called from the client before the session is
+    // guaranteed to be hydrated, so keep it accessible without a hard redirect.
+    "/api/whitelist/validate(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
