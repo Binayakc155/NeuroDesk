@@ -1,7 +1,5 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import { useUser, useClerk } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -183,7 +181,7 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={adding}
-                className="px-6 py-3 bg-linear-to-r from-[#14b8a6] to-[#3b82f6] hover:from-[#2dd4bf] hover:to-[#60a5fa] disabled:from-slate-600 disabled:to-slate-600 text-white font-bold rounded-xl transition-all shadow-lg"
+                className="px-6 py-3 bg-linear-to-r from-[#14b8a6] to-[#3b82f6] hover:from-[#2dd4bf] hover:to-[#60a5fa] disabled:from-slate-600 disabled:to-slate-600 text-white font-bold rounded-[12px] transition-all"
               >
                 {adding ? 'Adding...' : 'Add'}
               </button>
