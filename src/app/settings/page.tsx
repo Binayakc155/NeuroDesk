@@ -228,19 +228,19 @@ export default function Settings() {
 
         {/* Info Box */}
         <div className="bg-white/5 backdrop-blur-xl border border-[#66d8f5]/32 rounded-3xl p-8 shadow-2xl shadow-[#2bc7b7]/10">
-          <h3 className="text-xl font-semibold text-[#99e8ff] mb-4">Current Limitations</h3>
+          <h3 className="text-xl font-semibold text-[#99e8ff] mb-4">How the Whitelist Works</h3>
           <ul className="text-sm text-slate-300 space-y-3">
             <li className="flex items-start gap-2">
-              <span className="text-amber-300 font-bold">⚠</span>
-              <span><strong>Whitelist currently disabled:</strong> The browser&apos;s Page Visibility API can only detect when you leave this tab, but cannot see which site/app you switched to.</span>
+              <span className="text-emerald-400 font-bold">✓</span>
+              <span><strong>Whitelist is active:</strong> When you return to this tab from a whitelisted domain, the visit is not counted as a distraction.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-emerald-400 font-bold">✓</span>
+              <span><strong>Server-validated:</strong> Each return is cross-checked against your saved whitelist via the <code className="bg-white/10 px-1 rounded">/api/whitelist/validate</code> endpoint.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-300 font-bold">⚠</span>
-              <span><strong>All tab switches tracked:</strong> Any time you leave this tab for more than 3 seconds counts as a distraction for now.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#7de9ff] font-bold">ℹ</span>
-              <span><strong>Future enhancement:</strong> A browser extension would be needed to properly check which domains you visit against this whitelist.</span>
+              <span><strong>Browser limitation:</strong> The Page Visibility API reports <em>when</em> you leave, not <em>where</em> you go. Whitelist matching uses the referrer header as a best-effort signal — it works reliably when navigating back via a link, but simple tab switches may still be counted.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-[#7de9ff] font-bold">ℹ</span>

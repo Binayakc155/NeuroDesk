@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { domainMatches, extractHostname } from './whitelist';
 
 export function useDashboardStats() {
   const [stats, setStats] = useState({
@@ -213,33 +214,44 @@ export function useWhitelistedDomains() {
 }
 
 /**
- * Check if the current URL's hostname matches a whitelisted domain
- * Handles exact matches and subdomains (e.g., "github.com" matches "api.github.com")
+ * Ask the server whether `domain` is in the current user's whitelist.
+ * Returns false on any network/auth error so the app degrades safely.
  */
-function isCurrentUrlWhitelisted(whitelistedDomains: string[]): boolean {
-  if (whitelistedDomains.length === 0) return false;
-
+async function checkDomainWhitelistedViaApi(domain: string): Promise<boolean> {
+  if (!domain) return false;
   try {
-    const currentHostname = window.location.hostname.toLowerCase();
-
-    for (const domain of whitelistedDomains) {
-      const domainLower = domain.toLowerCase();
-
-      // Exact match (e.g., "github.com" === "github.com")
-      if (currentHostname === domainLower) {
-        return true;
-      }
-
-      // Subdomain match (e.g., "api.github.com" ends with ".github.com")
-      if (currentHostname.endsWith(`.${domainLower}`)) {
-        return true;
-      }
-    }
-  } catch (error) {
-    console.error('Error checking current URL against whitelist:', error);
+    const res = await fetch(
+      `/api/whitelist/validate?domain=${encodeURIComponent(domain)}`
+    );
+    if (!res.ok) return false;
+    const data = await res.json();
+    return Boolean(data.whitelisted);
+  } catch {
+    return false;
   }
+}
 
-  return false;
+/**
+ * Best-effort attempt to determine the hostname the user departed to.
+ *
+ * The Page Visibility API only tells us *that* the user left the tab — it
+ * cannot reveal which external URL they visited.  We use `document.referrer`
+ * as a heuristic: when the user navigates back to NeuroDesk from an external
+ * page via a link, the referrer reflects that origin.  For simple tab
+ * switches the referrer is usually empty or equal to the current origin, in
+ * which case we return '' and the caller falls back to conservative behaviour.
+ */
+function getDepartedHostname(): string {
+  try {
+    const referrer = document.referrer;
+    if (!referrer) return '';
+    const referrerHostname = extractHostname(referrer);
+    // Ignore if the referrer is just the NeuroDesk app itself
+    if (referrerHostname === window.location.hostname) return '';
+    return referrerHostname;
+  } catch {
+    return '';
+  }
 }
 
 export function useDistractionDetection(
@@ -248,10 +260,15 @@ export function useDistractionDetection(
   whitelistedDomains: string[]
 ) {
   const onDistractionDetectedRef = useRef(onDistractionDetected);
+  const whitelistedDomainsRef = useRef(whitelistedDomains);
 
   useEffect(() => {
     onDistractionDetectedRef.current = onDistractionDetected;
   }, [onDistractionDetected]);
+
+  useEffect(() => {
+    whitelistedDomainsRef.current = whitelistedDomains;
+  }, [whitelistedDomains]);
 
   useEffect(() => {
     if (!isSessionActive) return;
@@ -268,7 +285,7 @@ export function useDistractionDetection(
       }
     };
 
-    const maybeRecordDistraction = () => {
+    const maybeRecordDistraction = async () => {
       if (awayStartedAt === null) return;
 
       const now = Date.now();
@@ -278,10 +295,28 @@ export function useDistractionDetection(
       if (timeAway < MIN_AWAY_MS) return;
       if (now - lastRecordedAt < RECORD_COOLDOWN_MS) return;
 
-      // ✅ NEW: Check if current URL is whitelisted before recording distraction
-      if (isCurrentUrlWhitelisted(whitelistedDomains)) {
-        console.log('✓ Current domain is whitelisted, not recording distraction');
-        return;
+      // First, try a fast client-side check against the in-memory list.
+      // This covers the case where the referrer gives us the departed URL.
+      const departedHostname = getDepartedHostname();
+
+      if (departedHostname) {
+        const domains = whitelistedDomainsRef.current;
+
+        // Client-side check (synchronous, no network)
+        const locallyWhitelisted = domains.some((d) => domainMatches(departedHostname, d));
+
+        if (locallyWhitelisted) {
+          console.log(`✓ Departed domain "${departedHostname}" is whitelisted (local check) — not recording distraction`);
+          return;
+        }
+
+        // Server-side validation as a fallback (authoritative, handles
+        // cases where the in-memory list may be stale).
+        const serverWhitelisted = await checkDomainWhitelistedViaApi(departedHostname);
+        if (serverWhitelisted) {
+          console.log(`✓ Departed domain "${departedHostname}" is whitelisted (server check) — not recording distraction`);
+          return;
+        }
       }
 
       lastRecordedAt = now;
@@ -313,7 +348,7 @@ export function useDistractionDetection(
       window.removeEventListener('blur', handleBlur);
       window.removeEventListener('focus', handleFocus);
     };
-  }, [isSessionActive, whitelistedDomains]);
+  }, [isSessionActive]);
 }
 
 export { formatTime };
