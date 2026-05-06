@@ -12,6 +12,10 @@ interface WhitelistedDomain {
   createdAt: string;
 }
 
+// Skip static generation - this is a dynamic page that requires client-side auth
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function Settings() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
@@ -40,7 +44,7 @@ export default function Settings() {
       const res = await fetch('/api/whitelist');
       if (res.ok) {
         const data = await res.json();
-        setDomains(data);
+        setDomains(Array.isArray(data) ? data : []);
       }
     } catch (error) {
       console.error('Error fetching domains:', error);
@@ -76,8 +80,8 @@ export default function Settings() {
         setNewDomain('');
         setNewDescription('');
       } else {
-        const data = await res.json();
-        setError(data.error || 'Failed to add domain');
+        const errorData = await res.json();
+        setError(errorData?.error || 'Failed to add domain');
       }
     } catch (error) {
       setError('Failed to add domain');
@@ -181,7 +185,7 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={adding}
-                className="px-6 py-3 bg-linear-to-r from-[#14b8a6] to-[#3b82f6] hover:from-[#2dd4bf] hover:to-[#60a5fa] disabled:from-slate-600 disabled:to-slate-600 text-white font-bold rounded-[12px] transition-all"
+                className="px-6 py-3 bg-linear-to-r from-[#14b8a6] to-[#3b82f6] hover:from-[#2dd4bf] hover:to-[#60a5fa] disabled:from-slate-600 disabled:to-slate-600 text-white font-bold rounded-xl transition-all shadow-lg"
               >
                 {adding ? 'Adding...' : 'Add'}
               </button>
