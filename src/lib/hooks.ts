@@ -212,6 +212,36 @@ export function useWhitelistedDomains() {
   return { domains, loading };
 }
 
+/**
+ * Check if the current URL's hostname matches a whitelisted domain
+ * Handles exact matches and subdomains (e.g., "github.com" matches "api.github.com")
+ */
+function isCurrentUrlWhitelisted(whitelistedDomains: string[]): boolean {
+  if (whitelistedDomains.length === 0) return false;
+
+  try {
+    const currentHostname = window.location.hostname.toLowerCase();
+
+    for (const domain of whitelistedDomains) {
+      const domainLower = domain.toLowerCase();
+
+      // Exact match (e.g., "github.com" === "github.com")
+      if (currentHostname === domainLower) {
+        return true;
+      }
+
+      // Subdomain match (e.g., "api.github.com" ends with ".github.com")
+      if (currentHostname.endsWith(`.${domainLower}`)) {
+        return true;
+      }
+    }
+  } catch (error) {
+    console.error('Error checking current URL against whitelist:', error);
+  }
+
+  return false;
+}
+
 export function useDistractionDetection(
   isSessionActive: boolean,
   onDistractionDetected: () => void,
@@ -247,6 +277,12 @@ export function useDistractionDetection(
 
       if (timeAway < MIN_AWAY_MS) return;
       if (now - lastRecordedAt < RECORD_COOLDOWN_MS) return;
+
+      // ✅ NEW: Check if current URL is whitelisted before recording distraction
+      if (isCurrentUrlWhitelisted(whitelistedDomains)) {
+        console.log('✓ Current domain is whitelisted, not recording distraction');
+        return;
+      }
 
       lastRecordedAt = now;
       onDistractionDetectedRef.current();
