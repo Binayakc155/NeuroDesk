@@ -44,7 +44,7 @@ export default function Dashboard() {
     endSession,
     recordDistraction,
   } = useFocusSession(refetch);
-  const { domains: whitelistedDomains = [] } = useWhitelistedDomains();
+  const { domains: whitelistedDomains = [], loading: domainsLoading } = useWhitelistedDomains();
   const [isStarting, setIsStarting] = useState(false);
   const [showSessions, setShowSessions] = useState(true);
 
@@ -68,7 +68,7 @@ export default function Dashboard() {
   );
 
   useDistractionDetection(
-    !!activeSession,
+    !!activeSession && !domainsLoading,
     () => recordDistraction(),
     whitelistedDomains
   );
