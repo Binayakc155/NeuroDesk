@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     if (!apiKey) {
       return NextResponse.json(
         { error: 'Groq API key not configured' },
-        { status: 503 }
+        { status: 500 }
       );
     }
 
