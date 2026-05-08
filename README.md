@@ -77,6 +77,11 @@ Optional (OAuth):
 - `GITHUB_ID`, `GITHUB_SECRET`
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 
+Optional (Chatbot AI):
+
+- `GROQ_API_KEY` - required to enable chatbot responses via Groq API
+- `GROQ_MODEL` - optional Groq model name (default: `mixtral-8x7b-32768`, e.g. `llama-3-70b-8192`)
+
 ## Getting Started
 
 1. Install dependencies
