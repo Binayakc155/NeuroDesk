@@ -95,9 +95,15 @@ export async function POST(request: NextRequest) {
     const data = await response.json();
     const assistantMessage = data.choices?.[0]?.message?.content;
     if (!assistantMessage) {
+      const hasChoices = Array.isArray(data?.choices);
       console.error(
-        'Groq API returned unexpected response format. Expected choices[0].message.content but received:',
-        data
+        'Groq API returned unexpected response format. Expected choices[0].message.content.',
+        {
+          status: response.status,
+          hasChoices,
+          choicesCount: hasChoices ? data.choices.length : null,
+          data,
+        }
       );
     }
     const finalAssistantMessage =
