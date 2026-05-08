@@ -2,6 +2,9 @@ import { requireAuth } from '@/lib/clerk-auth';
 import prisma from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
+const CHATBOT_SYSTEM_PROMPT =
+  'You are a helpful AI assistant for a focus and productivity app. Help users improve their focus, manage distractions, and achieve their goals. Be concise, friendly, and supportive.';
+
 export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth();
@@ -53,8 +56,7 @@ export async function POST(request: NextRequest) {
 
     messages.unshift({
       role: 'system',
-      content:
-        'You are a helpful AI assistant for a focus and productivity app. Help users improve their focus, manage distractions, and achieve their goals. Be concise, friendly, and supportive.',
+      content: CHATBOT_SYSTEM_PROMPT,
     });
 
     messages.push({
