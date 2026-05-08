@@ -95,7 +95,10 @@ export async function POST(request: NextRequest) {
     const data = await response.json();
     const assistantMessage = data.choices?.[0]?.message?.content;
     if (!assistantMessage) {
-      console.error('Groq API unexpected response format:', data);
+      console.error(
+        'Groq API returned unexpected response format. Expected choices[0].message.content but received:',
+        data
+      );
     }
     const finalAssistantMessage =
       assistantMessage || 'Sorry, I could not generate a response.';
