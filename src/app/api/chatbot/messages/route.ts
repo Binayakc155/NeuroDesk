@@ -93,16 +93,19 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
-    const assistantMessage =
-      data.choices?.[0]?.message?.content ||
-      'Sorry, I could not generate a response.';
+    const assistantMessage = data.choices?.[0]?.message?.content;
+    if (!assistantMessage) {
+      console.error('Groq API unexpected response format:', data);
+    }
+    const finalAssistantMessage =
+      assistantMessage || 'Sorry, I could not generate a response.';
 
     // Save assistant message
     await prisma.chatMessage.create({
       data: {
         conversationId,
         role: 'assistant',
-        content: assistantMessage,
+        content: finalAssistantMessage,
       },
     });
 
@@ -115,7 +118,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    return NextResponse.json({ message: assistantMessage });
+    return NextResponse.json({ message: finalAssistantMessage });
   } catch (error) {
     console.error('Error in chatbot API:', error);
     return NextResponse.json(
