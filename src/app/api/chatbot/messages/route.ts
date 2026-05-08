@@ -68,17 +68,17 @@ export async function POST(request: NextRequest) {
     const response = await fetch(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: process.env.GROQ_MODEL || 'mixtral-8x7b-32768',
-        max_tokens: 500,
-        messages,
-      }),
-    }
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: process.env.GROQ_MODEL || 'mixtral-8x7b-32768',
+          max_tokens: 500,
+          messages,
+        }),
+      }
     );
 
     if (!response.ok) {
