@@ -77,6 +77,11 @@ Optional (OAuth):
 - `GITHUB_ID`, `GITHUB_SECRET`
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 
+Optional (AI chatbot):
+
+- `GROQ_API_KEY` - required to enable chatbot AI responses
+- `CLAUDE_API_KEY` - deprecated (chatbot now uses Groq)
+
 ## Getting Started
 
 1. Install dependencies

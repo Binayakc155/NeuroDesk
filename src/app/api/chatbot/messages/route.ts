@@ -36,16 +36,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Get Claude API key
-    const apiKey = process.env.CLAUDE_API_KEY;
+    // Get Groq API key
+    const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'Claude API key not configured' },
+        { error: 'Groq API key not configured' },
         { status: 500 }
       );
     }
 
-    // Build messages for Claude
+    // Build messages for Groq
     const messages = conversation.messages.map((msg) => ({
       role: msg.role === 'user' ? 'user' : 'assistant',
       content: msg.content,
@@ -56,19 +56,24 @@ export async function POST(request: NextRequest) {
       content: message,
     });
 
-    // Call Claude API
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    // Call Groq API
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
+        Authorization: `Bearer ${apiKey}`,
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'mixtral-8x7b-32768',
         max_tokens: 500,
-        system: 'You are a helpful AI assistant for a focus and productivity app. Help users improve their focus, manage distractions, and achieve their goals. Be concise, friendly, and supportive.',
-        messages,
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are a helpful AI assistant for a focus and productivity app. Help users improve their focus, manage distractions, and achieve their goals. Be concise, friendly, and supportive.',
+          },
+          ...messages,
+        ],
       }),
     });
 
@@ -80,7 +85,7 @@ export async function POST(request: NextRequest) {
       } catch (e) {
         errorDetails = `HTTP ${response.status}: ${response.statusText}`;
       }
-      console.error('Claude API error:', errorDetails);
+      console.error('Groq API error:', errorDetails);
       return NextResponse.json(
         { error: `Failed to get response from AI: ${errorDetails}` },
         { status: 500 }
@@ -89,7 +94,7 @@ export async function POST(request: NextRequest) {
 
     const data = await response.json();
     const assistantMessage =
-      data.content?.[0]?.text ||
+      data.choices?.[0]?.message?.content ||
       'Sorry, I could not generate a response.';
 
     // Save assistant message
