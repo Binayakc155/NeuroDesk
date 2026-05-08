@@ -1,6 +1,6 @@
 # NeuroDesk
 
-NeuroDesk is a  focus and deep-work tracker built with Next.js, Prisma, NextAuth, and PostgreSQL.
+NeuroDesk is a focus and deep-work tracker built with Next.js, Prisma, NextAuth, and PostgreSQL.
 
 It helps users run focused sessions, track distractions, view progress, and maintain a clean focus routine through a modern galaxy-style UI.
 
@@ -14,7 +14,7 @@ It helps users run focused sessions, track distractions, view progress, and main
 - Custom Spotify items persist in localStorage per browser
 - Whitelisted domains management in Settings
 - Authentication with credentials + optional GitHub/Google OAuth
-- Chatbot conversation and message endpoints
+- AI-powered chatbot with Groq integration for productivity assistance
 
 ## Tech Stack
 
@@ -23,6 +23,7 @@ It helps users run focused sessions, track distractions, view progress, and main
 - NextAuth v5 (JWT session strategy)
 - Prisma ORM + PostgreSQL
 - Zod, React Hook Form, Axios, bcryptjs
+- Groq API for AI assistant features
 
 ## Project Structure
 
@@ -77,6 +78,10 @@ Optional (OAuth):
 - `GITHUB_ID`, `GITHUB_SECRET`
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 
+Optional (AI Assistant):
+
+- `GROQ_API_KEY` - Groq API key for chatbot (get from https://console.groq.com)
+
 ## Getting Started
 
 1. Install dependencies
@@ -124,6 +129,15 @@ The platform supports multiple authentication methods:
 
 Configure OAuth providers by setting the appropriate environment variables.
 
+## AI Assistant (Chatbot)
+
+The app includes an AI-powered chatbot powered by Groq API:
+
+1. **Setup**: Get a free API key from https://console.groq.com
+2. **Configure**: Set `GROQ_API_KEY` in your environment variables
+3. **Models**: Uses `mixtral-8x7b-32768` by default (can be changed in `src/app/api/chatbot/messages/route.ts`)
+4. **Features**: Helps with productivity tips, focus techniques, and app guidance
+
 ## Focus Score Calculation
 
 The focus score is calculated based on:
@@ -162,15 +176,18 @@ Automatically generated every week containing:
 ## Deployment
 
 ### Deploy to Vercel (Recommended)
+
 ```bash
 npm install -g vercel
 vercel
 ```
 
+**Important**: Make sure to set `GROQ_API_KEY` in your Vercel environment variables before deployment.
+
 ### Deploy to Other Platforms
 
 1. Build: `npm run build`
-2. Set environment variables
+2. Set environment variables (including `GROQ_API_KEY` for chatbot)
 3. Start: `npm run start`
 
 ## Contributing
