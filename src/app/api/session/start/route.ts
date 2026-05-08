@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,9 +8,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing sessionId' }, { status: 400 });
     }
 
-    const session = await prisma.session.update({
+    const session = await prisma.focusSession.update({
       where: { id: sessionId },
-      data: { startedAt: new Date(), status: 'active' },
+      data: { startTime: new Date(), isDistracted: false },
     });
 
     return NextResponse.json(session, { status: 200 });
