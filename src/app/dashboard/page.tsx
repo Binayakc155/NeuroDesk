@@ -37,7 +37,8 @@ function SessionPausedBadge() {
   return (
     <div role="status" aria-live="polite" className="mb-4">
       <div className="inline-flex items-center rounded-full border border-amber-300/35 bg-amber-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-amber-100">
-        ⏸ Session Paused
+        <span aria-hidden="true" className="mr-1">⏸</span>
+        Session Paused
       </div>
     </div>
   );
