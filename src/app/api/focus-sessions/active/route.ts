@@ -24,6 +24,7 @@ function normalizeFocusSessionResponse(session: any) {
 export async function POST() {
   try {
     const user = await requireAuth();
+    console.log('Starting session creation for user:', user.id);
 
     // Check for existing active session
     const existingActiveSession = await prisma.focusSession.findFirst({
@@ -35,6 +36,8 @@ export async function POST() {
     });
 
     if (existingActiveSession) {
+      console.log('Found existing active session:', existingActiveSession);
+      
       // Validate and normalize the existing session
       if (!validateSessionStructure(existingActiveSession)) {
         const errorMsg = getSessionValidationError(existingActiveSession);
@@ -46,10 +49,12 @@ export async function POST() {
       }
 
       const normalizedSession = normalizeFocusSessionResponse(existingActiveSession);
+      console.log('Returning normalized existing session:', normalizedSession);
       return NextResponse.json({ activeSession: normalizedSession }, { status: 200 });
     }
 
     // Create a new focus session
+    console.log('Creating new focus session...');
     const focusSession = await prisma.focusSession.create({
       data: {
         userId: user.id,
@@ -60,6 +65,8 @@ export async function POST() {
         distractionCount: 0,
       },
     });
+
+    console.log('Created session from DB:', JSON.stringify(focusSession, null, 2));
 
     // Validate and normalize the newly created session
     if (!validateSessionStructure(focusSession)) {
@@ -72,14 +79,17 @@ export async function POST() {
     }
 
     const normalizedSession = normalizeFocusSessionResponse(focusSession);
+    console.log('Returning normalized new session:', normalizedSession);
     return NextResponse.json({ activeSession: normalizedSession }, { status: 201 });
   } catch (error) {
+    console.error('Error in POST /api/focus-sessions/active:', error);
     if (error instanceof AuthError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
     }
-    console.error('Error creating focus session:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Full error details:', errorMessage);
     return NextResponse.json(
-      { error: 'Failed to create session' },
+      { error: 'Failed to create session: ' + errorMessage },
       { status: 500 }
     );
   }
@@ -99,8 +109,11 @@ export async function GET() {
     });
 
     if (!activeSession) {
+      console.log('No active session found for user:', user.id);
       return NextResponse.json({ activeSession: null });
     }
+
+    console.log('Found active session:', activeSession);
 
     // Validate session structure
     if (!validateSessionStructure(activeSession)) {
@@ -112,14 +125,16 @@ export async function GET() {
 
     // Normalize and return the session
     const normalizedSession = normalizeFocusSessionResponse(activeSession);
+    console.log('Returning normalized session:', normalizedSession);
     return NextResponse.json({ activeSession: normalizedSession });
   } catch (error) {
+    console.error('Error in GET /api/focus-sessions/active:', error);
     if (error instanceof AuthError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
     }
-    console.error('Error fetching active session:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: 'Failed to fetch session' },
+      { error: 'Failed to fetch session: ' + errorMessage },
       { status: 500 }
     );
   }
