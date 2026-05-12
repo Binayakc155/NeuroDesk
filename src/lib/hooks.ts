@@ -51,6 +51,7 @@ export function useDashboardStats() {
 export function useFocusSession(refetchStats?: () => void) {
   const [activeSession, setActiveSession] = useState<ActiveFocusSession | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [distractionCount, setDistractionCount] = useState(0);
   const [localStartTime, setLocalStartTime] = useState<number | null>(null);
@@ -147,27 +148,38 @@ export function useFocusSession(refetchStats?: () => void) {
 
   const startSession = async () => {
     setLoading(true);
+    setError(null);
     try {
-      // Set local start time immediately (before API call)
-      const now = new Date().getTime();
-      setLocalStartTime(now);
-      setElapsedTime(0);
-
       const response = await fetch('/api/focus-sessions/active', {
         method: 'POST',
       });
-      if (response.ok) {
-        const session = await response.json();
-        setActiveSession(session);
-        setLocalStartTime(new Date(session.startTime).getTime());
-        setElapsedTime(0);
-        setDistractionCount(session?.distractionCount || 0);
-        if (refetchStats) {
-          refetchStats();
-        }
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        const errorMessage = data?.error || 'Failed to start focus session';
+        console.error('Failed to start session:', response.status, errorMessage);
+        setError(errorMessage);
+        return;
+      }
+
+      const session = data?.activeSession;
+      if (!session) {
+        const errorMessage = 'No active session was returned';
+        console.error(errorMessage, data);
+        setError(errorMessage);
+        return;
+      }
+
+      setActiveSession(session);
+      setLocalStartTime(new Date(session.startTime).getTime());
+      setElapsedTime(0);
+      setDistractionCount(session?.distractionCount || 0);
+      if (refetchStats) {
+        refetchStats();
       }
     } catch (error) {
       console.error('Error starting session:', error);
+      setError(error instanceof Error ? error.message : 'Error starting session');
     } finally {
       setLoading(false);
     }
@@ -209,18 +221,27 @@ export function useFocusSession(refetchStats?: () => void) {
     if (!activeSession || activeSession.status === 'paused') return;
 
     setLoading(true);
+    setError(null);
     try {
       const response = await fetch(`/api/focus-sessions/${activeSession.id}/pause`, {
         method: 'POST',
       });
 
-      if (response.ok) {
-        const session = await response.json();
-        setActiveSession(session);
-        setElapsedTime(calculateElapsedTime(session));
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        const errorMessage = data?.error || 'Failed to pause focus session';
+        console.error('Failed to pause session:', response.status, errorMessage);
+        setError(errorMessage);
+        return;
+      }
+
+      if (data) {
+        setActiveSession(data);
+        setElapsedTime(calculateElapsedTime(data));
       }
     } catch (error) {
       console.error('Error pausing session:', error);
+      setError(error instanceof Error ? error.message : 'Error pausing session');
     } finally {
       setLoading(false);
     }
@@ -230,18 +251,27 @@ export function useFocusSession(refetchStats?: () => void) {
     if (!activeSession || activeSession.status === 'active') return;
 
     setLoading(true);
+    setError(null);
     try {
       const response = await fetch(`/api/focus-sessions/${activeSession.id}/resume`, {
         method: 'POST',
       });
 
-      if (response.ok) {
-        const session = await response.json();
-        setActiveSession(session);
-        setElapsedTime(calculateElapsedTime(session));
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        const errorMessage = data?.error || 'Failed to resume focus session';
+        console.error('Failed to resume session:', response.status, errorMessage);
+        setError(errorMessage);
+        return;
+      }
+
+      if (data) {
+        setActiveSession(data);
+        setElapsedTime(calculateElapsedTime(data));
       }
     } catch (error) {
       console.error('Error resuming session:', error);
+      setError(error instanceof Error ? error.message : 'Error resuming session');
     } finally {
       setLoading(false);
     }
@@ -252,6 +282,7 @@ export function useFocusSession(refetchStats?: () => void) {
     elapsedTime,
     distractionCount,
     loading,
+    error,
     startSession,
     endSession,
     pauseSession,

@@ -1,4 +1,4 @@
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
@@ -13,60 +13,52 @@ export class AuthError extends Error {
 }
 
 /**
- * Resolve the current Clerk user to a DB user.
+ * Resolve the current authenticated user to a DB user ID.
  * Returns user ID if found, otherwise throws AuthError.
  */
 export async function getClerkUser() {
-    const session = await auth();
-
-    if (!session || !session.userId) {
-        throw new AuthError(401, 'Unauthorized');
-    }
-
-    return session.userId;
+    const user = await getAuthenticatedUser();
+    return user.id;
 }
 
 /**
- * Get the authenticated user from Clerk and resolve to DB user.
+ * Get the authenticated user from NextAuth session and resolve to DB user.
  * Returns the DB user or throws an AuthError.
- * Auto-creates users in the database if they don't exist (first-time Clerk auth).
+ * Auto-creates users in the database by email if they don't exist.
  */
 export async function getAuthenticatedUser() {
     const session = await auth();
 
-    if (!session || !session.userId) {
+    if (!session?.user?.id && !session?.user?.email) {
         throw new AuthError(401, 'Unauthorized');
     }
 
-    // Get full user object from Clerk
-    const clerkUser = await currentUser();
+    let user = null;
 
-    if (!clerkUser) {
+    if (session.user.id) {
+        user = await prisma.user.findUnique({
+            where: { id: session.user.id },
+        });
+    }
+
+    if (!user && session.user.email) {
+        user = await prisma.user.upsert({
+            where: { email: session.user.email },
+            update: {
+                name: session.user.name,
+                image: session.user.image,
+            },
+            create: {
+                email: session.user.email,
+                name: session.user.name,
+                image: session.user.image,
+            },
+        });
+    }
+
+    if (!user) {
         throw new AuthError(401, 'Unauthorized');
     }
-
-    // Get primary email from Clerk user
-    const userEmail = clerkUser.emailAddresses[0]?.emailAddress;
-
-    if (!userEmail) {
-        throw new AuthError(400, 'User email not found');
-    }
-
-    // Try to find or create user by email (upsert pattern)
-    const user = await prisma.user.upsert({
-        where: { email: userEmail },
-        update: {
-            clerkId: clerkUser.id,
-            name: clerkUser.firstName || clerkUser.username,
-            image: clerkUser.imageUrl,
-        },
-        create: {
-            email: userEmail,
-            clerkId: clerkUser.id,
-            name: clerkUser.firstName || clerkUser.username || null,
-            image: clerkUser.imageUrl || null,
-        },
-    });
 
     return user;
 }

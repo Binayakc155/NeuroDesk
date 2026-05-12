@@ -1,4 +1,4 @@
-import { requireAuth } from "@/lib/clerk-auth";
+import { AuthError, requireAuth } from "@/lib/clerk-auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -45,7 +45,7 @@ export async function POST(
       Math.floor((Date.now() - pausedAt.getTime()) / 1000)
     );
 
-    const resumeResult = await prisma.focusSession.updateMany({
+    await prisma.focusSession.updateMany({
       where: {
         id,
         userId: user.id,
@@ -76,6 +76,9 @@ export async function POST(
 
     return NextResponse.json(updatedSession);
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
     console.error("Error resuming focus session:", error);
     return NextResponse.json(
       { error: "Failed to resume focus session" },
