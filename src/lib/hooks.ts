@@ -1,6 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import {
+  NormalizedFocusSession,
+  validateSessionStructure,
+  getSessionValidationError,
+} from '@/lib/session-normalizer';
 
 type FocusSessionStatus = 'active' | 'paused' | 'completed';
 
@@ -100,25 +105,68 @@ export function useFocusSession(refetchStats?: () => void) {
     );
   };
 
+  /**
+   * Validate session structure with detailed error reporting
+   */
+  const validateAndNormalizeSession = (
+    session: any
+  ): ActiveFocusSession | null => {
+    if (!session) {
+      console.warn('Session is null or undefined');
+      return null;
+    }
+
+    if (!validateSessionStructure(session)) {
+      const errorMsg = getSessionValidationError(session);
+      console.error('Session validation failed:', errorMsg, session);
+      setError(errorMsg);
+      return null;
+    }
+
+    // Ensure all required fields have proper defaults
+    return {
+      id: session.id,
+      startTime: typeof session.startTime === 'string'
+        ? session.startTime
+        : new Date(session.startTime).toISOString(),
+      status: session.status || 'active',
+      pausedAt: session.pausedAt || null,
+      pausedDuration: session.pausedDuration ?? 0,
+      distractionCount: session.distractionCount ?? 0,
+    };
+  };
+
   const fetchActiveSession = async () => {
     try {
       const response = await fetch('/api/focus-sessions/active');
       if (response.ok) {
         const data = await response.json();
-        setActiveSession(data.activeSession);
-        if (data.activeSession) {
+        const session = data.activeSession;
+
+        if (session) {
+          const validatedSession = validateAndNormalizeSession(session);
+          if (!validatedSession) {
+            console.error('Failed to validate session');
+            setActiveSession(null);
+            return;
+          }
+
+          setActiveSession(validatedSession);
           const now = Date.now();
-          setLocalStartTime(new Date(data.activeSession.startTime).getTime());
-          setElapsedTime(calculateElapsedTime(data.activeSession, now));
-          setDistractionCount(data.activeSession.distractionCount || 0);
+          setLocalStartTime(new Date(validatedSession.startTime).getTime());
+          setElapsedTime(calculateElapsedTime(validatedSession, now));
+          setDistractionCount(validatedSession.distractionCount || 0);
+          setError(null);
         } else {
           setElapsedTime(0);
           setDistractionCount(0);
           setLocalStartTime(null);
+          setActiveSession(null);
         }
       }
-    } catch (error) {
-      console.error('Error fetching active session:', error);
+    } catch (err) {
+      console.error('Error fetching active session:', err);
+      setError(err instanceof Error ? err.message : 'Error fetching session');
     }
   };
 
@@ -141,8 +189,8 @@ export function useFocusSession(refetchStats?: () => void) {
         // Refetch dashboard stats after distraction
         if (refetchStats) refetchStats();
       }
-    } catch (error) {
-      console.error('Error recording distraction:', error);
+    } catch (err) {
+      console.error('Error recording distraction:', err);
     }
   };
 
@@ -170,16 +218,24 @@ export function useFocusSession(refetchStats?: () => void) {
         return;
       }
 
-      setActiveSession(session);
-      setLocalStartTime(new Date(session.startTime).getTime());
+      // Validate and normalize the session
+      const validatedSession = validateAndNormalizeSession(session);
+      if (!validatedSession) {
+        console.error('Session validation failed after creation');
+        return;
+      }
+
+      setActiveSession(validatedSession);
+      setLocalStartTime(new Date(validatedSession.startTime).getTime());
       setElapsedTime(0);
-      setDistractionCount(session?.distractionCount || 0);
+      setDistractionCount(validatedSession?.distractionCount || 0);
+      setError(null);
       if (refetchStats) {
         refetchStats();
       }
-    } catch (error) {
-      console.error('Error starting session:', error);
-      setError(error instanceof Error ? error.message : 'Error starting session');
+    } catch (err) {
+      console.error('Error starting session:', err);
+      setError(err instanceof Error ? err.message : 'Error starting session');
     } finally {
       setLoading(false);
     }
@@ -210,8 +266,9 @@ export function useFocusSession(refetchStats?: () => void) {
           location.reload();
         }
       }
-    } catch (error) {
-      console.error('Error ending session:', error);
+    } catch (err) {
+      console.error('Error ending session:', err);
+      setError(err instanceof Error ? err.message : 'Error ending session');
     } finally {
       setLoading(false);
     }
@@ -236,12 +293,15 @@ export function useFocusSession(refetchStats?: () => void) {
       }
 
       if (data) {
-        setActiveSession(data);
-        setElapsedTime(calculateElapsedTime(data));
+        const validatedSession = validateAndNormalizeSession(data);
+        if (validatedSession) {
+          setActiveSession(validatedSession);
+          setElapsedTime(calculateElapsedTime(validatedSession));
+        }
       }
-    } catch (error) {
-      console.error('Error pausing session:', error);
-      setError(error instanceof Error ? error.message : 'Error pausing session');
+    } catch (err) {
+      console.error('Error pausing session:', err);
+      setError(err instanceof Error ? err.message : 'Error pausing session');
     } finally {
       setLoading(false);
     }
@@ -266,12 +326,15 @@ export function useFocusSession(refetchStats?: () => void) {
       }
 
       if (data) {
-        setActiveSession(data);
-        setElapsedTime(calculateElapsedTime(data));
+        const validatedSession = validateAndNormalizeSession(data);
+        if (validatedSession) {
+          setActiveSession(validatedSession);
+          setElapsedTime(calculateElapsedTime(validatedSession));
+        }
       }
-    } catch (error) {
-      console.error('Error resuming session:', error);
-      setError(error instanceof Error ? error.message : 'Error resuming session');
+    } catch (err) {
+      console.error('Error resuming session:', err);
+      setError(err instanceof Error ? err.message : 'Error resuming session');
     } finally {
       setLoading(false);
     }
@@ -323,8 +386,8 @@ export function useWhitelistedDomains() {
             : [];
           setDomains(domainList);
         }
-      } catch (error) {
-        console.error('Error fetching whitelisted domains:', error);
+      } catch (err) {
+        console.error('Error fetching whitelisted domains:', err);
       } finally {
         setLoading(false);
       }
@@ -359,8 +422,8 @@ function isCurrentUrlWhitelisted(whitelistedDomains: string[]): boolean {
         return true;
       }
     }
-  } catch (error) {
-    console.error('Error checking current URL against whitelist:', error);
+  } catch (err) {
+    console.error('Error checking current URL against whitelist:', err);
   }
 
   return false;
