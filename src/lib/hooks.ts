@@ -13,6 +13,27 @@ interface ActiveFocusSession {
   distractionCount: number;
 }
 
+function isValidSessionStatus(status: unknown): status is FocusSessionStatus {
+  return status === 'active' || status === 'paused' || status === 'completed';
+}
+
+function isValidActiveFocusSession(session: unknown): session is ActiveFocusSession {
+  if (!session || typeof session !== 'object') return false;
+
+  const candidate = session as Record<string, unknown>;
+  const hasValidPausedAt =
+    candidate.pausedAt === null || candidate.pausedAt === undefined || typeof candidate.pausedAt === 'string';
+
+  return (
+    typeof candidate.id === 'string' &&
+    typeof candidate.startTime === 'string' &&
+    isValidSessionStatus(candidate.status) &&
+    hasValidPausedAt &&
+    typeof candidate.pausedDuration === 'number' &&
+    typeof candidate.distractionCount === 'number'
+  );
+}
+
 export function useDashboardStats() {
   const [stats, setStats] = useState({
     totalSessions: 0,
@@ -103,19 +124,37 @@ export function useFocusSession(refetchStats?: () => void) {
   const fetchActiveSession = async () => {
     try {
       const response = await fetch('/api/focus-sessions/active');
-      if (response.ok) {
-        const data = await response.json();
-        setActiveSession(data.activeSession);
-        if (data.activeSession) {
-          const now = Date.now();
-          setLocalStartTime(new Date(data.activeSession.startTime).getTime());
-          setElapsedTime(calculateElapsedTime(data.activeSession, now));
-          setDistractionCount(data.activeSession.distractionCount || 0);
-        } else {
-          setElapsedTime(0);
-          setDistractionCount(0);
-          setLocalStartTime(null);
-        }
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        const errorMessage = data?.error || 'Failed to fetch active session';
+        console.error('Failed to fetch active session:', response.status, errorMessage);
+        setError(errorMessage);
+        return;
+      }
+
+      const session = data?.activeSession ?? null;
+      if (session !== null && !isValidActiveFocusSession(session)) {
+        const errorMessage = 'Received invalid active session data';
+        console.error(errorMessage, data);
+        setError(errorMessage);
+        setActiveSession(null);
+        setElapsedTime(0);
+        setDistractionCount(0);
+        setLocalStartTime(null);
+        return;
+      }
+
+      setActiveSession(session);
+      if (session) {
+        const now = Date.now();
+        setLocalStartTime(new Date(session.startTime).getTime());
+        setElapsedTime(calculateElapsedTime(session, now));
+        setDistractionCount(session.distractionCount || 0);
+      } else {
+        setElapsedTime(0);
+        setDistractionCount(0);
+        setLocalStartTime(null);
       }
     } catch (error) {
       console.error('Error fetching active session:', error);
@@ -164,15 +203,23 @@ export function useFocusSession(refetchStats?: () => void) {
 
       const session = data?.activeSession;
       if (!session) {
-        const errorMessage = 'No active session was returned';
+        const errorMessage = 'Focus session could not be started: no active session returned by server';
+        console.error(errorMessage, data);
+        setError(errorMessage);
+        return;
+      }
+
+      if (!isValidActiveFocusSession(session)) {
+        const errorMessage = 'Focus session could not be started: invalid session data returned by server';
         console.error(errorMessage, data);
         setError(errorMessage);
         return;
       }
 
       setActiveSession(session);
+      const now = Date.now();
       setLocalStartTime(new Date(session.startTime).getTime());
-      setElapsedTime(0);
+      setElapsedTime(calculateElapsedTime(session, now));
       setDistractionCount(session?.distractionCount || 0);
       if (refetchStats) {
         refetchStats();

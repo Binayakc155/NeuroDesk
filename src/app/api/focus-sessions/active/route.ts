@@ -1,6 +1,20 @@
 import { requireAuth, AuthError } from '@/lib/clerk-auth';
 import { prisma } from '@/lib/prisma';
+import { FocusSession } from '@prisma/client';
 import { NextResponse } from 'next/server';
+
+function toActiveSessionResponse(session: FocusSession | null) {
+  if (!session) return null;
+
+  return {
+    id: session.id,
+    startTime: session.startTime.toISOString(),
+    status: session.status,
+    pausedAt: session.pausedAt ? session.pausedAt.toISOString() : null,
+    pausedDuration: session.pausedDuration ?? 0,
+    distractionCount: session.distractionCount ?? 0,
+  };
+}
 
 export async function POST() {
   try {
@@ -15,7 +29,10 @@ export async function POST() {
     });
 
     if (existingActiveSession) {
-      return NextResponse.json({ activeSession: existingActiveSession }, { status: 200 });
+      return NextResponse.json(
+        { activeSession: toActiveSessionResponse(existingActiveSession) },
+        { status: 200 }
+      );
     }
 
     // Create a new focus session
@@ -26,7 +43,10 @@ export async function POST() {
       },
     });
 
-    return NextResponse.json({ activeSession: focusSession }, { status: 201 });
+    return NextResponse.json(
+      { activeSession: toActiveSessionResponse(focusSession) },
+      { status: 201 }
+    );
   } catch (error) {
     if (error instanceof AuthError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
@@ -52,7 +72,7 @@ export async function GET() {
       orderBy: { startTime: 'desc' },
     });
 
-    return NextResponse.json({ activeSession });
+    return NextResponse.json({ activeSession: toActiveSessionResponse(activeSession) });
   } catch (error) {
     if (error instanceof AuthError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
