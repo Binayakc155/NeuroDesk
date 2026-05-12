@@ -39,22 +39,40 @@ export async function POST(
       return NextResponse.json(focusSession);
     }
 
+    const pausedAt = focusSession.pausedAt;
     const pausedSeconds = Math.max(
       0,
-      Math.floor((Date.now() - focusSession.pausedAt.getTime()) / 1000)
+      Math.floor((Date.now() - pausedAt.getTime()) / 1000)
     );
 
-    const updatedSession = await prisma.focusSession.update({
-      where: { id },
+    const resumeResult = await prisma.focusSession.updateMany({
+      where: {
+        id,
+        userId: user.id,
+        status: "paused",
+        endTime: null,
+        pausedAt,
+      },
       data: {
         status: "active",
         pausedAt: null,
         pausedDuration: focusSession.pausedDuration + pausedSeconds,
       },
+    });
+
+    const updatedSession = await prisma.focusSession.findUnique({
+      where: { id },
       include: {
         distractions: true,
       },
     });
+
+    if (!updatedSession) {
+      return NextResponse.json(
+        { error: "Focus session not found" },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json(updatedSession);
   } catch (error) {
