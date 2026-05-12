@@ -22,6 +22,9 @@ interface FocusSession {
   teamId?: string;
   startTime: Date | string;
   endTime?: Date | string;
+  status: 'active' | 'paused' | 'completed';
+  pausedAt?: Date | string | null;
+  pausedDuration?: number;
   duration: number;
   isDistracted: boolean;
   distractionCount: number;
@@ -42,6 +45,8 @@ export default function Dashboard() {
     loading: sessionLoading,
     startSession,
     endSession,
+    pauseSession,
+    resumeSession,
     recordDistraction,
   } = useFocusSession(refetch);
   const { domains: whitelistedDomains = [] } = useWhitelistedDomains();
@@ -192,7 +197,7 @@ export default function Dashboard() {
                 <h2 className="mt-2 text-2xl font-semibold text-white">Deep Work Timer</h2>
               </div>
               <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1 text-xs font-medium text-slate-300">
-                {activeSession ? 'Live now' : 'Ready'}
+                {activeSession ? (activeSession.status === 'paused' ? 'Paused' : 'Live now') : 'Ready'}
               </span>
             </div>
 
@@ -203,7 +208,9 @@ export default function Dashboard() {
                 </div>
 
                 <p className="text-sm text-slate-300">
-                  You are in the zone. Keep this tab active for your best score.
+                  {activeSession.status === 'paused'
+                    ? 'Session paused. Resume when you are ready to continue.'
+                    : 'You are in the zone. Keep this tab active for your best score.'}
                 </p>
 
                 <p className="mt-2 text-sm font-medium text-rose-300">
@@ -218,13 +225,26 @@ export default function Dashboard() {
 
             <div className="flex flex-wrap gap-4">
               {activeSession ? (
-                <button
-                  onClick={endSession}
-                  disabled={sessionLoading}
-                  className="rounded-xl bg-linear-to-r from-rose-500 to-pink-500 px-6 py-3 font-semibold text-white transition hover:from-rose-400 hover:to-pink-400 disabled:opacity-50"
-                >
-                  {sessionLoading ? 'Saving...' : 'End Session'}
-                </button>
+                <>
+                  <button
+                    onClick={activeSession.status === 'paused' ? resumeSession : pauseSession}
+                    disabled={sessionLoading}
+                    className="rounded-xl bg-linear-to-r from-amber-500 to-orange-500 px-6 py-3 font-semibold text-white transition hover:from-amber-400 hover:to-orange-400 disabled:opacity-50"
+                  >
+                    {sessionLoading
+                      ? 'Saving...'
+                      : activeSession.status === 'paused'
+                        ? 'Resume'
+                        : 'Pause'}
+                  </button>
+                  <button
+                    onClick={endSession}
+                    disabled={sessionLoading}
+                    className="rounded-xl bg-linear-to-r from-rose-500 to-pink-500 px-6 py-3 font-semibold text-white transition hover:from-rose-400 hover:to-pink-400 disabled:opacity-50"
+                  >
+                    {sessionLoading ? 'Saving...' : 'End Session'}
+                  </button>
+                </>
               ) : (
                 <button
                   onClick={handleStartSession}

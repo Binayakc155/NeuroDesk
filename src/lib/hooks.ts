@@ -2,6 +2,17 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+type FocusSessionStatus = 'active' | 'paused' | 'completed';
+
+interface ActiveFocusSession {
+  id: string;
+  startTime: string;
+  status: FocusSessionStatus;
+  pausedAt: string | null;
+  pausedDuration: number;
+  distractionCount: number;
+}
+
 export function useDashboardStats() {
   const [stats, setStats] = useState({
     totalSessions: 0,
@@ -38,7 +49,7 @@ export function useDashboardStats() {
 }
 
 export function useFocusSession(refetchStats?: () => void) {
-  const [activeSession, setActiveSession] = useState<any>(null);
+  const [activeSession, setActiveSession] = useState<ActiveFocusSession | null>(null);
   const [loading, setLoading] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [distractionCount, setDistractionCount] = useState(0);
@@ -55,13 +66,36 @@ export function useFocusSession(refetchStats?: () => void) {
     if (!activeSession || localStartTime === null) return;
 
     const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const elapsed = Math.floor((now - localStartTime) / 1000);
+      const now = Date.now();
+      const currentPauseDuration = activeSession.pausedAt
+        ? Math.floor((now - new Date(activeSession.pausedAt).getTime()) / 1000)
+        : 0;
+      const elapsed = Math.max(
+        0,
+        Math.floor((now - localStartTime) / 1000) -
+          (activeSession.pausedDuration || 0) -
+          currentPauseDuration
+      );
       setElapsedTime(elapsed);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSession, localStartTime]);
+  }, [activeSession, localStartTime, activeSession?.pausedAt, activeSession?.pausedDuration]);
+
+  const calculateElapsedTime = (session: ActiveFocusSession) => {
+    const now = Date.now();
+    const serverStartTime = new Date(session.startTime).getTime();
+    const currentPauseDuration = session.pausedAt
+      ? Math.floor((now - new Date(session.pausedAt).getTime()) / 1000)
+      : 0;
+
+    return Math.max(
+      0,
+      Math.floor((now - serverStartTime) / 1000) -
+        (session.pausedDuration || 0) -
+        currentPauseDuration
+    );
+  };
 
   const fetchActiveSession = async () => {
     try {
@@ -70,12 +104,13 @@ export function useFocusSession(refetchStats?: () => void) {
         const data = await response.json();
         setActiveSession(data.activeSession);
         if (data.activeSession) {
-          // Calculate how far into the session we are, then set local start time to match
-          const now = new Date().getTime();
-          const serverStartTime = new Date(data.activeSession.startTime).getTime();
-          const elapsedMs = now - serverStartTime;
-          setLocalStartTime(now - elapsedMs);
+          setLocalStartTime(new Date(data.activeSession.startTime).getTime());
+          setElapsedTime(calculateElapsedTime(data.activeSession));
           setDistractionCount(data.activeSession.distractionCount || 0);
+        } else {
+          setElapsedTime(0);
+          setDistractionCount(0);
+          setLocalStartTime(null);
         }
       }
     } catch (error) {
@@ -121,6 +156,8 @@ export function useFocusSession(refetchStats?: () => void) {
       if (response.ok) {
         const session = await response.json();
         setActiveSession(session);
+        setLocalStartTime(new Date(session.startTime).getTime());
+        setElapsedTime(0);
         setDistractionCount(session?.distractionCount || 0);
         if (refetchStats) {
           refetchStats();
@@ -165,6 +202,48 @@ export function useFocusSession(refetchStats?: () => void) {
     }
   };
 
+  const pauseSession = async () => {
+    if (!activeSession || activeSession.status === 'paused') return;
+
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/focus-sessions/${activeSession.id}/pause`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const session = await response.json();
+        setActiveSession(session);
+        setElapsedTime(calculateElapsedTime(session));
+      }
+    } catch (error) {
+      console.error('Error pausing session:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resumeSession = async () => {
+    if (!activeSession || activeSession.status === 'active') return;
+
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/focus-sessions/${activeSession.id}/resume`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const session = await response.json();
+        setActiveSession(session);
+        setElapsedTime(calculateElapsedTime(session));
+      }
+    } catch (error) {
+      console.error('Error resuming session:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     activeSession,
     elapsedTime,
@@ -172,6 +251,8 @@ export function useFocusSession(refetchStats?: () => void) {
     loading,
     startSession,
     endSession,
+    pauseSession,
+    resumeSession,
     recordDistraction,
   };
 }
