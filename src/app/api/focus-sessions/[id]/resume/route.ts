@@ -1,4 +1,4 @@
-import { requireAuth } from "@/lib/clerk-auth";
+import { AuthError, requireAuth } from "@/lib/clerk-auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -74,8 +74,24 @@ export async function POST(
       );
     }
 
+    if (resumeResult.count === 0) {
+      if (updatedSession.endTime) {
+        return NextResponse.json(
+          { error: "Cannot resume a completed session" },
+          { status: 400 }
+        );
+      }
+
+      if (updatedSession.status === "active" && !updatedSession.pausedAt) {
+        return NextResponse.json(updatedSession);
+      }
+    }
+
     return NextResponse.json(updatedSession);
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
     console.error("Error resuming focus session:", error);
     return NextResponse.json(
       { error: "Failed to resume focus session" },

@@ -15,7 +15,7 @@ export async function POST() {
     });
 
     if (existingActiveSession) {
-      return NextResponse.json(existingActiveSession, { status: 200 });
+      return NextResponse.json({ activeSession: existingActiveSession }, { status: 200 });
     }
 
     // Create a new focus session
@@ -26,7 +26,7 @@ export async function POST() {
       },
     });
 
-    return NextResponse.json(focusSession, { status: 201 });
+    return NextResponse.json({ activeSession: focusSession }, { status: 201 });
   } catch (error) {
     if (error instanceof AuthError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
