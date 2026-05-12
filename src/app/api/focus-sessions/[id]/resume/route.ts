@@ -85,6 +85,11 @@ export async function POST(
       if (updatedSession.status === "active" && !updatedSession.pausedAt) {
         return NextResponse.json(updatedSession);
       }
+
+      return NextResponse.json(
+        { error: "Unable to resume session due to an unexpected session state" },
+        { status: 409 }
+      );
     }
 
     return NextResponse.json(updatedSession);

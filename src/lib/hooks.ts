@@ -54,6 +54,23 @@ export function useFocusSession(refetchStats?: () => void) {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [distractionCount, setDistractionCount] = useState(0);
 
+  const calculateElapsedTime = (
+    session: ActiveFocusSession,
+    referenceNow: number = Date.now()
+  ) => {
+    const serverStartTime = new Date(session.startTime).getTime();
+    const currentPauseDuration = session.pausedAt
+      ? Math.floor((referenceNow - new Date(session.pausedAt).getTime()) / 1000)
+      : 0;
+
+    return Math.max(
+      0,
+      Math.floor((referenceNow - serverStartTime) / 1000) -
+        (session.pausedDuration || 0) -
+        currentPauseDuration
+    );
+  };
+
   // Fetch active session on mount
   useEffect(() => {
     fetchActiveSession();
@@ -72,23 +89,6 @@ export function useFocusSession(refetchStats?: () => void) {
 
     return () => clearInterval(interval);
   }, [activeSession]);
-
-  const calculateElapsedTime = (
-    session: ActiveFocusSession,
-    referenceNow: number = Date.now()
-  ) => {
-    const serverStartTime = new Date(session.startTime).getTime();
-    const currentPauseDuration = session.pausedAt
-      ? Math.floor((referenceNow - new Date(session.pausedAt).getTime()) / 1000)
-      : 0;
-
-    return Math.max(
-      0,
-      Math.floor((referenceNow - serverStartTime) / 1000) -
-        (session.pausedDuration || 0) -
-        currentPauseDuration
-    );
-  };
 
   const fetchActiveSession = async () => {
     try {
