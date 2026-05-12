@@ -32,15 +32,26 @@ export async function PATCH(
     }
 
     const endTime = new Date();
-    const duration = Math.floor(
+    const liveDuration = Math.floor(
       (endTime.getTime() - focusSession.startTime.getTime()) / 1000
     );
+    const activePauseDuration = focusSession.pausedAt
+      ? Math.floor((endTime.getTime() - focusSession.pausedAt.getTime()) / 1000)
+      : 0;
+    const duration = Math.max(
+      0,
+      liveDuration - focusSession.pausedDuration - activePauseDuration
+    );
+    const pausedDuration = focusSession.pausedDuration + activePauseDuration;
 
     const updatedSession = await prisma.focusSession.update({
       where: { id },
       data: {
         endTime,
         duration,
+        status: "completed",
+        pausedAt: null,
+        pausedDuration,
         isDistracted,
         distractionCount,
         notes: notes || focusSession.notes,

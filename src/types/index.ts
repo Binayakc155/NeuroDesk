@@ -6,6 +6,9 @@ export interface FocusSessionData {
   teamId?: string;
   startTime: Date;
   endTime?: Date;
+  status: "active" | "paused" | "completed";
+  pausedAt?: Date | null;
+  pausedDuration: number;
   duration: number;
   isDistracted: boolean;
   distractionCount: number;

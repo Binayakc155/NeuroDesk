@@ -123,6 +123,9 @@ model FocusSession {
   teamId                String?
   startTime             DateTime
   endTime               DateTime?
+  status                String                 @default("active")
+  pausedAt              DateTime?
+  pausedDuration        Int                    @default(0) // in seconds
   duration              Int                   @default(0) // in seconds
   isDistracted          Boolean               @default(false)
   distractionCount      Int                   @default(0)

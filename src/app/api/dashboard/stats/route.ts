@@ -20,11 +20,17 @@ export async function GET() {
         return sum + session.duration;
       }
 
-      const liveDuration = Math.max(
-        0,
-        Math.floor((now - new Date(session.startTime).getTime()) / 1000)
+      const liveDuration = Math.floor(
+        (now - new Date(session.startTime).getTime()) / 1000
       );
-      return sum + liveDuration;
+      const activePauseDuration = session.pausedAt
+        ? Math.floor((now - new Date(session.pausedAt).getTime()) / 1000)
+        : 0;
+      const currentDuration = Math.max(
+        0,
+        liveDuration - session.pausedDuration - activePauseDuration
+      );
+      return sum + currentDuration;
     }, 0);
     const totalHours = Math.round((totalDuration / 3600) * 10) / 10;
 
