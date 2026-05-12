@@ -60,6 +60,38 @@ export async function POST(
       },
     });
 
+    if (resumeResult.count === 0) {
+      const currentSession = await prisma.focusSession.findUnique({
+        where: { id },
+        include: {
+          distractions: true,
+        },
+      });
+
+      if (!currentSession) {
+        return NextResponse.json(
+          { error: "Focus session not found" },
+          { status: 404 }
+        );
+      }
+
+      if (currentSession.endTime) {
+        return NextResponse.json(
+          { error: "Cannot resume a completed session" },
+          { status: 400 }
+        );
+      }
+
+      if (currentSession.status === "active" && !currentSession.pausedAt) {
+        return NextResponse.json(currentSession);
+      }
+
+      return NextResponse.json(
+        { error: "Unable to resume session due to an unexpected session state" },
+        { status: 409 }
+      );
+    }
+
     const updatedSession = await prisma.focusSession.findUnique({
       where: { id },
       include: {
@@ -71,24 +103,6 @@ export async function POST(
       return NextResponse.json(
         { error: "Focus session not found" },
         { status: 404 }
-      );
-    }
-
-    if (resumeResult.count === 0) {
-      if (updatedSession.endTime) {
-        return NextResponse.json(
-          { error: "Cannot resume a completed session" },
-          { status: 400 }
-        );
-      }
-
-      if (updatedSession.status === "active" && !updatedSession.pausedAt) {
-        return NextResponse.json(updatedSession);
-      }
-
-      return NextResponse.json(
-        { error: "Unable to resume session due to an unexpected session state" },
-        { status: 409 }
       );
     }
 
