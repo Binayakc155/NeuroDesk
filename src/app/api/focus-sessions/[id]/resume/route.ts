@@ -36,7 +36,10 @@ export async function POST(
     }
 
     if (focusSession.status === "active" || !focusSession.pausedAt) {
-      return NextResponse.json(focusSession);
+      return NextResponse.json(
+        { error: "Session is already active" },
+        { status: 409 }
+      );
     }
 
     const pausedAt = focusSession.pausedAt;
@@ -59,6 +62,33 @@ export async function POST(
         pausedDuration: focusSession.pausedDuration + pausedSeconds,
       },
     });
+
+    if (resumeResult.count === 0) {
+      const currentSession = await prisma.focusSession.findUnique({
+        where: { id },
+      });
+
+      if (!currentSession) {
+        return NextResponse.json(
+          { error: "Focus session not found" },
+          { status: 404 }
+        );
+      }
+
+      if (currentSession.endTime) {
+        return NextResponse.json(
+          { error: "Cannot resume a completed session" },
+          { status: 400 }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          error: `Session cannot be resumed from current state: ${currentSession.status}. Session must be in paused state to resume.`,
+        },
+        { status: 409 }
+      );
+    }
 
     const updatedSession = await prisma.focusSession.findUnique({
       where: { id },

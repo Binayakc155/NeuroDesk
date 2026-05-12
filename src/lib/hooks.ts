@@ -13,6 +13,28 @@ interface ActiveFocusSession {
   distractionCount: number;
 }
 
+/**
+ * Computes active elapsed session time in seconds.
+ * Excludes accumulated paused duration and any currently running pause interval.
+ * `referenceNow` lets callers calculate using a specific timestamp.
+ */
+function calculateElapsedTime(
+  session: ActiveFocusSession,
+  referenceNow: number = Date.now()
+) {
+  const serverStartTime = new Date(session.startTime).getTime();
+  const currentPauseDuration = session.pausedAt
+    ? Math.floor((referenceNow - new Date(session.pausedAt).getTime()) / 1000)
+    : 0;
+
+  return Math.max(
+    0,
+    Math.floor((referenceNow - serverStartTime) / 1000) -
+      (session.pausedDuration || 0) -
+      currentPauseDuration
+  );
+}
+
 export function useDashboardStats() {
   const [stats, setStats] = useState({
     totalSessions: 0,
@@ -53,51 +75,25 @@ export function useFocusSession(refetchStats?: () => void) {
   const [loading, setLoading] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [distractionCount, setDistractionCount] = useState(0);
-  const [localStartTime, setLocalStartTime] = useState<number | null>(null);
 
   // Fetch active session on mount
   useEffect(() => {
     fetchActiveSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Timer for elapsed time
   useEffect(() => {
-    if (!activeSession || localStartTime === null) return;
+    if (!activeSession) return;
+
+    setElapsedTime(calculateElapsedTime(activeSession));
+    if (activeSession.status === 'paused') return;
 
     const interval = setInterval(() => {
-      const now = Date.now();
-      const currentPauseDuration = activeSession.pausedAt
-        ? Math.floor((now - new Date(activeSession.pausedAt).getTime()) / 1000)
-        : 0;
-      const elapsed = Math.max(
-        0,
-        Math.floor((now - localStartTime) / 1000) -
-          (activeSession.pausedDuration || 0) -
-          currentPauseDuration
-      );
-      setElapsedTime(elapsed);
+      setElapsedTime(calculateElapsedTime(activeSession));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSession, localStartTime]);
-
-  const calculateElapsedTime = (
-    session: ActiveFocusSession,
-    referenceNow: number = Date.now()
-  ) => {
-    const serverStartTime = new Date(session.startTime).getTime();
-    const currentPauseDuration = session.pausedAt
-      ? Math.floor((referenceNow - new Date(session.pausedAt).getTime()) / 1000)
-      : 0;
-
-    return Math.max(
-      0,
-      Math.floor((referenceNow - serverStartTime) / 1000) -
-        (session.pausedDuration || 0) -
-        currentPauseDuration
-    );
-  };
+  }, [activeSession]);
 
   const fetchActiveSession = async () => {
     try {
@@ -107,13 +103,11 @@ export function useFocusSession(refetchStats?: () => void) {
         setActiveSession(data.activeSession);
         if (data.activeSession) {
           const now = Date.now();
-          setLocalStartTime(new Date(data.activeSession.startTime).getTime());
           setElapsedTime(calculateElapsedTime(data.activeSession, now));
           setDistractionCount(data.activeSession.distractionCount || 0);
         } else {
           setElapsedTime(0);
           setDistractionCount(0);
-          setLocalStartTime(null);
         }
       }
     } catch (error) {
@@ -148,9 +142,6 @@ export function useFocusSession(refetchStats?: () => void) {
   const startSession = async () => {
     setLoading(true);
     try {
-      // Set local start time immediately (before API call)
-      const now = new Date().getTime();
-      setLocalStartTime(now);
       setElapsedTime(0);
 
       const response = await fetch('/api/focus-sessions/active', {
@@ -159,7 +150,6 @@ export function useFocusSession(refetchStats?: () => void) {
       if (response.ok) {
         const session = await response.json();
         setActiveSession(session);
-        setLocalStartTime(new Date(session.startTime).getTime());
         setElapsedTime(0);
         setDistractionCount(session?.distractionCount || 0);
         if (refetchStats) {
@@ -190,7 +180,6 @@ export function useFocusSession(refetchStats?: () => void) {
         setActiveSession(null);
         setElapsedTime(0);
         setDistractionCount(0);
-        setLocalStartTime(null);
         // Refresh stats
         if (refetchStats) {
           refetchStats();
