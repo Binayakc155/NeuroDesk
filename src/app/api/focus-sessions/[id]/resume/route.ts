@@ -45,7 +45,7 @@ export async function POST(
       Math.floor((Date.now() - pausedAt.getTime()) / 1000)
     );
 
-    await prisma.focusSession.updateMany({
+    const resumeResult = await prisma.focusSession.updateMany({
       where: {
         id,
         userId: user.id,
@@ -72,6 +72,19 @@ export async function POST(
         { error: "Focus session not found" },
         { status: 404 }
       );
+    }
+
+    if (resumeResult.count === 0) {
+      if (updatedSession.endTime) {
+        return NextResponse.json(
+          { error: "Cannot resume a completed session" },
+          { status: 400 }
+        );
+      }
+
+      if (updatedSession.status === "active" && !updatedSession.pausedAt) {
+        return NextResponse.json(updatedSession);
+      }
     }
 
     return NextResponse.json(updatedSession);
