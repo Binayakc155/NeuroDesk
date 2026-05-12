@@ -87,7 +87,9 @@ export async function POST(
       }
 
       return NextResponse.json(
-        { error: "Unable to resume session due to an unexpected session state" },
+        {
+          error: `Cannot resume session: current state is '${currentSession.status}' with pausedAt=${currentSession.pausedAt ? "set" : "null"}`,
+        },
         { status: 409 }
       );
     }
