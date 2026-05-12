@@ -15,9 +15,6 @@ interface WhitelistedDomain {
 // Skip static generation - this is a dynamic page that requires client-side auth
 export const dynamic = 'force-dynamic';
 
-
-
-
 export default function Settings() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
