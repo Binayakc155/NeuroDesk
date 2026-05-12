@@ -53,7 +53,6 @@ export function useFocusSession(refetchStats?: () => void) {
   const [loading, setLoading] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [distractionCount, setDistractionCount] = useState(0);
-  const [localStartTime, setLocalStartTime] = useState<number | null>(null);
 
   // Fetch active session on mount
   useEffect(() => {
@@ -63,24 +62,16 @@ export function useFocusSession(refetchStats?: () => void) {
 
   // Timer for elapsed time
   useEffect(() => {
-    if (!activeSession || localStartTime === null) return;
+    if (!activeSession) return;
+
+    setElapsedTime(calculateElapsedTime(activeSession));
 
     const interval = setInterval(() => {
-      const now = Date.now();
-      const currentPauseDuration = activeSession.pausedAt
-        ? Math.floor((now - new Date(activeSession.pausedAt).getTime()) / 1000)
-        : 0;
-      const elapsed = Math.max(
-        0,
-        Math.floor((now - localStartTime) / 1000) -
-          (activeSession.pausedDuration || 0) -
-          currentPauseDuration
-      );
-      setElapsedTime(elapsed);
+      setElapsedTime(calculateElapsedTime(activeSession));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSession, localStartTime]);
+  }, [activeSession]);
 
   const calculateElapsedTime = (
     session: ActiveFocusSession,
@@ -107,13 +98,11 @@ export function useFocusSession(refetchStats?: () => void) {
         setActiveSession(data.activeSession);
         if (data.activeSession) {
           const now = Date.now();
-          setLocalStartTime(new Date(data.activeSession.startTime).getTime());
           setElapsedTime(calculateElapsedTime(data.activeSession, now));
           setDistractionCount(data.activeSession.distractionCount || 0);
         } else {
           setElapsedTime(0);
           setDistractionCount(0);
-          setLocalStartTime(null);
         }
       }
     } catch (error) {
@@ -148,9 +137,6 @@ export function useFocusSession(refetchStats?: () => void) {
   const startSession = async () => {
     setLoading(true);
     try {
-      // Set local start time immediately (before API call)
-      const now = new Date().getTime();
-      setLocalStartTime(now);
       setElapsedTime(0);
 
       const response = await fetch('/api/focus-sessions/active', {
@@ -159,7 +145,6 @@ export function useFocusSession(refetchStats?: () => void) {
       if (response.ok) {
         const session = await response.json();
         setActiveSession(session);
-        setLocalStartTime(new Date(session.startTime).getTime());
         setElapsedTime(0);
         setDistractionCount(session?.distractionCount || 0);
         if (refetchStats) {
@@ -190,7 +175,6 @@ export function useFocusSession(refetchStats?: () => void) {
         setActiveSession(null);
         setElapsedTime(0);
         setDistractionCount(0);
-        setLocalStartTime(null);
         // Refresh stats
         if (refetchStats) {
           refetchStats();

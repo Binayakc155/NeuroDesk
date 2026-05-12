@@ -203,6 +203,11 @@ export default function Dashboard() {
 
             {activeSession ? (
               <div className="mb-8">
+                {activeSession.status === 'paused' && (
+                  <div className="mb-4 inline-flex items-center rounded-full border border-amber-300/35 bg-amber-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-amber-100">
+                    Session Paused
+                  </div>
+                )}
                 <div className="mb-2 text-5xl font-semibold text-[#dbe2ff] sm:text-6xl">
                   {formatTime(elapsedTime)}
                 </div>

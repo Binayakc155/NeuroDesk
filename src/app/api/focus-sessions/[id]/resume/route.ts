@@ -74,6 +74,19 @@ export async function POST(
       );
     }
 
+    if (resumeResult.count === 0) {
+      if (updatedSession.endTime) {
+        return NextResponse.json(
+          { error: "Cannot resume a completed session" },
+          { status: 400 }
+        );
+      }
+
+      if (updatedSession.status === "active" && !updatedSession.pausedAt) {
+        return NextResponse.json(updatedSession);
+      }
+    }
+
     return NextResponse.json(updatedSession);
   } catch (error) {
     console.error("Error resuming focus session:", error);
