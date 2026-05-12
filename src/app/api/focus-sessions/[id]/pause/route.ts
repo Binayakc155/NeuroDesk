@@ -39,16 +39,47 @@ export async function POST(
       return NextResponse.json(focusSession);
     }
 
-    const updatedSession = await prisma.focusSession.update({
-      where: { id },
+    const pauseTimestamp = new Date();
+    const pauseResult = await prisma.focusSession.updateMany({
+      where: {
+        id,
+        userId: user.id,
+        status: "active",
+        pausedAt: null,
+        endTime: null,
+      },
       data: {
         status: "paused",
-        pausedAt: new Date(),
+        pausedAt: pauseTimestamp,
       },
+    });
+
+    const updatedSession = await prisma.focusSession.findUnique({
+      where: { id },
       include: {
         distractions: true,
       },
     });
+
+    if (!updatedSession) {
+      return NextResponse.json(
+        { error: "Focus session not found" },
+        { status: 404 }
+      );
+    }
+
+    if (pauseResult.count === 0) {
+      if (updatedSession.endTime) {
+        return NextResponse.json(
+          { error: "Cannot pause a completed session" },
+          { status: 400 }
+        );
+      }
+
+      if (updatedSession.status === "paused" && updatedSession.pausedAt) {
+        return NextResponse.json(updatedSession);
+      }
+    }
 
     return NextResponse.json(updatedSession);
   } catch (error) {
