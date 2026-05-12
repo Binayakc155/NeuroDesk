@@ -1,5 +1,5 @@
 -- AlterTable
 ALTER TABLE "FocusSession"
 ADD COLUMN "status" TEXT NOT NULL DEFAULT 'active',
-ADD COLUMN "pausedAt" DATETIME,
+ADD COLUMN "pausedAt" TIMESTAMP(3),
 ADD COLUMN "pausedDuration" INTEGER NOT NULL DEFAULT 0;

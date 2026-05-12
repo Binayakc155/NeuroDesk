@@ -80,18 +80,20 @@ export function useFocusSession(refetchStats?: () => void) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSession, localStartTime, activeSession?.pausedAt, activeSession?.pausedDuration]);
+  }, [activeSession, localStartTime]);
 
-  const calculateElapsedTime = (session: ActiveFocusSession) => {
-    const now = Date.now();
+  const calculateElapsedTime = (
+    session: ActiveFocusSession,
+    referenceNow: number = Date.now()
+  ) => {
     const serverStartTime = new Date(session.startTime).getTime();
     const currentPauseDuration = session.pausedAt
-      ? Math.floor((now - new Date(session.pausedAt).getTime()) / 1000)
+      ? Math.floor((referenceNow - new Date(session.pausedAt).getTime()) / 1000)
       : 0;
 
     return Math.max(
       0,
-      Math.floor((now - serverStartTime) / 1000) -
+      Math.floor((referenceNow - serverStartTime) / 1000) -
         (session.pausedDuration || 0) -
         currentPauseDuration
     );
@@ -104,8 +106,9 @@ export function useFocusSession(refetchStats?: () => void) {
         const data = await response.json();
         setActiveSession(data.activeSession);
         if (data.activeSession) {
+          const now = Date.now();
           setLocalStartTime(new Date(data.activeSession.startTime).getTime());
-          setElapsedTime(calculateElapsedTime(data.activeSession));
+          setElapsedTime(calculateElapsedTime(data.activeSession, now));
           setDistractionCount(data.activeSession.distractionCount || 0);
         } else {
           setElapsedTime(0);
