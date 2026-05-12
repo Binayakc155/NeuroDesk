@@ -73,7 +73,7 @@ export default function Dashboard() {
   );
 
   useDistractionDetection(
-    !!activeSession,
+    activeSession?.status === 'active',
     () => recordDistraction(),
     whitelistedDomains
   );

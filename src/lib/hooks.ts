@@ -122,7 +122,7 @@ export function useFocusSession(refetchStats?: () => void) {
   };
 
   const recordDistraction = async (description?: string) => {
-    if (!activeSession) return;
+    if (!activeSession || activeSession.status !== 'active') return;
 
     try {
       const response = await fetch('/api/distractions', {
