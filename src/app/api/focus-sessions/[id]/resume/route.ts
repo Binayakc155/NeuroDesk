@@ -36,7 +36,10 @@ export async function POST(
     }
 
     if (focusSession.status === "active" || !focusSession.pausedAt) {
-      return NextResponse.json(focusSession);
+      return NextResponse.json(
+        { error: "Session is already active" },
+        { status: 409 }
+      );
     }
 
     const pausedAt = focusSession.pausedAt;
@@ -83,7 +86,10 @@ export async function POST(
       }
 
       if (currentSession.status === "active" && !currentSession.pausedAt) {
-        return NextResponse.json(currentSession);
+        return NextResponse.json(
+          { error: "Session is already active" },
+          { status: 409 }
+        );
       }
 
       return NextResponse.json(

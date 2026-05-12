@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type FocusSessionStatus = 'active' | 'paused' | 'completed';
 
@@ -54,22 +54,22 @@ export function useFocusSession(refetchStats?: () => void) {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [distractionCount, setDistractionCount] = useState(0);
 
-  const calculateElapsedTime = useCallback(
-    (session: ActiveFocusSession, referenceNow: number = Date.now()) => {
-      const serverStartTime = new Date(session.startTime).getTime();
-      const currentPauseDuration = session.pausedAt
-        ? Math.floor((referenceNow - new Date(session.pausedAt).getTime()) / 1000)
-        : 0;
+  const calculateElapsedTime = (
+    session: ActiveFocusSession,
+    referenceNow: number = Date.now()
+  ) => {
+    const serverStartTime = new Date(session.startTime).getTime();
+    const currentPauseDuration = session.pausedAt
+      ? Math.floor((referenceNow - new Date(session.pausedAt).getTime()) / 1000)
+      : 0;
 
-      return Math.max(
-        0,
-        Math.floor((referenceNow - serverStartTime) / 1000) -
-          (session.pausedDuration || 0) -
-          currentPauseDuration
-      );
-    },
-    []
-  );
+    return Math.max(
+      0,
+      Math.floor((referenceNow - serverStartTime) / 1000) -
+        (session.pausedDuration || 0) -
+        currentPauseDuration
+    );
+  };
 
   // Fetch active session on mount
   useEffect(() => {
@@ -89,7 +89,7 @@ export function useFocusSession(refetchStats?: () => void) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSession, calculateElapsedTime]);
+  }, [activeSession]);
 
   const fetchActiveSession = async () => {
     try {
