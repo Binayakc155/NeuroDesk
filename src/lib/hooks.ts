@@ -13,6 +13,11 @@ interface ActiveFocusSession {
   distractionCount: number;
 }
 
+/**
+ * Computes active elapsed session time in seconds.
+ * Excludes accumulated paused duration and any currently running pause interval.
+ * `referenceNow` lets callers calculate using a specific timestamp.
+ */
 function calculateElapsedTime(
   session: ActiveFocusSession,
   referenceNow: number = Date.now()

@@ -66,9 +66,6 @@ export async function POST(
     if (resumeResult.count === 0) {
       const currentSession = await prisma.focusSession.findUnique({
         where: { id },
-        include: {
-          distractions: true,
-        },
       });
 
       if (!currentSession) {
