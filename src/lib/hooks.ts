@@ -278,7 +278,16 @@ export function useWhitelistedDomains() {
         const response = await fetch('/api/whitelist');
         if (response.ok) {
           const data = await response.json();
-          setDomains(data.map((d: any) => d.domain));
+          const domainList = Array.isArray(data)
+            ? data
+                .map((item: unknown) =>
+                  typeof item === 'object' && item !== null && 'domain' in item
+                    ? (item as { domain?: unknown }).domain
+                    : null
+                )
+                .filter((domain): domain is string => typeof domain === 'string')
+            : [];
+          setDomains(domainList);
         }
       } catch (error) {
         console.error('Error fetching whitelisted domains:', error);
