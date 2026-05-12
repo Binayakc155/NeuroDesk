@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type FocusSessionStatus = 'active' | 'paused' | 'completed';
 
@@ -54,22 +54,22 @@ export function useFocusSession(refetchStats?: () => void) {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [distractionCount, setDistractionCount] = useState(0);
 
-  const calculateElapsedTime = (
-    session: ActiveFocusSession,
-    referenceNow: number = Date.now()
-  ) => {
-    const serverStartTime = new Date(session.startTime).getTime();
-    const currentPauseDuration = session.pausedAt
-      ? Math.floor((referenceNow - new Date(session.pausedAt).getTime()) / 1000)
-      : 0;
+  const calculateElapsedTime = useCallback(
+    (session: ActiveFocusSession, referenceNow: number = Date.now()) => {
+      const serverStartTime = new Date(session.startTime).getTime();
+      const currentPauseDuration = session.pausedAt
+        ? Math.floor((referenceNow - new Date(session.pausedAt).getTime()) / 1000)
+        : 0;
 
-    return Math.max(
-      0,
-      Math.floor((referenceNow - serverStartTime) / 1000) -
-        (session.pausedDuration || 0) -
-        currentPauseDuration
-    );
-  };
+      return Math.max(
+        0,
+        Math.floor((referenceNow - serverStartTime) / 1000) -
+          (session.pausedDuration || 0) -
+          currentPauseDuration
+      );
+    },
+    []
+  );
 
   // Fetch active session on mount
   useEffect(() => {
@@ -82,13 +82,14 @@ export function useFocusSession(refetchStats?: () => void) {
     if (!activeSession) return;
 
     setElapsedTime(calculateElapsedTime(activeSession));
+    if (activeSession.status === 'paused') return;
 
     const interval = setInterval(() => {
       setElapsedTime(calculateElapsedTime(activeSession));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSession]);
+  }, [activeSession, calculateElapsedTime]);
 
   const fetchActiveSession = async () => {
     try {
