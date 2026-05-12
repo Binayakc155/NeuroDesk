@@ -85,13 +85,6 @@ export async function POST(
         );
       }
 
-      if (currentSession.status === "active" && !currentSession.pausedAt) {
-        return NextResponse.json(
-          { error: "Session is already active" },
-          { status: 409 }
-        );
-      }
-
       return NextResponse.json(
         {
           error: `Cannot resume session: current state is '${currentSession.status}' with pausedAt=${currentSession.pausedAt ? "set" : "null"}`,
