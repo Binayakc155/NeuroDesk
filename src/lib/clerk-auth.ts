@@ -9,10 +9,6 @@ export class AuthError extends Error {
   }
 }
 
-/**
- * Resolve the current authenticated Clerk user to a DB user record.
- * Returns the DB user or throws AuthError.
- */
 export async function getAuthenticatedUser() {
   const { userId } = await auth();
 
@@ -20,8 +16,8 @@ export async function getAuthenticatedUser() {
     throw new AuthError(401, 'Unauthorized');
   }
 
-  // Find by clerkId (not by DB id)
-  let user = await prisma.user.findUnique({
+  // clerkId is not unique in schema, so use findFirst
+  let user = await prisma.user.findFirst({
     where: { clerkId: userId },
   });
 
