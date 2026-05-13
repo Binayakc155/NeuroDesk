@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
@@ -20,13 +20,30 @@ export async function getAuthenticatedUser() {
     throw new AuthError(401, 'Unauthorized');
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
+  // Find by clerkId (not by DB id)
+  let user = await prisma.user.findUnique({
+    where: { clerkId: userId },
   });
 
-  // If the user is not in DB, treat as unauthorized (or auto-create if desired).
   if (!user) {
-    throw new AuthError(401, 'Unauthorized');
+    const clerkUser = await clerkClient.users.getUser(userId);
+    const email = clerkUser.emailAddresses?.[0]?.emailAddress;
+
+    if (!email) {
+      throw new AuthError(401, 'Unauthorized');
+    }
+
+    user = await prisma.user.create({
+      data: {
+        clerkId: userId,
+        email,
+        name:
+          [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') ||
+          clerkUser.username ||
+          null,
+        image: clerkUser.imageUrl || null,
+      },
+    });
   }
 
   return user;
