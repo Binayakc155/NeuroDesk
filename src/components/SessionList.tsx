@@ -12,10 +12,15 @@ interface SessionListProps {
 }
 
 const SessionList: React.FC<SessionListProps> = ({ sessions, refreshSessions }) => {
-  const handleStartSession = async () => {
-    const res = await fetch('/api/focus-sessions/active', {
+  const handleStartSession = async (sessionId: string) => {
+    const res = await fetch('/api/session/start', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ sessionId }),
     });
+
     if (res.ok) {
       if (refreshSessions) refreshSessions();
       alert('Session started!');
@@ -27,10 +32,10 @@ const SessionList: React.FC<SessionListProps> = ({ sessions, refreshSessions }) 
 
   return (
     <ul>
-      {sessions.map(session => (
+      {sessions.map((session) => (
         <li key={session.id}>
           {session.title} - {session.status}
-          <button onClick={handleStartSession}>
+          <button onClick={() => handleStartSession(session.id)}>
             Start Session
           </button>
         </li>
