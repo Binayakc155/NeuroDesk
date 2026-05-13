@@ -14,18 +14,17 @@ export class AuthError extends Error {
  * Returns the DB user or throws AuthError.
  */
 export async function getAuthenticatedUser() {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     throw new AuthError(401, 'Unauthorized');
   }
 
-  let user = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: userId },
   });
 
-  // If you want auto-create with email, fetch from Clerk here.
-  // Otherwise, just enforce that the user exists in DB.
+  // If the user is not in DB, treat as unauthorized (or auto-create if desired).
   if (!user) {
     throw new AuthError(401, 'Unauthorized');
   }
