@@ -36,20 +36,19 @@ export async function POST() {
     });
 
     if (existingActiveSession) {
-      console.log('Found existing active session:', existingActiveSession);
-      
-      // Validate and normalize the existing session
-      if (!validateSessionStructure(existingActiveSession)) {
-        const errorMsg = getSessionValidationError(existingActiveSession);
-        console.error('Existing session validation failed:', errorMsg, existingActiveSession);
-        return NextResponse.json(
-          { error: 'Session structure invalid: ' + errorMsg },
-          { status: 500 }
-        );
-      }
+      // Reset existing session so timer starts from 0
+      const resetSession = await prisma.focusSession.update({
+        where: { id: existingActiveSession.id },
+        data: {
+          startTime: new Date(),
+          status: 'active',
+          pausedAt: null,
+          pausedDuration: 0,
+          distractionCount: 0,
+        },
+      });
 
-      const normalizedSession = normalizeFocusSessionResponse(existingActiveSession);
-      console.log('Returning normalized existing session:', normalizedSession);
+      const normalizedSession = normalizeFocusSessionResponse(resetSession);
       return NextResponse.json({ activeSession: normalizedSession }, { status: 200 });
     }
 
